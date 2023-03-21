@@ -1,7 +1,4 @@
 <p align="center">
-<a href="https://dl.circleci.com/status-badge/redirect/gh/Gig-Client/gig-api/tree/main" target="blank"><img src="https://dl.circleci.com/status-badge/img/gh/Gig-Client/gig-api/tree/main.svg?style=svg" width="100" alt="Circle CI" /></a>
-</p>
-<p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
