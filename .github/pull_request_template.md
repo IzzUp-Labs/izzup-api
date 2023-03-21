@@ -1,3 +1,5 @@
+![][trello.png] [**TRELLO_CARD_NAME**](TRELLO_CARD_URL)
+
 # Description
 
 Please include a summary of the changes and the related issue. Please also include relevant motivation and context. List any dependencies that are required for this change.
@@ -20,3 +22,4 @@ Please include a summary of the changes and the related issue. Please also inclu
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published in downstream modules
 
+[trello.png]: https://github.trello.services/images/mini-trello-icon.png
