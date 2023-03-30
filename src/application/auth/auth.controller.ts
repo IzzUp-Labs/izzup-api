@@ -1,23 +1,24 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
 import { AuthService } from '../../domain/services/auth/auth.service';
-import { LoginAuthDto } from './dto/login-auth.dto';
+import { AuthLoginDto } from './dto/auth-login.dto';
 
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  version: '1',
+})
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: LoginAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  login(@Body() authLoginDto: AuthLoginDto) {
+    return this.authService.validateLogin(authLoginDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  register(@Body() authLoginDto: AuthLoginDto) {
+    return this.authService.register(authLoginDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
 }
