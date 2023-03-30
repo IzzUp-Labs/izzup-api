@@ -4,8 +4,6 @@ import { AuthRegisterDto } from "../../../application/auth/dto/auth-register.dto
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../user/user.service";
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from "../../../infrastructure/entities/user.entity";
-import { FindOptionsWhere } from "typeorm";
 
 @Injectable()
 export class AuthService {
