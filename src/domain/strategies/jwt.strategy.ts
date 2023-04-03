@@ -1,9 +1,9 @@
-import { UserEntity } from "../../infrastructure/entities/user.entity";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
-import { Strategy, ExtractJwt} from "passport-jwt";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
+import { UserEntity } from '../../infrastructure/entities/user.entity';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 type JwtPayload = Pick<UserEntity, 'id'> & { iat: number; exp: number };
 

@@ -1,6 +1,6 @@
 describe('Initial Test', () => {
 
-    it('Hello World', () => {
-        expect(true).toBe(true);
-    });
+  it('Hello World', () => {
+    expect(true).toBe(true);
+  });
 });
