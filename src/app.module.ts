@@ -26,6 +26,7 @@ import authConfig from './infrastructure/config/auth.config';
     }),
     UserModule,
     AuthModule,
+    ExtraModule
   ],
   controllers: [],
   providers: [],

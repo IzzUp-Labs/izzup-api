@@ -4,16 +4,17 @@ import { AuthRegisterDto } from '../../../application/auth/dto/auth-register.dto
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
+import { AuthRegisterExtraDto } from "../../../application/auth/dto/auth-register-extra.dto";
+import { ExtraService } from "../extra/extra.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
-  ) {
-  }
-
-  validateLogin(authLoginDto: AuthLoginDto): Promise<{ token: string }> {
+    private extraService: ExtraService,
+  ) {}
+  validateLogin(authLoginDto: AuthLoginDto): Promise<{token:string}> {
     return this.userService.findOne({
       email: authLoginDto.email,
     }).then((user) => {
@@ -53,6 +54,18 @@ export class AuthService {
     await this.userService.create({
       ...authRegisterDto,
       password: hashedPassword,
+    });
+  }
+
+  async registerExtra(authRegisterExtraDto: AuthRegisterExtraDto) : Promise<void> {
+    const hashedPassword = await bcrypt.hash(authRegisterExtraDto.password, 10);
+    const createdUser = await this.userService.create({
+      email: authRegisterExtraDto.email,
+      password: hashedPassword,
+    });
+    await this.extraService.create({
+      ...authRegisterExtraDto,
+      user_id: createdUser.id,
     });
   }
 }
