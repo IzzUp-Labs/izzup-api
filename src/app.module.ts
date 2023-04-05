@@ -8,6 +8,7 @@ import { UserModule } from "./infrastructure/modules/user.module";
 import { AuthModule } from "./infrastructure/modules/auth.module";
 import authConfig from "./infrastructure/config/auth.config";
 import { ExtraModule } from "./infrastructure/modules/extra.module";
+import { RoleModule } from "./infrastructure/modules/role.module";
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { ExtraModule } from "./infrastructure/modules/extra.module";
     }),
     UserModule,
     AuthModule,
-    ExtraModule
+    ExtraModule,
+    RoleModule
   ],
   controllers: [],
   providers: []

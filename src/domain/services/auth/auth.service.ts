@@ -63,7 +63,9 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(authRegisterExtraDto.password, 10);
     const createdUser = await this.userService.create({
       ...authRegisterExtraDto,
-      password: hashedPassword
+      email: authRegisterExtraDto.email,
+      role: 'EXTRA',
+      password: hashedPassword,
     });
     await this.extraService.create({
       ...authRegisterExtraDto,

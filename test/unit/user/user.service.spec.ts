@@ -21,14 +21,15 @@ describe("UserService", () => {
             find: jest.fn(),
             save: jest.fn(),
             create: jest.fn().mockReturnValue({
-                id: 1,
-                email: "test@example.com",
-                password: "password",
-                last_name: "lasttest",
-                first_name: "firsttest",
-                created_at: new Date("2023-04-02T13:15:43.636Z"),
-                updated_at: new Date("2023-04-02T13:15:43.636Z")
-              }
+              id: 1,
+              email: 'test@example.com',
+              password: 'password',
+              last_name: "lasttest",
+              first_name: "firsttest",
+              role: 'EXTRA',
+              created_at: new Date("2023-04-02T13:15:43.636Z"),
+              updated_at: new Date("2023-04-02T13:15:43.636Z"),
+            }
             ),
             delete: jest.fn()
           }
@@ -50,6 +51,7 @@ describe("UserService", () => {
         password: "password",
         last_name: "lasttest",
         first_name: "firsttest",
+        role: 'EXTRA',
         created_at: new Date("2023-04-02T13:15:43.636Z"),
         updated_at: new Date("2023-04-02T13:15:43.636Z")
       };
