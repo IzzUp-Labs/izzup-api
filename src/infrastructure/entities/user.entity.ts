@@ -26,6 +26,9 @@ export class UserEntity {
     @Column()
     first_name: string;
 
+    @Column()
+    role: string;
+
     @CreateDateColumn()
     created_at: Date;
 
