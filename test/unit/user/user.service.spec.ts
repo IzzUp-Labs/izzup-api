@@ -24,6 +24,8 @@ describe('UserService', () => {
               id: 1,
               email: 'test@example.com',
               password: 'password',
+              last_name: "lasttest",
+              first_name: "firsttest",
               created_at: new Date("2023-04-02T13:15:43.636Z"),
               updated_at: new Date("2023-04-02T13:15:43.636Z"),
             }
@@ -46,6 +48,8 @@ describe('UserService', () => {
         id: 1,
         email: 'test@example.com',
         password: 'password',
+        last_name: "lasttest",
+        first_name: "firsttest",
         created_at: new Date("2023-04-02T13:15:43.636Z"),
         updated_at: new Date("2023-04-02T13:15:43.636Z"),
       };

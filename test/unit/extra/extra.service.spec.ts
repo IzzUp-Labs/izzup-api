@@ -23,11 +23,8 @@ describe('ExtraService', () => {
             create: jest.fn().mockReturnValue({
                 id: 1,
                 user_id: 1,
-                first_name: 'John',
-                last_name: 'Doe',
                 date_of_birth: new Date("2023-04-02T13:15:43.636Z"),
                 address: '123 Test Street',
-                function: 'Test',
                 updated_at: new Date("2023-04-02T13:15:43.636Z"),
               }
             ),
@@ -48,20 +45,14 @@ describe('ExtraService', () => {
       const mockExtra: ExtraEntity = {
         id: 1,
         user_id: 1,
-        first_name: 'John',
-        last_name: 'Doe',
         date_of_birth: new Date("2023-04-02T13:15:43.636Z"),
         address: '123 Test Street',
-        function: 'Test',
         updated_at: new Date("2023-04-02T13:15:43.636Z"),
       };
       const createExtraDto: ExtraDto = {
         user_id: 1,
-        first_name: 'John',
-        last_name: 'Doe',
         date_of_birth: new Date("2023-04-02T13:15:43.636Z"),
         address: '123 Test Street',
-        function: 'Test',
       };
 
       const extraRepositorySaveSpy = jest
@@ -81,21 +72,15 @@ describe('ExtraService', () => {
         {
           id: 1,
           user_id: 1,
-          first_name: 'John',
-          last_name: 'Doe',
           date_of_birth: new Date("2023-04-02T13:15:43.636Z"),
           address: '123 Test Street',
-          function: 'Test',
           updated_at: new Date("2023-04-02T13:15:43.636Z"),
         },
         {
           id: 2,
           user_id: 2,
-          first_name: 'Mark',
-          last_name: 'Johns',
           date_of_birth: new Date("2023-04-02T13:15:43.636Z"),
           address: '321 Test Street',
-          function: 'Test',
           updated_at: new Date("2023-04-02T13:15:43.636Z"),
         },
       ];
@@ -111,11 +96,8 @@ describe('ExtraService', () => {
       const extra = {
         id: 1,
         user_id: 1,
-        first_name: 'John',
-        last_name: 'Doe',
         date_of_birth: new Date("2023-04-02T13:15:43.636Z"),
         address: '123 Test Street',
-        function: 'Test',
         updated_at: new Date("2023-04-02T13:15:43.636Z"),
       };
       jest.spyOn(repository, 'findOne').mockResolvedValueOnce(extra as any);
@@ -127,15 +109,12 @@ describe('ExtraService', () => {
   describe('update', () => {
     it('should update and return a user by id and update dto', async () => {
       const id = 1;
-      const updateUserDto = { function: 'new function' };
+      const updateUserDto = { address: 'new address' };
       const extra = {
         id: 1,
         user_id: 1,
-        first_name: 'John',
-        last_name: 'Doe',
         date_of_birth: new Date("2023-04-02T13:15:43.636Z"),
         address: '123 Test Street',
-        function: 'Test',
         updated_at: new Date("2023-04-02T13:15:43.636Z"),
       };
       jest.spyOn(repository, 'save').mockResolvedValueOnce(extra as any);

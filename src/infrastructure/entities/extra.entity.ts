@@ -9,19 +9,10 @@ export class ExtraEntity {
     user_id: number;
 
     @Column()
-    last_name: string;
-
-    @Column()
-    first_name: string;
-
-    @Column()
     date_of_birth: Date;
 
     @Column()
     address: string;
-
-    @Column()
-    function: string;
 
     @UpdateDateColumn()
     updated_at: Date;

@@ -34,6 +34,8 @@ describe('AuthService', () => {
               id: 1,
               email: 'test@example.com',
               password: 'password',
+              last_name: "lastName",
+              first_name: "firstName",
             }),
           },
         },
@@ -65,6 +67,8 @@ describe('AuthService', () => {
         id: 1,
         email: authLoginDto.email,
         password: await bcrypt.hash(authLoginDto.password, 10),
+        last_name: "lastName",
+        first_name: "firstName",
         created_at: new Date(),
         updated_at: new Date()
       };
@@ -85,6 +89,9 @@ describe('AuthService', () => {
         id: 1,
         email: authLoginDto.email,
         password: await bcrypt.hash('wrong-password', 10),
+        last_name: "lastName",
+        first_name: "firstName",
+        address: "address",
         created_at: new Date(),
         updated_at: new Date()
       };
@@ -131,6 +138,8 @@ describe('AuthService', () => {
         id: 1,
         email: authRegisterDto.email,
         password: hashedPassword,
+        last_name: "lastName",
+        first_name: "firstName",
         created_at: new Date(),
         updated_at: new Date()
       };
@@ -172,7 +181,7 @@ describe('AuthService', () => {
       await service.registerExtra(authRegisterExtraDto);
 
       expect(userService.create).toHaveBeenCalledWith({
-        email: authRegisterExtraDto.email,
+        ...authRegisterExtraDto,
         password: hashedPassword,
       });
       expect(extraService.create).toHaveBeenCalledWith({
