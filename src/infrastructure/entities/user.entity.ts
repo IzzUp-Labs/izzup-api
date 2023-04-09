@@ -20,6 +20,12 @@ export class UserEntity {
     @Column()
     role: string;
 
+    @Column()
+    last_name: string;
+
+    @Column()
+    first_name: string;
+
     @CreateDateColumn()
     created_at: Date;
 
