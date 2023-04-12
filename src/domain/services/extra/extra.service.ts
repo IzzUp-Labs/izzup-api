@@ -11,12 +11,13 @@ import { ExtraDto } from "../../../application/extra/dto/extra.dto";
 export class ExtraService {
   constructor(
     @InjectRepository(ExtraEntity)
-    private extrasRepository: Repository<ExtraEntity>,
-  ) {}
+    private extrasRepository: Repository<ExtraEntity>
+  ) {
+  }
 
   create(extraDto: ExtraDto) {
     return this.extrasRepository.save(
-      this.extrasRepository.create(extraDto),
+      this.extrasRepository.create(extraDto)
     );
   }
 
@@ -26,7 +27,7 @@ export class ExtraService {
 
   findOne(fields: EntityCondition<UserEntity>) {
     return this.extrasRepository.findOne({
-      where: fields,
+      where: fields
     });
   }
 
@@ -34,8 +35,8 @@ export class ExtraService {
     return this.extrasRepository.save(
       this.extrasRepository.create({
         id,
-        ...updateExtraDto,
-      }),
+        ...updateExtraDto
+      })
     );
   }
 

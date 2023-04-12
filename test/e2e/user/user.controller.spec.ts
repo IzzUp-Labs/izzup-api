@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../../../src/application/user/user.controller';
-import { UserService } from '../../../src/domain/services/user/user.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UserController } from "../../../src/application/user/user.controller";
+import { UserService } from "../../../src/domain/services/user/user.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { UserEntity } from "../../../src/infrastructure/entities/user.entity";
 
-describe('UserController', () => {
+describe("UserController", () => {
   let controller: UserController;
 
   beforeEach(async () => {
@@ -16,13 +16,13 @@ describe('UserController', () => {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
         }
-      ],
+      ]
     }).compile();
 
     controller = module.get<UserController>(UserController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

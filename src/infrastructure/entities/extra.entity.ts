@@ -1,19 +1,19 @@
-import {Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('extra')
+@Entity("extra")
 export class ExtraEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    user_id: number;
+  @Column()
+  user_id: number;
 
-    @Column()
-    date_of_birth: Date;
+  @Column()
+  date_of_birth: Date;
 
-    @Column()
-    address: string;
+  @Column()
+  address: string;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 }

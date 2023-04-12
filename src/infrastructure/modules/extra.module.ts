@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ExtraEntity } from '../entities/extra.entity';
+import { ExtraEntity } from "../entities/extra.entity";
 import { ExtraController } from "../../application/extra/extra.contoller";
 import { ExtraService } from "../../domain/services/extra/extra.service";
 
@@ -8,6 +8,7 @@ import { ExtraService } from "../../domain/services/extra/extra.service";
   imports: [TypeOrmModule.forFeature([ExtraEntity])],
   controllers: [ExtraController],
   providers: [ExtraService],
-  exports: [ExtraService],
+  exports: [ExtraService]
 })
-export class ExtraModule {}
+export class ExtraModule {
+}
