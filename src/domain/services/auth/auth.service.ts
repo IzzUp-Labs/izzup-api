@@ -51,7 +51,11 @@ export class AuthService {
     });
   }
 
-  async register(authRegisterDto: AuthRegisterDto): Promise<void> {
+  decodeToken(token: string) {
+    return this.jwtService.decode(token);
+  }
+
+  async register(authRegisterDto: AuthRegisterDto) : Promise<void> {
     const hashedPassword = await bcrypt.hash(authRegisterDto.password, 10);
     await this.userService.create({
       ...authRegisterDto,
