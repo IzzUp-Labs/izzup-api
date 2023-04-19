@@ -13,6 +13,7 @@ import { RolesGuard } from "./domain/guards/role.guard";
 import { EmployerModule } from "./infrastructure/modules/employer.module";
 import { CompanyModule } from "./infrastructure/modules/company.module";
 import { ActivitySectorModule } from "./infrastructure/modules/activity-sector.module";
+import { TagModule } from "./infrastructure/modules/tag.module";
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { ActivitySectorModule } from "./infrastructure/modules/activity-sector.m
     RoleModule,
     EmployerModule,
     CompanyModule,
-    ActivitySectorModule
+    ActivitySectorModule,
+    TagModule
   ],
   controllers: [],
   providers: [

@@ -17,20 +17,11 @@ export class UserEntity {
   @Column()
   first_name: string;
 
-    @Column()
-    role: string;
+  @Column()
+  role: string;
 
-    @Column()
-    last_name: string;
-
-    @Column()
-    first_name: string;
-
-    @Column()
-    role: string;
-
-    @CreateDateColumn()
-    created_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
