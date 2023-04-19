@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
-import databaseConfig from './infrastructure/config/database.config';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import appConfig from './infrastructure/config/app.config';
-import { TypeOrmConfigService } from './infrastructure/config/typeorm-config.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './infrastructure/modules/user.module';
-import { AuthModule } from './infrastructure/modules/auth.module';
-import authConfig from './infrastructure/config/auth.config';
+import { Module } from "@nestjs/common";
+import databaseConfig from "./infrastructure/config/database.config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import appConfig from "./infrastructure/config/app.config";
+import { TypeOrmConfigService } from "./infrastructure/config/typeorm-config.service";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UserModule } from "./infrastructure/modules/user.module";
+import { AuthModule } from "./infrastructure/modules/auth.module";
+import authConfig from "./infrastructure/config/auth.config";
+import { ExtraModule } from "./infrastructure/modules/extra.module";
 
 @Module({
   imports: [
@@ -15,20 +16,21 @@ import authConfig from './infrastructure/config/auth.config';
       load: [
         databaseConfig,
         appConfig,
-        authConfig,
+        authConfig
       ],
-      envFilePath: ['env/local.env'],
+      envFilePath: ["env/local.env"]
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: TypeOrmConfigService,
-      inject: [ConfigService],
+      inject: [ConfigService]
     }),
     UserModule,
     AuthModule,
+    ExtraModule
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
 export class AppModule {
 }
