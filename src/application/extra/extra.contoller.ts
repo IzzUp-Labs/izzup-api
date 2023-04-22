@@ -29,4 +29,14 @@ export class ExtraController {
   remove(@Param("id") id: string) {
     return this.extraService.remove(+id);
   }
+
+  @Patch(":id/tag/:tagId")
+  addTag(@Param("id") id: string, @Param("tagId") tagId: string) {
+    return this.extraService.addTag(+id, +tagId);
+  }
+
+  @Delete(":id/tag/:tagId")
+  removeTag(@Param("id") id: string, @Param("tagId") tagId: string) {
+    return this.extraService.removeTag(+id, +tagId);
+  }
 }

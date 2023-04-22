@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { TagEntity } from "./tag.entity";
 
 @Entity("extra")
 export class ExtraEntity {
@@ -16,4 +17,8 @@ export class ExtraEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToMany(() => TagEntity)
+  @JoinTable()
+  tags: TagEntity[];
 }
