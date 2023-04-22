@@ -1,5 +1,6 @@
 import { RolesGuard } from "../../../src/domain/guards/role.guard";
 import { Reflector } from "@nestjs/core";
+import { AuthService } from "../../../src/domain/services/auth/auth.service";
 import { UserService } from "../../../src/domain/services/user/user.service";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ExecutionContext } from "@nestjs/common";
@@ -24,6 +25,12 @@ describe('RolesGuard', () => {
           provide: UserService,
           useValue: {
             findOne: jest.fn(() => ({ role: 'admin' })),
+          },
+        },
+        {
+          provide: AuthService,
+          useValue: {
+            decodeToken: jest.fn(() => ({ id: 123 })),
           },
         },
       ],
