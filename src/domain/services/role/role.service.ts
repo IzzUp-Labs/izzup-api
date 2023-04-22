@@ -28,4 +28,8 @@ export class RoleService {
     return this.roleRepository.find();
   }
 
+  delete(id: number) {
+    return this.roleRepository.delete(id);
+  }
+
 }

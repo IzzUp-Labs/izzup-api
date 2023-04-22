@@ -67,4 +67,13 @@ describe('RoleService', () => {
       expect(result).toEqual(foundRoles);
     });
   });
+
+  describe('delete', () => {
+    it('should delete a role by id', async () => {
+      const id = 1;
+      jest.spyOn(repository, 'delete').mockResolvedValue(undefined);
+      const result = await service.delete(id);
+      expect(result).toBeUndefined();
+    });
+  });
 });
