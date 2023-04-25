@@ -68,15 +68,24 @@
       "json",
       "ts"
     ],
-    "rootDir": "test",
+    "roots": [
+      "test",
+      "src"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.dto.(t|j)s",
+      "!**/*.module.(t|j)s",
+      "!**/jwt.strategy.(t|j)s",
+      "!**/main.(t|j)s",
+      "!**/*.config.(t|j)s",
+      "!**/typeorm-config.service.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "coverage",
     "testEnvironment": "node"
   }
 }

@@ -6,5 +6,4 @@ export class AuthRegisterExtraDto {
   first_name: string;
   date_of_birth: Date;
   address: string;
-  function: string;
 }

@@ -8,6 +8,8 @@ import { UserModule } from "./infrastructure/modules/user.module";
 import { AuthModule } from "./infrastructure/modules/auth.module";
 import authConfig from "./infrastructure/config/auth.config";
 import { ExtraModule } from "./infrastructure/modules/extra.module";
+import { RoleModule } from "./infrastructure/modules/role.module";
+import { RolesGuard } from "./domain/guards/role.guard";
 
 @Module({
   imports: [
@@ -27,10 +29,16 @@ import { ExtraModule } from "./infrastructure/modules/extra.module";
     }),
     UserModule,
     AuthModule,
-    ExtraModule
+    ExtraModule,
+    RoleModule
   ],
   controllers: [],
-  providers: []
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: RolesGuard,
+    }
+  ],
 })
 export class AppModule {
 }

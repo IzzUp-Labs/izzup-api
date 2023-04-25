@@ -35,9 +35,10 @@ describe("AuthService", () => {
               email: "test@example.com",
               password: "password",
               last_name: "lastName",
-              first_name: "firstName"
-            })
-          }
+              first_name: "firstName",
+              role: 'USER'
+            }),
+          },
         },
         {
           provide: getRepositoryToken(ExtraEntity),
@@ -69,6 +70,7 @@ describe("AuthService", () => {
         password: await bcrypt.hash(authLoginDto.password, 10),
         last_name: "lastName",
         first_name: "firstName",
+        role: 'USER',
         created_at: new Date(),
         updated_at: new Date()
       };
@@ -84,14 +86,14 @@ describe("AuthService", () => {
       });
     });
 
-    it("should throw an HttpException if the password is incorrect", async () => {
-      const user = {
+    it('should throw an HttpException if the password is incorrect', async () => {
+      const user : UserEntity = {
         id: 1,
         email: authLoginDto.email,
         password: await bcrypt.hash("wrong-password", 10),
         last_name: "lastName",
         first_name: "firstName",
-        address: "address",
+        role: "USER",
         created_at: new Date(),
         updated_at: new Date()
       };
@@ -144,6 +146,7 @@ describe("AuthService", () => {
         password: hashedPassword,
         last_name: "lastName",
         first_name: "firstName",
+        role: 'USER',
         created_at: new Date(),
         updated_at: new Date()
       };
@@ -160,8 +163,8 @@ describe("AuthService", () => {
     });
   });
 
-  describe("registerExtra", () => {
-    it("should create a new user and extra record", async () => {
+  describe('registerExtra', () => {
+    it('should create a new user and extra', async () => {
       // Arrange
       const authRegisterExtraDto: AuthRegisterExtraDto = {
         email: "test@example.com",
@@ -169,8 +172,7 @@ describe("AuthService", () => {
         first_name: "John",
         last_name: "Doe",
         date_of_birth: new Date(),
-        address: "123 Test Street",
-        function: "Test"
+        address: '123 Test Street',
       };
 
       const hashedPassword = await bcrypt.hash(authRegisterExtraDto.password, 10);
@@ -186,6 +188,8 @@ describe("AuthService", () => {
 
       expect(userService.create).toHaveBeenCalledWith({
         ...authRegisterExtraDto,
+        email: authRegisterExtraDto.email,
+        role: 'EXTRA',
         password: hashedPassword
       });
       expect(extraService.create).toHaveBeenCalledWith({
