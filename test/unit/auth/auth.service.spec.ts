@@ -11,12 +11,20 @@ import * as bcrypt from "bcrypt";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { AuthRegisterDto } from "../../../src/application/auth/dto/auth-register.dto";
 import { AuthRegisterExtraDto } from "../../../src/application/auth/dto/auth-register-extra.dto";
+import { EmployerService } from "../../../src/domain/services/employer/employer.service";
+import { CompanyService } from "../../../src/domain/services/company/company.service";
+import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
+import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
+import { AuthRegisterEmployerDto } from "../../../src/application/auth/dto/auth-register-employer.dto";
+import { CompanyDto } from "../../../src/application/company/dto/company.dto";
 
 describe("AuthService", () => {
   let service: AuthService;
   let jwtService: JwtService;
   let userService: UserService;
   let extraService: ExtraService;
+  let employerService: EmployerService;
+  let companyService: CompanyService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,6 +33,8 @@ describe("AuthService", () => {
         JwtService,
         UserService,
         ExtraService,
+        EmployerService,
+        CompanyService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -43,6 +53,14 @@ describe("AuthService", () => {
         {
           provide: getRepositoryToken(ExtraEntity),
           useValue: ExtraEntity
+        },
+        {
+          provide: getRepositoryToken(EmployerEntity),
+          useValue: EmployerEntity
+        },
+        {
+          provide: getRepositoryToken(CompanyEntity),
+          useValue: CompanyEntity
         }
       ]
     }).compile();
@@ -51,6 +69,8 @@ describe("AuthService", () => {
     userService = module.get<UserService>(UserService);
     extraService = module.get<ExtraService>(ExtraService);
     service = module.get<AuthService>(AuthService);
+    employerService = module.get<EmployerService>(EmployerService);
+    companyService = module.get<CompanyService>(CompanyService);
   });
 
   it("should be defined", () => {
@@ -199,4 +219,47 @@ describe("AuthService", () => {
     });
   });
 
+  describe('registerEmployer', () => {
+    it('should create a new user and employer', async () => {
+      // Arrange
+      const authRegisterEmployerDto: AuthRegisterEmployerDto = {
+        email: "test@example.com",
+        password: "password123",
+        first_name: "John",
+        last_name: "Doe",
+        date_of_birth: new Date(),
+        company: new CompanyDto()
+      }
+
+      const hashedPassword = await bcrypt.hash(authRegisterEmployerDto.password, 10);
+
+      jest.spyOn<any, any>(bcrypt, "hash").mockResolvedValue(hashedPassword);
+
+      const createdUser = { id: 1 } as UserEntity;
+      const createdEmployer = { id: 1 } as EmployerEntity;
+      const createdCompany = { id: 1 } as CompanyEntity;
+      jest.spyOn(userService, "create").mockResolvedValue(createdUser);
+      jest.spyOn(employerService, "create").mockResolvedValue(createdEmployer);
+      jest.spyOn(companyService, "create").mockResolvedValue(createdCompany);
+
+      await service.registerEmployer(authRegisterEmployerDto);
+
+      expect(userService.create).toHaveBeenCalledWith({
+        ...authRegisterEmployerDto,
+        email: authRegisterEmployerDto.email,
+        role: 'EMPLOYER',
+        password: hashedPassword
+      });
+
+      expect(employerService.create).toHaveBeenCalledWith({
+        ...authRegisterEmployerDto,
+        user_id: createdUser.id
+      });
+
+      expect(companyService.create).toHaveBeenCalledWith({
+        ...authRegisterEmployerDto.company,
+        employer_id: createdEmployer.id
+      });
+    });
+  });
 });

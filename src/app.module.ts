@@ -10,6 +10,9 @@ import authConfig from "./infrastructure/config/auth.config";
 import { ExtraModule } from "./infrastructure/modules/extra.module";
 import { RoleModule } from "./infrastructure/modules/role.module";
 import { RolesGuard } from "./domain/guards/role.guard";
+import { EmployerModule } from "./infrastructure/modules/employer.module";
+import { CompanyModule } from "./infrastructure/modules/company.module";
+import { ActivitySectorModule } from "./infrastructure/modules/activity-sector.module";
 
 @Module({
   imports: [
@@ -30,7 +33,10 @@ import { RolesGuard } from "./domain/guards/role.guard";
     UserModule,
     AuthModule,
     ExtraModule,
-    RoleModule
+    RoleModule,
+    EmployerModule,
+    CompanyModule,
+    ActivitySectorModule
   ],
   controllers: [],
   providers: [

@@ -6,13 +6,18 @@ import { UserService } from "../user/user.service";
 import * as bcrypt from "bcrypt";
 import { AuthRegisterExtraDto } from "../../../application/auth/dto/auth-register-extra.dto";
 import { ExtraService } from "../extra/extra.service";
+import { AuthRegisterEmployerDto } from "../../../application/auth/dto/auth-register-employer.dto";
+import { EmployerService } from "../employer/employer.service";
+import { CompanyService } from "../company/company.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
-    private extraService: ExtraService
+    private extraService: ExtraService,
+    private employerService: EmployerService,
+    private companyService: CompanyService
   ) {
   }
 
@@ -74,6 +79,24 @@ export class AuthService {
     await this.extraService.create({
       ...authRegisterExtraDto,
       user_id: createdUser.id
+    });
+  }
+
+  async registerEmployer(authRegisterEmployer: AuthRegisterEmployerDto) {
+    const hashedPassword = await bcrypt.hash(authRegisterEmployer.password, 10);
+    const createdUser = await this.userService.create({
+      ...authRegisterEmployer,
+      email: authRegisterEmployer.email,
+      role: 'EMPLOYER',
+      password: hashedPassword,
+    });
+    const createdEmployer = await this.employerService.create({
+      ...authRegisterEmployer,
+      user_id: createdUser.id
+    });
+    await this.companyService.create({
+      ...authRegisterEmployer.company,
+      employer_id: createdEmployer.id
     });
   }
 }
