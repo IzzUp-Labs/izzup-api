@@ -6,11 +6,15 @@ import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "../../domain/strategies/jwt.strategy";
 import { ExtraModule } from "./extra.module";
+import { CompanyModule } from "./company.module";
+import { EmployerModule } from "./employer.module";
 
 @Module({
   imports: [
     UserModule,
     ExtraModule,
+    EmployerModule,
+    CompanyModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { AuthService } from "../../domain/services/auth/auth.service";
 import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterExtraDto } from "./dto/auth-register-extra.dto";
+import { AuthRegisterEmployerDto } from "./dto/auth-register-employer.dto";
 
 @Controller({
   path: "auth",
@@ -27,6 +28,12 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   registerExtra(@Body() authRegisterExtraDto: AuthRegisterExtraDto) {
     return this.authService.registerExtra(authRegisterExtraDto);
+  }
+
+  @Post("register/employer")
+  @HttpCode(HttpStatus.CREATED)
+registerEmployer(@Body() authRegisterEmployerDto: AuthRegisterEmployerDto) {
+    return this.authService.registerEmployer(authRegisterEmployerDto);
   }
 
 }

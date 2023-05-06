@@ -7,6 +7,10 @@ import { UserService } from "../../../src/domain/services/user/user.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { UserEntity } from "../../../src/infrastructure/entities/user.entity";
 import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
+import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
+import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
+import { CompanyService } from "../../../src/domain/services/company/company.service";
+import { EmployerService } from "../../../src/domain/services/employer/employer.service";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -19,6 +23,8 @@ describe("AuthController", () => {
         JwtService,
         ExtraService,
         UserService,
+        EmployerService,
+        CompanyService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -26,6 +32,14 @@ describe("AuthController", () => {
         {
           provide: getRepositoryToken(ExtraEntity),
           useValue: ExtraEntity
+        },
+        {
+          provide: getRepositoryToken(EmployerEntity),
+          useValue: EmployerEntity
+        },
+        {
+          provide: getRepositoryToken(CompanyEntity),
+          useValue: CompanyEntity
         }
       ]
     }).compile();
