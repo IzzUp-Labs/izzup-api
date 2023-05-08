@@ -26,7 +26,7 @@ describe('TagService', () => {
 
   describe('create', () => {
     it('should create a tag', async () => {
-      const tagDto = { name: 'test', color: '#000000' };
+      const tagDto = { id: 1, name: 'test', color: '#000000' };
       const createdTag = { id: 1, name: 'test', color: '#000000' };
       jest.spyOn(tagRepository, 'create').mockReturnValue(createdTag);
       jest.spyOn(tagRepository, 'save').mockResolvedValue(createdTag);

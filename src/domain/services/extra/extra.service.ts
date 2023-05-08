@@ -6,6 +6,7 @@ import { EntityCondition } from "../../utils/types/entity-condition.type";
 import { ExtraEntity } from "../../../infrastructure/entities/extra.entity";
 import { UpdateExtraDto } from "../../../application/extra/dto/update-extra.dto";
 import { ExtraDto } from "../../../application/extra/dto/extra.dto";
+import { TagDto } from "../../../application/tag/dto/tag.dto";
 
 @Injectable()
 export class ExtraService {
@@ -58,6 +59,17 @@ export class ExtraService {
         .relation(ExtraEntity, "tags")
         .of(extraId)
         .add(tagId)
+    }
+    catch (error) {
+      throw new Error("Tag not found");
+    }
+  }
+
+  async addTags(extraId: EntityCondition<UserEntity>, tagIds: TagDto[]) {
+    try {
+      const user = await this.extrasRepository.findOne( {where: extraId});
+      user.tags = tagIds;
+      return this.extrasRepository.save(user);
     }
     catch (error) {
       throw new Error("Tag not found");
