@@ -9,6 +9,7 @@ import { ExtraService } from "../extra/extra.service";
 import { AuthRegisterEmployerDto } from "../../../application/auth/dto/auth-register-employer.dto";
 import { EmployerService } from "../employer/employer.service";
 import { CompanyService } from "../company/company.service";
+import { AuthMembershipCheckDto } from "../../../application/auth/dto/auth-membership-check.dto";
 
 @Injectable()
 export class AuthService {
@@ -66,6 +67,13 @@ export class AuthService {
       ...authRegisterDto,
       password: hashedPassword
     });
+  }
+
+  async isMember(authMembershipCheckDto: AuthMembershipCheckDto): Promise<boolean> {
+    const user = await this.userService.findOne({
+      email: authMembershipCheckDto.email
+    });
+    return !!user;
   }
 
   async registerExtra(authRegisterExtraDto: AuthRegisterExtraDto): Promise<void> {
