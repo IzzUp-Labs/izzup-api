@@ -6,6 +6,7 @@ import { EntityCondition } from "../../utils/types/entity-condition.type";
 import { ExtraEntity } from "../../../infrastructure/entities/extra.entity";
 import { UpdateExtraDto } from "../../../application/extra/dto/update-extra.dto";
 import { ExtraDto } from "../../../application/extra/dto/extra.dto";
+import { TagDto } from "../../../application/tag/dto/tag.dto";
 
 @Injectable()
 export class ExtraService {
@@ -22,11 +23,18 @@ export class ExtraService {
   }
 
   findAll() {
-    return this.extrasRepository.find();
+    return this.extrasRepository.find({
+      relations: {
+        tags: true
+      }
+    });
   }
 
   findOne(fields: EntityCondition<UserEntity>) {
     return this.extrasRepository.findOne({
+      relations: {
+        tags: true
+      },
       where: fields
     });
   }
@@ -42,5 +50,42 @@ export class ExtraService {
 
   remove(id: number) {
     return this.extrasRepository.delete(id);
+  }
+
+  addTag(extraId: number, tagId: number) {
+    try {
+      return this.extrasRepository
+        .createQueryBuilder()
+        .relation(ExtraEntity, "tags")
+        .of(extraId)
+        .add(tagId)
+    }
+    catch (error) {
+      throw new Error("Tag not found");
+    }
+  }
+
+  async addTags(extraId: EntityCondition<UserEntity>, tagIds: TagDto[]) {
+    try {
+      const user = await this.extrasRepository.findOne( {where: extraId});
+      user.tags = tagIds;
+      return this.extrasRepository.save(user);
+    }
+    catch (error) {
+      throw new Error("Tag not found");
+    }
+  }
+
+  removeTag(extraId: number, tagId: number) {
+    try {
+      return this.extrasRepository
+        .createQueryBuilder()
+        .relation(ExtraEntity, "tags")
+        .of(extraId)
+        .remove(tagId);
+    }
+    catch (error) {
+      throw new Error("Tag not found");
+    }
   }
 }

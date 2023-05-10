@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
 import { ExtraService } from "../../domain/services/extra/extra.service";
 import { UpdateExtraDto } from "./dto/update-extra.dto";
+import { TagDto } from "../tag/dto/tag.dto";
 
 @Controller({
   path: "extra",
@@ -28,5 +29,20 @@ export class ExtraController {
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.extraService.remove(+id);
+  }
+
+  @Patch(":id/tag/:tagId")
+  addTag(@Param("id") id: string, @Param("tagId") tagId: string) {
+    return this.extraService.addTag(+id, +tagId);
+  }
+
+  @Patch(":id/add/tags")
+  addTags(@Param("id") id: string, @Body() tags: TagDto[]) {
+    return this.extraService.addTags({id: +id}, tags);
+  }
+
+  @Delete(":id/tag/:tagId")
+  removeTag(@Param("id") id: string, @Param("tagId") tagId: string) {
+    return this.extraService.removeTag(+id, +tagId);
   }
 }
