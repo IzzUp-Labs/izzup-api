@@ -16,6 +16,7 @@ import { CompanyService } from "../../../src/domain/services/company/company.ser
 import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
 import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
 import { AuthRegisterEmployerDto } from "../../../src/application/auth/dto/auth-register-employer.dto";
+import { AuthMembershipCheckDto } from "../../../src/application/auth/dto/auth-membership-check.dto";
 import { CompanyDto } from "../../../src/application/company/dto/company.dto";
 
 describe("AuthService", () => {
@@ -260,6 +261,33 @@ describe("AuthService", () => {
         ...authRegisterEmployerDto.company,
         employer_id: createdEmployer.id
       });
+    });
+  });
+
+  describe('Membership check', () => {
+    it('should return true if the user is a member', async () => {
+      const authMembershipCheckDto: AuthMembershipCheckDto = {
+        email: "test@exemple.com",
+      };
+      const user : UserEntity = {
+        id: 1,
+        email: authMembershipCheckDto.email,
+        password: await bcrypt.hash("password", 10),
+        last_name: "lastName",
+        first_name: "firstName",
+        role: "USER",
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+      jest.spyOn(userService, "findOne").mockResolvedValueOnce(user);
+      expect(await service.isMember(authMembershipCheckDto)).toBe(true);
+    });
+    it("should return false if the user is not a member", async () => {
+      const authMembershipCheckDto: AuthMembershipCheckDto = {
+        email: "test@exemple.com",
+      };
+      jest.spyOn(userService, "findOne").mockResolvedValueOnce(null);
+      expect(await service.isMember(authMembershipCheckDto)).toBe(false);
     });
   });
 });

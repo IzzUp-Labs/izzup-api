@@ -3,6 +3,7 @@ import { AuthService } from "../../domain/services/auth/auth.service";
 import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterExtraDto } from "./dto/auth-register-extra.dto";
 import { AuthRegisterEmployerDto } from "./dto/auth-register-employer.dto";
+import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
 
 @Controller({
   path: "auth",
@@ -22,6 +23,12 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   register(@Body() authLoginDto: AuthLoginDto) {
     return this.authService.register(authLoginDto);
+  }
+
+  @Post("check")
+  @HttpCode(HttpStatus.OK)
+  isMember(@Body() authMembershipCheckDto: AuthMembershipCheckDto) {
+    return this.authService.isMember(authMembershipCheckDto);
   }
 
   @Post("register/extra")
