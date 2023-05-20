@@ -14,6 +14,7 @@ import { EmployerModule } from "./infrastructure/modules/employer.module";
 import { CompanyModule } from "./infrastructure/modules/company.module";
 import { ActivitySectorModule } from "./infrastructure/modules/activity-sector.module";
 import { TagModule } from "./infrastructure/modules/tag.module";
+import { IdPhotoModule } from "./infrastructure/modules/id-photo.module";
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { TagModule } from "./infrastructure/modules/tag.module";
     EmployerModule,
     CompanyModule,
     ActivitySectorModule,
-    TagModule
+    TagModule,
+    IdPhotoModule
   ],
   controllers: [],
   providers: [
