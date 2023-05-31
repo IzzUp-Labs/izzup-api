@@ -18,6 +18,8 @@ import { CompanyEntity } from "../../../src/infrastructure/entities/company.enti
 import { AuthRegisterEmployerDto } from "../../../src/application/auth/dto/auth-register-employer.dto";
 import { AuthMembershipCheckDto } from "../../../src/application/auth/dto/auth-membership-check.dto";
 import { CompanyDto } from "../../../src/application/company/dto/company.dto";
+import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
+import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -36,6 +38,7 @@ describe("AuthService", () => {
         ExtraService,
         EmployerService,
         CompanyService,
+        JobOfferService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -62,6 +65,10 @@ describe("AuthService", () => {
         {
           provide: getRepositoryToken(CompanyEntity),
           useValue: CompanyEntity
+        },
+        {
+          provide: getRepositoryToken(JobOfferEntity),
+          useValue: JobOfferEntity
         }
       ]
     }).compile();
