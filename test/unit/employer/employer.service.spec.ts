@@ -5,6 +5,10 @@ import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EmployerDto } from "../../../src/application/employer/dto/employer.dto";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
+import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
+import { CompanyService } from "../../../src/domain/services/company/company.service";
+import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
+import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
 
 describe('EmployerService', () => {
   let service: EmployerService;
@@ -14,6 +18,8 @@ describe('EmployerService', () => {
     const module = await Test.createTestingModule({
       providers: [
         EmployerService,
+        JobOfferService,
+        CompanyService,
         {
           provide: getRepositoryToken(EmployerEntity),
           useValue: {
@@ -31,6 +37,14 @@ describe('EmployerService', () => {
             })),
           },
         },
+        {
+          provide: getRepositoryToken(CompanyEntity),
+          useValue: CompanyEntity
+        },
+        {
+          provide: getRepositoryToken(JobOfferEntity),
+          useValue: JobOfferEntity
+        }
       ],
     }).compile();
 

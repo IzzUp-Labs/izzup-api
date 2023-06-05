@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { EntityCondition } from "../../utils/types/entity-condition.type";
-import { UserEntity } from "../../../infrastructure/entities/user.entity";
 import { CompanyEntity } from "../../../infrastructure/entities/company.entity";
 import { CompanyDto } from "../../../application/company/dto/company.dto";
 import { UpdateCompanyDto } from "../../../application/company/dto/update-company.dto";
@@ -31,7 +30,7 @@ export class CompanyService {
     );
   }
 
-  findOne(fields: EntityCondition<UserEntity>) {
+  findOne(fields: EntityCondition<CompanyEntity>) {
     return this.companyRepository.findOne({
       where: fields
     });

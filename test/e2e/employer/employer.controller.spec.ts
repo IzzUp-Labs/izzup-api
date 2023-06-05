@@ -3,6 +3,12 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { EmployerService } from "../../../src/domain/services/employer/employer.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
+import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
+import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
+import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
+import { CompanyService } from "../../../src/domain/services/company/company.service";
+import { ParamCheckService } from "../../../src/domain/middleware/param-check/param-check.service";
+import { JwtService } from "@nestjs/jwt";
 
 describe('EmployerController', () => {
   let controller: EmployerController;
@@ -12,9 +18,21 @@ describe('EmployerController', () => {
       controllers: [EmployerController],
       providers: [
         EmployerService,
+        JobOfferService,
+        CompanyService,
+        ParamCheckService,
+        JwtService,
         {
           provide: getRepositoryToken(EmployerEntity),
           useValue: EmployerEntity
+        },
+        {
+          provide: getRepositoryToken(CompanyEntity),
+          useValue: CompanyEntity
+        },
+        {
+          provide: getRepositoryToken(JobOfferEntity),
+          useValue: JobOfferEntity
         }
       ],
     }).compile();
