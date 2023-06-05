@@ -7,6 +7,8 @@ import { JobOfferService } from "../../../src/domain/services/job-offer/job-offe
 import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
 import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
 import { CompanyService } from "../../../src/domain/services/company/company.service";
+import { ParamCheckService } from "../../../src/domain/middleware/param-check/param-check.service";
+import { JwtService } from "@nestjs/jwt";
 
 describe('EmployerController', () => {
   let controller: EmployerController;
@@ -18,6 +20,8 @@ describe('EmployerController', () => {
         EmployerService,
         JobOfferService,
         CompanyService,
+        ParamCheckService,
+        JwtService,
         {
           provide: getRepositoryToken(EmployerEntity),
           useValue: EmployerEntity
