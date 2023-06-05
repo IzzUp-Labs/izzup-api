@@ -1,5 +1,5 @@
 {
-  "name": "gig-api",
+  "name": "izzup-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "seed-run": "ts-node -r tsconfig-paths/register ./src/infrastructure/database/seeds/run-seed.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
