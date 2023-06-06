@@ -30,7 +30,7 @@ export class ExtraService {
     });
   }
 
-  findOne(fields: EntityCondition<UserEntity>) {
+  findOne(fields: EntityCondition<ExtraEntity>) {
     return this.extrasRepository.findOne({
       relations: {
         tags: true

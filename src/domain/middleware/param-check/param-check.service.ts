@@ -16,4 +16,9 @@ check(token: string, paramId: number): boolean {
     }
     return tokenDecoded.id == paramId;
 }
+
+decodeId(token: string): number {
+  const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: number };
+  return tokenDecoded.id;
+}
 }

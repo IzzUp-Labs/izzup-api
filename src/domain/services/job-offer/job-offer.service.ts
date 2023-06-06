@@ -43,5 +43,4 @@ export class JobOfferService {
     return this.jobOfferRepository.delete(id);
   }
 
-
 }

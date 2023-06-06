@@ -47,6 +47,7 @@ const module: TestingModule = await Test.createTestingModule({
         job_title: "test",
         price: 100,
         is_available: true,
+        requests: [],
       };
 
       jest.spyOn(repository, "save").mockResolvedValueOnce(mockJobOffer);
@@ -63,6 +64,7 @@ const module: TestingModule = await Test.createTestingModule({
         job_title: "test",
         price: 100,
         is_available: true,
+        requests: [],
       };
 
       jest.spyOn(repository, "find").mockResolvedValueOnce([mockJobOffer]);
@@ -80,6 +82,7 @@ const module: TestingModule = await Test.createTestingModule({
         job_title: "test",
         price: 100,
         is_available: true,
+        requests: [],
       };
 
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(mockJobOffer);
@@ -96,6 +99,7 @@ const module: TestingModule = await Test.createTestingModule({
         job_title: "test",
         price: 100,
         is_available: true,
+        requests: [],
       };
 
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(mockJobOffer);
@@ -113,6 +117,7 @@ const module: TestingModule = await Test.createTestingModule({
         job_title: "test",
         price: 100,
         is_available: true,
+        requests: [],
       };
 
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(mockJobOffer);
