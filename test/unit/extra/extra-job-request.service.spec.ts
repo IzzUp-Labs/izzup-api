@@ -9,6 +9,7 @@ import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
 import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
 import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-status";
 import { ExtraJobRequestDto } from "../../../src/application/extra/dto/extra-job-request.dto";
+import { HttpException } from "@nestjs/common";
 
 describe('ExtraJobRequestService', () => {
   let extraJobRequestService: ExtraJobRequestService;
@@ -61,7 +62,7 @@ describe('ExtraJobRequestService', () => {
   });
 
     describe('create', () => {
-      it('should create a new extra job request', async () => {
+      it('should create a new extra job request if job is available', async () => {
         const extraId = 1;
         const jobOfferId = 2;
         const userId = 3;
@@ -71,7 +72,7 @@ describe('ExtraJobRequestService', () => {
           status: JobRequestStatus.PENDING,
         }
         const extra = { id: extraId };
-        const jobOffer = { id: jobOfferId, requests: [] };
+        const jobOffer = { id: jobOfferId, is_available: true, requests: [] };
         const createdRequest = { id: 4 };
 
         jest.spyOn(extraService, 'findOne').mockResolvedValue(extra as ExtraEntity);
@@ -94,6 +95,37 @@ describe('ExtraJobRequestService', () => {
           requests: [createdRequest],
         });
         expect(result).toBe(jobOffer);
+      });
+
+      it('should throw error if job is not available', async () => {
+        const extraId = 1;
+        const jobOfferId = 2;
+        const userId = 3;
+
+        const extraJobRequestDto : ExtraJobRequestDto = {
+          extraId: extraId,
+          status: JobRequestStatus.PENDING,
+        }
+        const extra = { id: extraId };
+        const jobOffer = { id: jobOfferId, is_available: false, requests: [] };
+        const createdRequest = { id: 4 };
+
+        jest.spyOn(extraService, 'findOne').mockResolvedValue(extra as ExtraEntity);
+        jest.spyOn(jobOfferService, 'findOne').mockResolvedValue(jobOffer as JobOfferEntity);
+        jest.spyOn(repository, 'create').mockReturnValue(extraJobRequestDto as ExtraJobRequestEntity);
+        jest.spyOn(repository, 'save').mockResolvedValue(createdRequest as ExtraJobRequestEntity);
+        jest.spyOn(jobOfferService, 'update').mockResolvedValue(jobOffer as JobOfferEntity);
+
+
+        let error;
+        try {
+          await extraJobRequestService.create(jobOfferId, userId);
+        } catch (e) {
+          error = e;
+        }
+
+        expect(jobOfferService.findOne).toHaveBeenCalledWith({ id: jobOfferId });
+        expect(error).toBeInstanceOf(HttpException);
       });
     });
 });
