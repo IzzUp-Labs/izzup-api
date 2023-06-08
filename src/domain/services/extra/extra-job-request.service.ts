@@ -19,20 +19,25 @@ export class ExtraJobRequestService {
 
   async create(jobOfferId: number, userId: number) {
     const jobOffer = await this.jobOfferService.findOne({ id: jobOfferId });
-    if(jobOffer.is_available) {
-      const extra = await this.extraService.findOne({ user_id: userId });
-      const extraJobRequestDto : ExtraJobRequestDto = {
-        extraId: extra.id,
-        status: JobRequestStatus.PENDING
-      };
-      const createdRequest = await this.extraJobRequestRepository.save(
-        this.extraJobRequestRepository.create(extraJobRequestDto)
-      );
-      jobOffer.requests = [createdRequest];
-      return await this.jobOfferService.update(jobOfferId, jobOffer);
+    if(jobOffer != null) {
+      if(jobOffer.is_available) {
+        const extra = await this.extraService.findOne({ user_id: userId });
+        const extraJobRequestDto : ExtraJobRequestDto = {
+          extraId: extra.id,
+          status: JobRequestStatus.PENDING
+        };
+        const createdRequest = await this.extraJobRequestRepository.save(
+          this.extraJobRequestRepository.create(extraJobRequestDto)
+        );
+        jobOffer.requests = [createdRequest];
+        return await this.jobOfferService.update(jobOfferId, jobOffer);
+      }
+      else {
+        throw new HttpException('Job offer is not available', 400);
+      }
     }
     else {
-      throw new HttpException('Job offer is not available', 400);
+      throw new HttpException('Job offer not found', 404);
     }
   }
 }
