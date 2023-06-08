@@ -13,7 +13,6 @@ export class ExtraJobRequestService {
     @InjectRepository(ExtraJobRequestEntity)
     private readonly extraJobRequestRepository: Repository<ExtraJobRequestEntity>,
     private readonly jobOfferService: JobOfferService,
-
     private readonly extraService: ExtraService
   ) {}
 

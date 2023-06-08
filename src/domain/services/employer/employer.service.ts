@@ -55,4 +55,10 @@ export class EmployerService {
     jobOfferDto.company_id = company.id;
     return this.jobOfferService.create(jobOfferDto);
   }
+
+  async findAllByAuthEmployer(userId: number) {
+    const employer = await this.findOne({ user_id: userId });
+    const company = await this.companyService.findOne({ employer_id: employer.id });
+    return this.jobOfferService.findAllWithRelations(company.id);
+  }
 }

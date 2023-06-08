@@ -66,4 +66,13 @@ export class EmployerController {
         );
       }
   }
+
+  @RoleGuard(RoleEnum.EMPLOYER)
+  @UseGuards(AuthGuard('jwt'))
+  @Get("my/joboffers")
+  getMyJobOffers(@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    console.log('USEERID : ',userId);
+    return this.employerService.findAllByAuthEmployer(userId);
+  }
 }
