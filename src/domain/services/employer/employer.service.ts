@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "../../../infrastructure/entities/user.entity";
 import { Repository } from "typeorm";
 import { EntityCondition } from "../../utils/types/entity-condition.type";
 import { EmployerEntity } from "../../../infrastructure/entities/employer.entity";
@@ -17,7 +16,7 @@ export class EmployerService {
     private employerRepository: Repository<EmployerEntity>,
 
     private jobOfferService: JobOfferService,
-    private companyService: CompanyService
+    private readonly companyService: CompanyService
   ) {
   }
 
@@ -31,7 +30,7 @@ export class EmployerService {
     return this.employerRepository.find();
   }
 
-  findOne(fields: EntityCondition<UserEntity>) {
+  findOne(fields: EntityCondition<EmployerEntity>) {
     return this.employerRepository.findOne({
       where: fields
     });
@@ -51,7 +50,8 @@ export class EmployerService {
   }
 
   async createJobOffer(employerId: number, jobOfferDto: JobOfferDto) {
-    const company = await this.companyService.findOne({ employer_id: employerId });
+    const employer = await this.findOne({ user_id: employerId });
+    const company = await this.companyService.findOne({ employer_id: employer.id });
     jobOfferDto.company_id = company.id;
     return this.jobOfferService.create(jobOfferDto);
   }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ExtraJobRequestEntity } from "./extra-job-request.entity";
 
 @Entity('job-offer')
 export class JobOfferEntity {
@@ -17,5 +18,9 @@ export class JobOfferEntity {
 
   @Column()
   is_available: boolean;
+
+  @ManyToMany(() => ExtraJobRequestEntity)
+  @JoinTable()
+  requests: ExtraJobRequestEntity[];
 
 }
