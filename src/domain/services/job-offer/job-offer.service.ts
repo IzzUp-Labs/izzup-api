@@ -43,6 +43,10 @@ export class JobOfferService {
     return this.jobOfferRepository.findOne( { where: fields } );
   }
 
+  findOneWithRelations(fields: EntityCondition<JobOfferEntity>) {
+    return this.jobOfferRepository.findOne( { where: fields, relations: { requests: true } } );
+  }
+
   update(id: number, jobOfferDto: JobOfferDto) {
     return this.jobOfferRepository.save(
       this.jobOfferRepository.create({

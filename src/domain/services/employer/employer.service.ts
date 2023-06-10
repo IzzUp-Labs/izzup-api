@@ -8,6 +8,11 @@ import { UpdateEmployerDto } from "../../../application/employer/dto/update-empl
 import { JobOfferService } from "../job-offer/job-offer.service";
 import { JobOfferDto } from "../../../application/job-offer/dto/job-offer.dto";
 import { CompanyService } from "../company/company.service";
+import { JobRequestStatus } from "../../utils/enums/job-request-status";
+import { ExtraJobRequestEntity } from "../../../infrastructure/entities/extra-job-request.entity";
+import { JobOfferEntity } from "../../../infrastructure/entities/job-offer.entity";
+import { ExtraJobRequestService } from "../extra/extra-job-request.service";
+import { ExtraJobRequestDto } from "../../../application/extra/dto/extra-job-request.dto";
 
 @Injectable()
 export class EmployerService {
@@ -16,7 +21,9 @@ export class EmployerService {
     private employerRepository: Repository<EmployerEntity>,
 
     private jobOfferService: JobOfferService,
-    private readonly companyService: CompanyService
+    private readonly companyService: CompanyService,
+
+    private readonly extraJobRequestService: ExtraJobRequestService
   ) {
   }
 
@@ -60,5 +67,18 @@ export class EmployerService {
     const employer = await this.findOne({ user_id: userId });
     const company = await this.companyService.findOne({ employer_id: employer.id });
     return this.jobOfferService.findAllWithRelations(company.id);
+  }
+
+  async acceptExtraJobRequest(userId: number, jobOfferId: number, extraId: number) {
+    const jobOffers : JobOfferEntity[] = await this.findAllByAuthEmployer(userId);
+    const jobOffer = jobOffers.find(jobOffer => jobOffer.id === jobOfferId);
+    console.log(jobOffer.requests)
+    const extraJobRequest: ExtraJobRequestEntity = jobOffer.requests.find(request => request.extraId === extraId);
+    extraJobRequest.status = JobRequestStatus.ACCEPTED;
+    const updatedExtraJobRequest: ExtraJobRequestDto = {
+      ...extraJobRequest,
+      status: JobRequestStatus.ACCEPTED,
+    }
+    return this.extraJobRequestService.update(extraJobRequest.id, updatedExtraJobRequest);
   }
 }

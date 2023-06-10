@@ -19,6 +19,9 @@ export class JobOfferEntity {
   @Column()
   is_available: boolean;
 
+  @Column()
+  spots: number;
+
   @ManyToMany(() => ExtraJobRequestEntity)
   @JoinTable()
   requests: ExtraJobRequestEntity[];

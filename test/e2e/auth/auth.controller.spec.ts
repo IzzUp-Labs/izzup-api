@@ -13,6 +13,8 @@ import { CompanyService } from "../../../src/domain/services/company/company.ser
 import { EmployerService } from "../../../src/domain/services/employer/employer.service";
 import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
 import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
+import { ExtraJobRequestService } from "../../../src/domain/services/extra/extra-job-request.service";
+import { ExtraJobRequestEntity } from "../../../src/infrastructure/entities/extra-job-request.entity";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -28,6 +30,7 @@ describe("AuthController", () => {
         EmployerService,
         CompanyService,
         JobOfferService,
+        ExtraJobRequestService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -47,6 +50,10 @@ describe("AuthController", () => {
         {
           provide: getRepositoryToken(JobOfferEntity),
           useValue: JobOfferEntity
+        },
+        {
+          provide: getRepositoryToken(ExtraJobRequestEntity),
+          useValue: ExtraJobRequestEntity
         }
       ]
     }).compile();

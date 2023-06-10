@@ -72,7 +72,14 @@ export class EmployerController {
   @Get("my/joboffers")
   getMyJobOffers(@Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    console.log('USEERID : ',userId);
     return this.employerService.findAllByAuthEmployer(userId);
+  }
+
+  @RoleGuard(RoleEnum.EMPLOYER)
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(":jobOfferId/accept/:extraId")
+  acceptExtra(@Param("jobOfferId") jobOfferId: string, @Param("extraId") extraId: string, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.acceptExtraJobRequest(userId, +jobOfferId, +extraId);
   }
 }
