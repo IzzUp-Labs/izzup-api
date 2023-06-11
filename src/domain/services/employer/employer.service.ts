@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { EntityCondition } from "../../utils/types/entity-condition.type";
@@ -72,13 +72,32 @@ export class EmployerService {
   async acceptExtraJobRequest(userId: number, jobOfferId: number, extraId: number) {
     const jobOffers : JobOfferEntity[] = await this.findAllByAuthEmployer(userId);
     const jobOffer = jobOffers.find(jobOffer => jobOffer.id === jobOfferId);
-    console.log(jobOffer.requests)
+    let acceptedCount = 0;
+    for (const accepted in jobOffer.requests) {
+      if(jobOffer.requests[accepted].status === JobRequestStatus.ACCEPTED) {
+        ++acceptedCount;
+      }
+      if(acceptedCount === jobOffer.spots) {
+        throw new HttpException('No more spots available', 400);
+      }
+    }
     const extraJobRequest: ExtraJobRequestEntity = jobOffer.requests.find(request => request.extraId === extraId);
     extraJobRequest.status = JobRequestStatus.ACCEPTED;
     const updatedExtraJobRequest: ExtraJobRequestDto = {
       ...extraJobRequest,
       status: JobRequestStatus.ACCEPTED,
     }
-    return this.extraJobRequestService.update(extraJobRequest.id, updatedExtraJobRequest);
+    await this.extraJobRequestService.update(extraJobRequest.id, updatedExtraJobRequest);
+    if(acceptedCount + 1 === jobOffer.spots) {
+      jobOffer.is_available = false;
+      await this.jobOfferService.update(jobOffer.id, jobOffer);
+      const pendingOffers: number[] = [];
+      for (const rejectedRequest of jobOffer.requests) {
+        if(rejectedRequest.status === JobRequestStatus.PENDING) {
+          pendingOffers.push(rejectedRequest.extraId);
+        }
+      }
+      await this.extraJobRequestService.rejectRemainingRequests(pendingOffers);
+    }
   }
 }

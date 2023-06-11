@@ -53,4 +53,13 @@ export class ExtraJobRequestService {
       })
     );
   }
+
+  rejectRemainingRequests(requestIds: number[]) {
+    return this.extraJobRequestRepository
+      .createQueryBuilder()
+      .update(ExtraJobRequestEntity)
+      .set({ status: JobRequestStatus.REJECTED })
+      .where("extraId IN (:...offersIds) AND status = :status", { offersIds: requestIds, status: JobRequestStatus.PENDING })
+      .execute();
+  }
 }
