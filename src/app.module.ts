@@ -16,6 +16,7 @@ import { ActivitySectorModule } from "./infrastructure/modules/activity-sector.m
 import { TagModule } from "./infrastructure/modules/tag.module";
 import { JobOfferModule } from "./infrastructure/modules/job-offer.module";
 import { JobStatusModule } from "./infrastructure/modules/job-status.module";
+import { ExtraJobRequestModule } from "./infrastructure/modules/extra-job-request.module";
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { JobStatusModule } from "./infrastructure/modules/job-status.module";
     ActivitySectorModule,
     TagModule,
     JobOfferModule,
-    JobStatusModule
+    JobStatusModule,
+    ExtraJobRequestModule
   ],
   controllers: [],
   providers: [

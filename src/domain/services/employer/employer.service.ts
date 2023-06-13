@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { EntityCondition } from "../../utils/types/entity-condition.type";
@@ -8,6 +8,11 @@ import { UpdateEmployerDto } from "../../../application/employer/dto/update-empl
 import { JobOfferService } from "../job-offer/job-offer.service";
 import { JobOfferDto } from "../../../application/job-offer/dto/job-offer.dto";
 import { CompanyService } from "../company/company.service";
+import { JobRequestStatus } from "../../utils/enums/job-request-status";
+import { ExtraJobRequestEntity } from "../../../infrastructure/entities/extra-job-request.entity";
+import { JobOfferEntity } from "../../../infrastructure/entities/job-offer.entity";
+import { ExtraJobRequestService } from "../extra/extra-job-request.service";
+import { ExtraJobRequestDto } from "../../../application/extra/dto/extra-job-request.dto";
 
 @Injectable()
 export class EmployerService {
@@ -16,7 +21,9 @@ export class EmployerService {
     private employerRepository: Repository<EmployerEntity>,
 
     private jobOfferService: JobOfferService,
-    private readonly companyService: CompanyService
+    private readonly companyService: CompanyService,
+
+    private readonly extraJobRequestService: ExtraJobRequestService
   ) {
   }
 
@@ -54,5 +61,43 @@ export class EmployerService {
     const company = await this.companyService.findOne({ employer_id: employer.id });
     jobOfferDto.company_id = company.id;
     return this.jobOfferService.create(jobOfferDto);
+  }
+
+  async findAllByAuthEmployer(userId: number) {
+    const employer = await this.findOne({ user_id: userId });
+    const company = await this.companyService.findOne({ employer_id: employer.id });
+    return this.jobOfferService.findAllWithRelations(company.id);
+  }
+
+  async acceptExtraJobRequest(userId: number, jobOfferId: number, extraId: number) {
+    const jobOffers : JobOfferEntity[] = await this.findAllByAuthEmployer(userId);
+    const jobOffer = jobOffers.find(jobOffer => jobOffer.id === jobOfferId);
+    let acceptedCount = 0;
+    for (const accepted in jobOffer.requests) {
+      if(jobOffer.requests[accepted].status === JobRequestStatus.ACCEPTED) {
+        ++acceptedCount;
+      }
+      if(acceptedCount === jobOffer.spots) {
+        throw new HttpException('No more spots available', 400);
+      }
+    }
+    const extraJobRequest: ExtraJobRequestEntity = jobOffer.requests.find(request => request.extraId === extraId);
+    extraJobRequest.status = JobRequestStatus.ACCEPTED;
+    const updatedExtraJobRequest: ExtraJobRequestDto = {
+      ...extraJobRequest,
+      status: JobRequestStatus.ACCEPTED,
+    }
+    await this.extraJobRequestService.update(extraJobRequest.id, updatedExtraJobRequest);
+    if(acceptedCount + 1 === jobOffer.spots) {
+      jobOffer.is_available = false;
+      await this.jobOfferService.update(jobOffer.id, jobOffer);
+      const pendingOffers: number[] = [];
+      for (const rejectedRequest of jobOffer.requests) {
+        if(rejectedRequest.status === JobRequestStatus.PENDING) {
+          pendingOffers.push(rejectedRequest.extraId);
+        }
+      }
+      await this.extraJobRequestService.rejectRemainingRequests(pendingOffers);
+    }
   }
 }

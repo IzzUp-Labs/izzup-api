@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
 import { JobOfferService } from "../../domain/services/job-offer/job-offer.service";
 import { JobOfferDto } from "./dto/job-offer.dto";
 
@@ -20,7 +20,7 @@ export class JobOfferController {
   }
 
   @Get(":id")
-  findOne(id: string) {
+  findOne(@Param("id") id: string) {
     return this.jobOfferService.findOne({ id: +id });
   }
 
@@ -30,7 +30,7 @@ export class JobOfferController {
   }
 
   @Delete(":id")
-  remove(id: string) {
+  remove(@Param("id") id: string) {
     return this.jobOfferService.remove(+id);
   }
 

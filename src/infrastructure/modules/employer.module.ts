@@ -6,13 +6,15 @@ import { EmployerService } from "../../domain/services/employer/employer.service
 import { CompanyModule } from "./company.module";
 import { JobOfferModule } from "./job-offer.module";
 import { ParamCheckModule } from "./param-check.module";
+import { ExtraJobRequestModule } from "./extra-job-request.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([EmployerEntity]),
     CompanyModule,
     JobOfferModule,
-    ParamCheckModule
+    ParamCheckModule,
+    ExtraJobRequestModule,
   ],
   controllers: [EmployerController],
   providers: [EmployerService],

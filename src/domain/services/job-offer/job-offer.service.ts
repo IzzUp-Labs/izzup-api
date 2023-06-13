@@ -26,8 +26,25 @@ export class JobOfferService {
     return this.jobOfferRepository.find({ where: { is_available: true } });
   }
 
+  findAllWithRelations(id: number) {
+    return this.jobOfferRepository.find(
+      {
+        where: {
+          company_id: id
+        },
+        relations: {
+          requests: true,
+        }
+      }
+    )
+  }
+
   findOne(fields: EntityCondition<JobOfferEntity>) {
     return this.jobOfferRepository.findOne( { where: fields } );
+  }
+
+  findOneWithRelations(fields: EntityCondition<JobOfferEntity>) {
+    return this.jobOfferRepository.findOne( { where: fields, relations: { requests: true } } );
   }
 
   update(id: number, jobOfferDto: JobOfferDto) {

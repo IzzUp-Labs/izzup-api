@@ -3,4 +3,5 @@ export class JobOfferDto {
     job_title: string;
     price: number;
     is_available: boolean;
+    spots: number;
 }
