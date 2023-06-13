@@ -18,6 +18,10 @@ jobs:
   build-nestjs:
     name: Build NestJS Docker Image
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: "read"
+      id-token: "write"
     steps:
       - uses: actions/checkout@v3
       - run: cp .env.example .env
