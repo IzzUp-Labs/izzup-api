@@ -22,6 +22,7 @@ import { JobOfferService } from "../../../src/domain/services/job-offer/job-offe
 import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
 import { ExtraJobRequestService } from "../../../src/domain/services/extra/extra-job-request.service";
 import { ExtraJobRequestEntity } from "../../../src/infrastructure/entities/extra-job-request.entity";
+import { DataSource } from "typeorm";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -42,6 +43,7 @@ describe("AuthService", () => {
         CompanyService,
         JobOfferService,
         ExtraJobRequestService,
+        DataSource,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {

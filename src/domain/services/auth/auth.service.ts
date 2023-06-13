@@ -10,6 +10,10 @@ import { AuthRegisterEmployerDto } from "../../../application/auth/dto/auth-regi
 import { EmployerService } from "../employer/employer.service";
 import { CompanyService } from "../company/company.service";
 import { AuthMembershipCheckDto } from "../../../application/auth/dto/auth-membership-check.dto";
+import { DataSource } from "typeorm";
+import { UserEntity } from "../../../infrastructure/entities/user.entity";
+import { EmployerEntity } from "../../../infrastructure/entities/employer.entity";
+import { CompanyEntity } from "../../../infrastructure/entities/company.entity";
 
 @Injectable()
 export class AuthService {
@@ -18,7 +22,8 @@ export class AuthService {
     private userService: UserService,
     private extraService: ExtraService,
     private employerService: EmployerService,
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private dataSource: DataSource
   ) {
   }
 
@@ -92,19 +97,31 @@ export class AuthService {
 
   async registerEmployer(authRegisterEmployer: AuthRegisterEmployerDto) {
     const hashedPassword = await bcrypt.hash(authRegisterEmployer.password, 10);
-    const createdUser = await this.userService.create({
-      ...authRegisterEmployer,
-      email: authRegisterEmployer.email,
-      role: 'EMPLOYER',
-      password: hashedPassword,
-    });
-    const createdEmployer = await this.employerService.create({
-      ...authRegisterEmployer,
-      user_id: createdUser.id
-    });
-    await this.companyService.create({
-      ...authRegisterEmployer.company,
-      employer_id: createdEmployer.id
-    });
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      await queryRunner.startTransaction();
+      const createdUser = await queryRunner.manager.save(UserEntity, {
+        ...authRegisterEmployer,
+        email: authRegisterEmployer.email,
+        role: 'EMPLOYER',
+        password: hashedPassword,
+      });
+      const createdEmployer = await queryRunner.manager.save(EmployerEntity,{
+        ...authRegisterEmployer,
+        user_id: createdUser.id
+      });
+      await queryRunner.manager.save(CompanyEntity,{
+        ...authRegisterEmployer.company,
+        employer_id: createdEmployer.id
+      });
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
