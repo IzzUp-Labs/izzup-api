@@ -1,0 +1,64 @@
+name: NestJS Docker Image
+
+on:
+  push:
+  #  branches:
+  #    - main
+  #    - v1.0.0
+  workflow_dispatch:
+
+env:
+  registry: europe-west9-docker.pkg.dev
+  workdir: .
+  image: ${{ github.repository }}/izzup-api
+  target: api
+  platforms: "linux/amd64,linux/arm64"
+
+jobs:
+  build-nestjs:
+    name: Build NestJS Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: cp .env.example .env
+
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          access_token_lifetime: 300s
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.registry }}
+          username: oauth2accesstoken
+          password:  ${{ steps.auth.outputs.access_token }}
+
+      - name: Set up Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.image }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+            type=semver,pattern={{version}}
+            type=raw,value=stable,enable=${{ github.ref_name == 'main' || github.ref_name == 'v1.0.0' }}
+
+      - uses: docker/build-push-action@v3
+        with:
+          context: ${{ env.workdir }}
+          target: ${{ env.target }}
+          platforms: ${{ env.platforms }}
+          tags: ${{ steps.meta.outputs.tags }}
+          push: true
+          cache-from: type=gha,scope=${{ env.image }}
+          cache-to: type=gha,scope=${{ env.image }},mode=max
