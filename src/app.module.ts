@@ -17,6 +17,7 @@ import { TagModule } from "./infrastructure/modules/tag.module";
 import { JobOfferModule } from "./infrastructure/modules/job-offer.module";
 import { JobStatusModule } from "./infrastructure/modules/job-status.module";
 import { ExtraJobRequestModule } from "./infrastructure/modules/extra-job-request.module";
+import { HomepageCardModule } from "./infrastructure/modules/homepage-card.module";
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { ExtraJobRequestModule } from "./infrastructure/modules/extra-job-reques
     TagModule,
     JobOfferModule,
     JobStatusModule,
-    ExtraJobRequestModule
+    ExtraJobRequestModule,
+    HomepageCardModule
   ],
   controllers: [],
   providers: [
