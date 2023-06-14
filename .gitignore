@@ -35,4 +35,4 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Env files except .env.example
-/env/*.env
+*.env

@@ -28,7 +28,7 @@ import { HomepageCardModule } from "./infrastructure/modules/homepage-card.modul
         appConfig,
         authConfig
       ],
-      envFilePath: ["env/local.env"]
+      envFilePath: [".env"]
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

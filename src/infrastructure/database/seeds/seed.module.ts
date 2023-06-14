@@ -14,7 +14,7 @@ import { RoleSeedModule } from "./role/role-seed.module";
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
-      envFilePath: ["env/local.env"],
+      envFilePath: [".env"],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
