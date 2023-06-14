@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
 import { ExtraService } from "../../domain/services/extra/extra.service";
 import { UpdateExtraDto } from "./dto/update-extra.dto";
 import { TagDto } from "../tag/dto/tag.dto";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Extras')
 @Controller({
   path: "extra",
   version: "1"

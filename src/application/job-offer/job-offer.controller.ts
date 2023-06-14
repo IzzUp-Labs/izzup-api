@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
 import { JobOfferService } from "../../domain/services/job-offer/job-offer.service";
 import { JobOfferDto } from "./dto/job-offer.dto";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Job Offers')
 @Controller({
   path: "job-offer",
   version: "1"

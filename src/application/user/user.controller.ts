@@ -5,7 +5,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { AuthGuard } from "@nestjs/passport";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('User')
 @Controller({
   path: "user",
   version: "1"
@@ -19,6 +21,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard(RoleEnum.EXTRA)
   @Get()

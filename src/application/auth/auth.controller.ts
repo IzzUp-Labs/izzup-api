@@ -4,7 +4,9 @@ import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterExtraDto } from "./dto/auth-register-extra.dto";
 import { AuthRegisterEmployerDto } from "./dto/auth-register-employer.dto";
 import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Authentications')
 @Controller({
   path: "auth",
   version: "1"
@@ -39,7 +41,7 @@ export class AuthController {
 
   @Post("register/employer")
   @HttpCode(HttpStatus.CREATED)
-registerEmployer(@Body() authRegisterEmployerDto: AuthRegisterEmployerDto) {
+  registerEmployer(@Body() authRegisterEmployerDto: AuthRegisterEmployerDto) {
     return this.authService.registerEmployer(authRegisterEmployerDto);
   }
 

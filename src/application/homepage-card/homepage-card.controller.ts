@@ -3,7 +3,9 @@ import { HomepageCardService } from "../../domain/services/homepage-card/homepag
 import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { AuthGuard } from "@nestjs/passport";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Homepage Cards')
 @Controller( {
   path: 'homepage-card',
   version: '1'
@@ -14,6 +16,7 @@ export class HomepageCardController {
   ) {
   }
 
+  @ApiBearerAuth()
   @RoleGuard(RoleEnum.ADMIN)
   @UseGuards(AuthGuard('jwt'))
   @Post()
@@ -31,6 +34,7 @@ export class HomepageCardController {
     return this.homepageCardService.findOne(homepageCardDto);
   }
 
+  @ApiBearerAuth()
   @RoleGuard(RoleEnum.ADMIN)
   @UseGuards(AuthGuard('jwt'))
   @Patch(":id")
@@ -38,6 +42,7 @@ export class HomepageCardController {
     return this.homepageCardService.update(id, homepageCardDto);
   }
 
+  @ApiBearerAuth()
   @RoleGuard(RoleEnum.ADMIN)
   @UseGuards(AuthGuard('jwt'))
   @Delete(":id")
