@@ -43,7 +43,21 @@ describe("AuthService", () => {
         CompanyService,
         JobOfferService,
         ExtraJobRequestService,
-        DataSource,
+        {
+          provide: DataSource,
+          useValue: {
+            createQueryRunner: jest.fn(),
+            manager: {
+              save: jest.fn(),
+              create: jest.fn(),
+              findOne: jest.fn(),
+              find: jest.fn(),
+              update: jest.fn(),
+              delete: jest.fn(),
+              query: jest.fn(),
+              },
+            },
+          },
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
