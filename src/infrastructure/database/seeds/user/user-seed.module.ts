@@ -11,7 +11,7 @@ import seedUserConfig from "../../../config/seed-user.config";
     ConfigModule.forRoot({
       isGlobal: true,
       load: [seedUserConfig],
-      envFilePath: ["env/local.env"],
+      envFilePath: [".env"],
     }),],
   providers: [UserSeedService],
   exports: [UserSeedService],
