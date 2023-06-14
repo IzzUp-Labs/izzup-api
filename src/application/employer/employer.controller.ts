@@ -17,7 +17,9 @@ import { AuthGuard } from "@nestjs/passport";
 import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Employers')
 @Controller({
   path: "employer",
   version: "1"
@@ -47,7 +49,7 @@ export class EmployerController {
     return this.employerService.remove(+id);
   }
 
-
+  @ApiBearerAuth()
   @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
   @Post(":id/job-offer")
@@ -67,6 +69,7 @@ export class EmployerController {
       }
   }
 
+  @ApiBearerAuth()
   @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
   @Get("my/joboffers")
@@ -75,6 +78,7 @@ export class EmployerController {
     return this.employerService.findAllByAuthEmployer(userId);
   }
 
+  @ApiBearerAuth()
   @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
   @Patch(":jobOfferId/accept/:extraId")

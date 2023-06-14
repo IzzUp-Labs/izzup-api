@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Patch} from "@nestjs/common";
 import { CompanyService } from "../../domain/services/company/company.service";
 import { UpdateCompanyDto } from "./dto/update-company.dto";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Companies')
 @Controller({
   path: "company",
   version: "1"

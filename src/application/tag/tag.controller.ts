@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/commo
 import { TagService } from "../../domain/services/tag/tag.service";
 import { UpdateTagDto } from "./dto/update-tag.dto";
 import { TagDto } from "./dto/tag.dto";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Tags')
 @Controller({
   path: 'tag',
   version: '1',

@@ -5,7 +5,9 @@ import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { AuthGuard } from "@nestjs/passport";
 import { JobStatusDto } from "./dto/job-status.dto";
 import { UpdateJobStatusDto } from "./dto/update-job-status.dto";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Job Status')
 @Controller({
   path: "job-status",
   version: "1"
@@ -14,6 +16,7 @@ export class JobStatusController {
   constructor(private readonly jobStatusService: JobStatusService) {
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard(RoleEnum.ADMIN)
   @Post()
@@ -21,6 +24,7 @@ export class JobStatusController {
     return this.jobStatusService.create(jobStatusDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard(RoleEnum.ADMIN)
   @Get()
@@ -28,6 +32,7 @@ export class JobStatusController {
     return this.jobStatusService.findAll();
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard(RoleEnum.ADMIN)
   @Get(":id")
@@ -35,6 +40,7 @@ export class JobStatusController {
     return this.jobStatusService.findOne({ id: +id });
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard(RoleEnum.ADMIN)
   @Patch(":id")
@@ -42,6 +48,7 @@ export class JobStatusController {
     return this.jobStatusService.update(+id, updatedJobStatus);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard(RoleEnum.ADMIN)
   @Delete(":id")
