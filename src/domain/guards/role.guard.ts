@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { UserService } from "../services/user/user.service";
-import { AuthService } from "../services/auth/auth.service";
+import { UserService } from "../../usecase/user/user.service";
+import { AuthService } from "../../usecase/auth/auth.service";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -23,6 +23,9 @@ export class RolesGuard implements CanActivate {
       return false;
     }
     const userEntity = await this.userService.findOne({ id: token.id });
+    if(!userEntity){
+      return false;
+    }
     return userEntity.role == roles;
   }
 }

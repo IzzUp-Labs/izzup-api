@@ -1,10 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserService } from "../../../src/domain/services/user/user.service";
+import { UserService } from "../../../src/usecase/user/user.service";
 import { Repository } from "typeorm";
-import { UserEntity } from "../../../src/infrastructure/entities/user.entity";
+import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
-import { AuthRegisterDto } from "../../../src/application/auth/dto/auth-register.dto";
+import { AuthRegisterDto } from "../../../src/usecase/auth/dto/auth-register.dto";
 
 describe("UserService", () => {
   let service: UserService;
@@ -52,8 +52,10 @@ describe("UserService", () => {
         last_name: "lasttest",
         first_name: "firsttest",
         role: 'EXTRA',
+        date_of_birth: new Date("2015-08-02T13:15:43.636Z"),
         created_at: new Date("2023-04-02T13:15:43.636Z"),
-        updated_at: new Date("2023-04-02T13:15:43.636Z")
+        updated_at: new Date("2023-04-02T13:15:43.636Z"),
+        deleted_at: null,
       };
       const createUserDto: AuthRegisterDto = {
         email: "test@test.com",

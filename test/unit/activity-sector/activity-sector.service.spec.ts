@@ -1,6 +1,6 @@
-import { ActivitySectorDto } from "../../../src/application/activity-sector/dto/activity-sector.dto";
-import { ActivitySectorEntity } from "../../../src/infrastructure/entities/activity-sector.entity";
-import { ActivitySectorService } from "../../../src/domain/services/activity-sector/activity-sector.service";
+import { ActivitySectorDto } from "../../../src/usecase/activity-sector/dto/activity-sector.dto";
+import { ActivitySectorEntity } from "../../../src/usecase/activity-sector/entities/activity-sector.entity";
+import { ActivitySectorService } from "../../../src/usecase/activity-sector/activity-sector.service";
 import { Repository } from "typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
@@ -38,6 +38,9 @@ describe('ActivitySectorService', () => {
       const createdActivitySector: ActivitySectorEntity = {
         id: 1,
         name: 'test',
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
       };
 
       jest
@@ -59,6 +62,9 @@ describe('ActivitySectorService', () => {
       const foundActivitySector: ActivitySectorEntity = {
         id: 1,
         name: 'test',
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
       };
 
       jest
@@ -74,8 +80,8 @@ describe('ActivitySectorService', () => {
   describe('findAll', () => {
     it('should find all activity sectors', async () => {
       const foundActivitySectors: ActivitySectorEntity[] = [
-        { id: 1, name: 'test1' },
-        { id: 2, name: 'test2' },
+        { id: 1, name: 'test1', created_at: new Date(), updated_at: new Date(), deleted_at: null},
+        { id: 2, name: 'test2', created_at: new Date(), updated_at: new Date(), deleted_at: null },
       ];
 
       jest.spyOn(repository, 'find').mockResolvedValue(foundActivitySectors);
@@ -102,17 +108,17 @@ describe('ActivitySectorService', () => {
     it('should update an activity sector by id', async () => {
       const id = 1;
       const activitySectorDto: ActivitySectorDto = { id: 1, name: 'test' };
-      const updatedActivitySector: ActivitySectorEntity = {
+      const updatedActivitySector = {
         id: 1,
-        name: 'test',
+        name: 'test'
       };
 
       jest
         .spyOn(repository, 'create')
-        .mockImplementation(() => updatedActivitySector);
+        .mockImplementation(() => updatedActivitySector as ActivitySectorEntity);
       jest
         .spyOn(repository, 'save')
-        .mockImplementation(() => Promise.resolve(updatedActivitySector));
+        .mockImplementation(() => Promise.resolve(updatedActivitySector as ActivitySectorEntity));
 
       const result = await service.update(id, activitySectorDto);
 

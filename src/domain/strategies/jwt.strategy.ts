@@ -1,4 +1,4 @@
-import { UserEntity } from "../../infrastructure/entities/user.entity";
+import { UserEntity } from "../../usecase/user/entities/user.entity";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";

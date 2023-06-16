@@ -1,21 +1,21 @@
-import { EmployerService } from "../../../src/domain/services/employer/employer.service";
+import { EmployerService } from "../../../src/usecase/employer/employer.service";
 import { Repository } from "typeorm";
-import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
+import { EmployerEntity } from "../../../src/usecase/employer/entities/employer.entity";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { EmployerDto } from "../../../src/application/employer/dto/employer.dto";
+import { EmployerDto } from "../../../src/usecase/employer/dto/employer.dto";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
-import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
-import { CompanyService } from "../../../src/domain/services/company/company.service";
-import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
-import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
-import { ExtraJobRequestService } from "../../../src/domain/services/extra/extra-job-request.service";
-import { ExtraJobRequestEntity } from "../../../src/infrastructure/entities/extra-job-request.entity";
-import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
-import { ExtraService } from "../../../src/domain/services/extra/extra.service";
+import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
+import { CompanyService } from "../../../src/usecase/company/company.service";
+import { CompanyEntity } from "../../../src/usecase/company/entities/company.entity";
+import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
+import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
+import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra-job-request.entity";
+import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
+import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-status";
 import { HttpException } from "@nestjs/common";
-import { JobOfferDto } from "../../../src/application/job-offer/dto/job-offer.dto";
+import { JobOfferDto } from "../../../src/usecase/job-offer/dto/job-offer.dto";
 
 describe('EmployerService', () => {
   let service: EmployerService;
@@ -82,8 +82,9 @@ describe('EmployerService', () => {
       const employer : EmployerEntity = {
         id: 1,
         user_id: 1,
-        date_of_birth: new Date(),
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
       const mockEmployer : EmployerDto = {
         user_id: 1,
@@ -106,8 +107,9 @@ describe('EmployerService', () => {
       const employer : EmployerEntity = {
         id: 1,
         user_id: 1,
-        date_of_birth: new Date(),
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
 
       const employerRepositoryFindSpy = jest
@@ -127,8 +129,9 @@ describe('EmployerService', () => {
       const employer : EmployerEntity = {
         id: 1,
         user_id: 1,
-        date_of_birth: new Date(),
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
 
       const employerRepositoryFindOneSpy = jest
@@ -147,8 +150,9 @@ describe('EmployerService', () => {
       const employer : EmployerEntity = {
         id: 1,
         user_id: 1,
-        date_of_birth: new Date(),
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
       const mockEmployer : EmployerDto = {
         user_id: 1,
@@ -186,8 +190,9 @@ describe('EmployerService', () => {
       const employer : EmployerEntity = {
         id: 1,
         user_id: 1,
-        date_of_birth: new Date(),
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
       const jobOfferDto: JobOfferDto = {
         company_id: 2,

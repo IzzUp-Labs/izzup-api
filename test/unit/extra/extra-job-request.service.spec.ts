@@ -1,14 +1,14 @@
-import { ExtraJobRequestService } from "../../../src/domain/services/extra/extra-job-request.service";
-import { ExtraJobRequestEntity } from "../../../src/infrastructure/entities/extra-job-request.entity";
+import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
+import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra-job-request.entity";
 import { Repository } from "typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
-import { ExtraService } from "../../../src/domain/services/extra/extra.service";
-import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
-import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
+import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
+import { ExtraService } from "../../../src/usecase/extra/extra.service";
+import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
+import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
 import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-status";
-import { ExtraJobRequestDto } from "../../../src/application/extra/dto/extra-job-request.dto";
+import { ExtraJobRequestDto } from "../../../src/usecase/extra/dto/extra-job-request.dto";
 import { HttpException } from "@nestjs/common";
 
 describe('ExtraJobRequestService', () => {

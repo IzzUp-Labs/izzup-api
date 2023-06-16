@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UserSeedService } from './user-seed.service';
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserEntity } from "../../../entities/user.entity";
+import { UserEntity } from "../../../../usecase/user/entities/user.entity";
 import { ConfigModule } from "@nestjs/config";
 import seedUserConfig from "../../../config/seed-user.config";
 

@@ -1,6 +1,6 @@
-import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
+import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
 import { Repository } from "typeorm";
-import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
+import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";

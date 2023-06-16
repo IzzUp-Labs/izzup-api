@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { RoleController } from "../../../src/application/role/role.controller";
-import { RoleService } from "../../../src/domain/services/role/role.service";
-import { RoleEntity } from "../../../src/infrastructure/entities/role.entity";
+import { RoleController } from "../../../src/usecase/role/role.controller";
+import { RoleService } from "../../../src/usecase/role/role.service";
+import { RoleEntity } from "../../../src/usecase/role/entities/role.entity";
 
 describe('RoleController', () => {
   let controller: RoleController;

@@ -1,6 +1,6 @@
-import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
-import { CompanyDto } from "../../../src/application/company/dto/company.dto";
-import { CompanyService } from "../../../src/domain/services/company/company.service";
+import { CompanyEntity } from "../../../src/usecase/company/entities/company.entity";
+import { CompanyDto } from "../../../src/usecase/company/dto/company.dto";
+import { CompanyService } from "../../../src/usecase/company/company.service";
 import { Repository } from "typeorm";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
