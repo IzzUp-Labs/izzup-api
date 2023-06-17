@@ -27,8 +27,6 @@ export class ExtraJobRequestService {
     if (extra == null)
       throw new HttpException('Extra not found', 404);
 
-    console.log(jobOffer.requests);
-
     jobOffer.requests.forEach(request => {
         if (request.extra.id == extra.id)
             throw new HttpException('Job request already exists', 400);
