@@ -20,6 +20,9 @@ export class JobOfferEntity {
   @Column()
   spots: number;
 
+  @Column()
+  acceptedSpots: number;
+
   @ManyToOne(() => CompanyEntity, (company) => company.jobOffers)
   company: CompanyEntity;
 

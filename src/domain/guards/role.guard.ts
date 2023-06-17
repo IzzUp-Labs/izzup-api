@@ -26,6 +26,6 @@ export class RolesGuard implements CanActivate {
     if(!userEntity){
       return false;
     }
-    return userEntity.role == roles;
+    return userEntity?.role == roles;
   }
 }

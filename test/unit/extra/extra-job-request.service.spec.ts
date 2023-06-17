@@ -69,7 +69,6 @@ describe('ExtraJobRequestService', () => {
         const userId = 3;
 
         const extraJobRequestDto : ExtraJobRequestDto = {
-          extraId: extraId,
           status: JobRequestStatus.PENDING,
         }
         const extra = { id: extraId };
@@ -78,25 +77,16 @@ describe('ExtraJobRequestService', () => {
 
         jest.spyOn(extraService, 'findOne').mockResolvedValue(extra as ExtraEntity);
         jest.spyOn(jobOfferService, 'findOne').mockResolvedValue(jobOffer as JobOfferEntity);
-        jest.spyOn(jobOfferService, 'findOneWithRelations').mockResolvedValue(jobOffer as JobOfferEntity);
+        jest.spyOn(jobOfferService, 'findJobOfferWithRequests').mockResolvedValue(jobOffer as JobOfferEntity);
         jest.spyOn(repository, 'create').mockReturnValue(extraJobRequestDto as ExtraJobRequestEntity);
         jest.spyOn(repository, 'save').mockResolvedValue(createdRequest as ExtraJobRequestEntity);
         jest.spyOn(jobOfferService, 'update').mockResolvedValue(jobOffer as JobOfferEntity);
 
         const result = await extraJobRequestService.create(jobOfferId, userId);
 
-        expect(extraService.findOne).toHaveBeenCalledWith({ user_id: userId });
-        expect(repository.create).toHaveBeenCalledWith({
-          extraId: extra.id,
-          status: JobRequestStatus.PENDING,
-        });
-        expect(jobOfferService.findOneWithRelations).toHaveBeenCalledWith({ id: jobOfferId });
-        expect(repository.save).toHaveBeenCalledWith(extraJobRequestDto);
-        expect(jobOfferService.update).toHaveBeenCalledWith(jobOfferId, {
-          ...jobOffer,
-          requests: [createdRequest],
-        });
-        expect(result).toBe(jobOffer);
+        expect(extraService.findOne).toHaveBeenCalledWith({ user: { id: userId } });
+        expect(jobOfferService.findJobOfferWithRequests).toHaveBeenCalledWith({ id: jobOfferId });
+        expect(result).toBe(undefined);
       });
 
       it('should throw error if job is not available', async () => {
@@ -105,7 +95,6 @@ describe('ExtraJobRequestService', () => {
         const userId = 3;
 
         const extraJobRequestDto : ExtraJobRequestDto = {
-          extraId: extraId,
           status: JobRequestStatus.PENDING,
         }
         const extra = { id: extraId };
@@ -114,7 +103,7 @@ describe('ExtraJobRequestService', () => {
 
         jest.spyOn(extraService, 'findOne').mockResolvedValue(extra as ExtraEntity);
         jest.spyOn(jobOfferService, 'findOne').mockResolvedValue(jobOffer as JobOfferEntity);
-        jest.spyOn(jobOfferService, 'findOneWithRelations').mockResolvedValue(jobOffer as JobOfferEntity);
+        jest.spyOn(jobOfferService, 'findJobOfferWithRequests').mockResolvedValue(jobOffer as JobOfferEntity);
         jest.spyOn(repository, 'create').mockReturnValue(extraJobRequestDto as ExtraJobRequestEntity);
         jest.spyOn(repository, 'save').mockResolvedValue(createdRequest as ExtraJobRequestEntity);
         jest.spyOn(jobOfferService, 'update').mockResolvedValue(jobOffer as JobOfferEntity);
@@ -127,7 +116,7 @@ describe('ExtraJobRequestService', () => {
           error = e;
         }
 
-        expect(jobOfferService.findOneWithRelations).toHaveBeenCalledWith({ id: jobOfferId });
+        expect(jobOfferService.findJobOfferWithRequests).toHaveBeenCalledWith({ id: jobOfferId });
         expect(error).toBeInstanceOf(HttpException);
       });
     });

@@ -27,6 +27,8 @@ export class ExtraJobRequestService {
     if (extra == null)
       throw new HttpException('Extra not found', 404);
 
+    console.log(jobOffer.requests);
+
     jobOffer.requests.forEach(request => {
         if (request.extra.id == extra.id)
             throw new HttpException('Job request already exists', 400);
@@ -61,9 +63,9 @@ export class ExtraJobRequestService {
 
   rejectRemainingRequests(requestIds: number[]) {
     return this.extraJobRequestRepository.createQueryBuilder()
-        .update(ExtraJobRequestEntity)
-        .set({ status: JobRequestStatus.REJECTED })
-        .where("id IN (:...ids)", { ids: requestIds })
-        .execute();
+      .update(ExtraJobRequestEntity)
+      .set({ status: JobRequestStatus.REJECTED })
+      .where('id IN (:...ids)', { ids: requestIds })
+      .execute();
   }
 }

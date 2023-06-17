@@ -14,7 +14,10 @@ export class JobOfferService {
 
   create(jobOfferDto: JobOfferDto) {
     return this.jobOfferRepository.save(
-      this.jobOfferRepository.create(jobOfferDto)
+      this.jobOfferRepository.create({
+        ...jobOfferDto,
+        acceptedSpots: 0
+      })
     );
   }
 
@@ -32,7 +35,7 @@ export class JobOfferService {
 
   findJobOfferWithRequests(fields: EntityCondition<JobOfferEntity>) {
     return this.jobOfferRepository.findOne({
-      relations: ['requests', 'company', 'company.employer.user'],
+      relations: ['requests', 'company', 'company.employer.user', 'requests.extra'],
       where: fields
     });
   }
@@ -44,6 +47,22 @@ export class JobOfferService {
         ...jobOfferDto
       })
     );
+  }
+
+  updateAvailableSpots(id: number, spots: number) {
+    return this.jobOfferRepository.createQueryBuilder()
+      .update(JobOfferEntity)
+      .set({ acceptedSpots: spots})
+      .where("id = :id", { id })
+      .execute();
+  }
+
+  updateAvailable(id: number, is_available: boolean) {
+    return this.jobOfferRepository.createQueryBuilder()
+      .update(JobOfferEntity)
+      .set({ is_available })
+      .where("id = :id", { id })
+      .execute();
   }
 
   remove(id: number) {

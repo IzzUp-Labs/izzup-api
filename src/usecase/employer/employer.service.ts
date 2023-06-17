@@ -10,6 +10,7 @@ import {JobOfferDto} from "../job-offer/dto/job-offer.dto";
 import {CompanyService} from "../company/company.service";
 import {ExtraJobRequestService} from "../extra/extra-job-request.service";
 import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
+import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
 
 @Injectable()
 export class EmployerService {
@@ -85,14 +86,9 @@ export class EmployerService {
     if(!jobOffer) {
       throw new HttpException('Job offer not found for this request id', 404);
     }
-    let acceptedCount = 0;
-    for (const acceptedSpot in jobOffer.requests) {
-        if(jobOffer.requests[acceptedSpot].status === JobRequestStatus.ACCEPTED) {
-            ++acceptedCount;
-        }
-        if(acceptedCount === jobOffer.spots) {
-            throw new HttpException('No more spots available', 400);
-        }
+
+    if(jobOffer.acceptedSpots === jobOffer.spots) {
+      throw new HttpException('No more spots available', 400);
     }
 
     const request = jobOffer.requests.find(request => request.id === request_id);
@@ -108,19 +104,21 @@ export class EmployerService {
       });
     }catch (e) {
       throw new HttpException('Error while accepting request', 500);
+    } finally {
+      await this.jobOfferService.updateAvailableSpots(jobOffer.id, jobOffer.acceptedSpots + 1)
     }
     request.status = JobRequestStatus.ACCEPTED;
 
-    acceptedCount++;
-    if(acceptedCount === jobOffer.spots) {
-      jobOffer.is_available = false;
-      await this.jobOfferService.update(jobOffer.id, jobOffer);
-      const pendingOffers = jobOffer.requests.map(request => {
-        if (request.status === JobRequestStatus.PENDING) {
-          return request.id;
-        }
-      });
-      await this.extraJobRequestService.rejectRemainingRequests(pendingOffers);
+    if(jobOffer.acceptedSpots + 1 === jobOffer.spots) {
+      return await this.setJobOfferExpired(jobOffer);
     }
+  }
+
+  private async setJobOfferExpired(jobOffer: JobOfferEntity) {
+    await this.jobOfferService.updateAvailable(jobOffer.id, false);
+    const requestIdsToReject = await this.extraJobRequestService.findAllJobRequestsByJobOfferId(jobOffer.id)
+      .then(requests => requests.filter(request => request.status === JobRequestStatus.PENDING)
+        .map(request => request.id));
+    return await this.extraJobRequestService.rejectRemainingRequests(requestIdsToReject);
   }
 }

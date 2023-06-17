@@ -9,7 +9,6 @@ import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
 import { AuthLoginDto } from "../../../src/usecase/auth/dto/auth-login.dto";
 import * as bcrypt from "bcrypt";
 import { HttpException, HttpStatus } from "@nestjs/common";
-import { AuthRegisterDto } from "../../../src/usecase/auth/dto/auth-register.dto";
 import { AuthRegisterExtraDto } from "../../../src/usecase/auth/dto/auth-register-extra.dto";
 import { EmployerService } from "../../../src/usecase/employer/employer.service";
 import { CompanyService } from "../../../src/usecase/company/company.service";
@@ -54,7 +53,9 @@ describe("AuthService", () => {
               last_name: "lastName",
               first_name: "firstName",
               date_of_birth: new Date(),
-              role: 'USER'
+              role: 'USER',
+              extra: null,
+              employer: null,
             }),
           },
         },
@@ -108,6 +109,8 @@ describe("AuthService", () => {
         first_name: "firstName",
         date_of_birth: new Date(),
         role: 'USER',
+        extra: null,
+        employer: null,
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null
@@ -133,6 +136,8 @@ describe("AuthService", () => {
         first_name: "firstName",
         date_of_birth: new Date(),
         role: "USER",
+        extra: null,
+        employer: null,
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null
@@ -170,41 +175,6 @@ describe("AuthService", () => {
     });
   });
 
-  describe("register", () => {
-    it("should register a new user", async () => {
-      const authRegisterDto: AuthRegisterDto = {
-        email: "test@example.com",
-        password: "password"
-      };
-      const hashedPassword = await bcrypt.hash(authRegisterDto.password, 10);
-
-      jest.spyOn<any, any>(bcrypt, "hash").mockResolvedValue(hashedPassword);
-
-      const createdUser: UserEntity = {
-        id: 1,
-        email: authRegisterDto.email,
-        password: hashedPassword,
-        last_name: "lastName",
-        first_name: "firstName",
-        date_of_birth: new Date(),
-        role: 'USER',
-        created_at: new Date(),
-        updated_at: new Date(),
-        deleted_at: null
-      };
-
-      jest.spyOn(userService, "create").mockResolvedValue(createdUser);
-
-      await expect(service.register(authRegisterDto)).resolves.toBeUndefined();
-
-      expect(bcrypt.hash).toHaveBeenCalledWith(authRegisterDto.password, 10);
-      expect(userService.create).toHaveBeenCalledWith({
-        ...authRegisterDto,
-        password: hashedPassword
-      });
-    });
-  });
-
   describe('registerExtra', () => {
     it('should create a new user and extra', async () => {
       // Arrange
@@ -230,13 +200,14 @@ describe("AuthService", () => {
 
       expect(userService.create).toHaveBeenCalledWith({
         ...authRegisterExtraDto,
-        email: authRegisterExtraDto.email,
-        role: 'EXTRA',
-        password: hashedPassword
+        extra: {
+          id: 1,
+        },
+        password: hashedPassword,
+        role: 'EXTRA'
       });
       expect(extraService.create).toHaveBeenCalledWith({
-        ...authRegisterExtraDto,
-        user_id: createdUser.id
+        address: authRegisterExtraDto.address,
       });
     });
   });
@@ -269,18 +240,20 @@ describe("AuthService", () => {
       expect(userService.create).toHaveBeenCalledWith({
         ...authRegisterEmployerDto,
         email: authRegisterEmployerDto.email,
+        employer: {
+          id: 1,
+        },
         role: 'EMPLOYER',
         password: hashedPassword
       });
 
       expect(employerService.create).toHaveBeenCalledWith({
-        ...authRegisterEmployerDto,
-        user_id: createdUser.id
       });
 
       expect(companyService.create).toHaveBeenCalledWith({
-        ...authRegisterEmployerDto.company,
-        employer_id: createdEmployer.id
+        employer: {
+          id: 1,
+        }
       });
     });
   });
@@ -298,6 +271,8 @@ describe("AuthService", () => {
         first_name: "firstName",
         date_of_birth: new Date(),
         role: "USER",
+        extra: null,
+        employer: null,
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null

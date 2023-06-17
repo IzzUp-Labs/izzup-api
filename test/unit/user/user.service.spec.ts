@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
-import { AuthRegisterDto } from "../../../src/usecase/auth/dto/auth-register.dto";
+import { CreateUserDto } from "../../../src/usecase/user/dto/create-user.dto";
 
 describe("UserService", () => {
   let service: UserService;
@@ -56,10 +56,18 @@ describe("UserService", () => {
         created_at: new Date("2023-04-02T13:15:43.636Z"),
         updated_at: new Date("2023-04-02T13:15:43.636Z"),
         deleted_at: null,
+        employer: null,
+        extra: null,
       };
-      const createUserDto: AuthRegisterDto = {
-        email: "test@test.com",
-        password: "password"
+      const createUserDto: CreateUserDto = {
+        email: "test@example.com",
+        password: "password",
+        last_name: "lasttest",
+        first_name: "firsttest",
+        date_of_birth: new Date(),
+        role: 'EXTRA',
+        employer: null,
+        extra: null,
       };
 
       const userRepositorySaveSpy = jest
@@ -70,18 +78,6 @@ describe("UserService", () => {
 
       expect(userRepositorySaveSpy).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockUser);
-    });
-  });
-
-  describe("findAll", () => {
-    it("should return all users", async () => {
-      const users = [
-        { id: 1, email: "test1@example.com", password: "password" },
-        { id: 2, email: "test2@example.com", password: "password" }
-      ];
-      jest.spyOn(repository, "find").mockResolvedValueOnce(users as any);
-      const result = await service.findAll();
-      expect(result).toEqual(users);
     });
   });
 

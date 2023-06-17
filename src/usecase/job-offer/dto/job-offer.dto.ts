@@ -9,4 +9,6 @@ export class JobOfferDto {
     is_available: boolean;
     @ApiProperty()
     spots: number;
+    @ApiProperty()
+    acceptedSpots: number;
 }
