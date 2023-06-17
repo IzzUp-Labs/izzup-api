@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity,
+  Entity, JoinColumn, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
+import {EmployerEntity} from "../../employer/entities/employer.entity";
+import {ExtraEntity} from "../../extra/entities/extra.entity";
 
 @Entity("user")
 export class UserEntity {
@@ -29,6 +31,14 @@ export class UserEntity {
 
   @Column()
   role: string;
+
+  @OneToOne(() => EmployerEntity, (employer) => employer.user, {cascade: true})
+  @JoinColumn()
+  employer: EmployerEntity;
+
+  @OneToOne(() => ExtraEntity, (extra) => extra.user, {cascade: true})
+  @JoinColumn()
+  extra: ExtraEntity;
 
   @CreateDateColumn()
   created_at: Date;

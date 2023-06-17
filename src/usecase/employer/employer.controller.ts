@@ -52,11 +52,11 @@ export class EmployerController {
   @ApiBearerAuth()
   @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
-  @Post(":id/job-offer")
-  createJobOffer(@Param("id") id: string, @Body() jobOfferDto, @Headers("Authorization") authorization: string) {
+  @Post(":id/job-offer/:companyId")
+  createJobOffer(@Param("id") id: string, @Param("companyId") companyId: string, @Body() jobOfferDto, @Headers("Authorization") authorization: string) {
     const result = this.paramCheckService.check(authorization, +id)
       if(result) {
-        return this.employerService.createJobOffer(+id, jobOfferDto);
+        return this.employerService.createJobOffer(+id, jobOfferDto, +companyId);
       }
       else {
         throw new HttpException(
@@ -75,15 +75,15 @@ export class EmployerController {
   @Get("my/joboffers")
   getMyJobOffers(@Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.findAllByAuthEmployer(userId);
+    return this.employerService.getMyJobOffers(userId);
   }
 
   @ApiBearerAuth()
   @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
-  @Patch(":jobOfferId/accept/:extraId")
-  acceptExtra(@Param("jobOfferId") jobOfferId: string, @Param("extraId") extraId: string, @Headers("Authorization") authorization: string) {
+  @Patch("accept/request/:requestId")
+  acceptExtraJobRequest(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.acceptExtraJobRequest(userId, +jobOfferId, +extraId);
+    return this.employerService.acceptExtraJobRequest(userId, +requestId);
   }
 }

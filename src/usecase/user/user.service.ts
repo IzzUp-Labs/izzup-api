@@ -21,7 +21,8 @@ export class UserService {
   }
 
   findAll() {
-    return this.usersRepository.find();
+    return this.usersRepository.createQueryBuilder("user")
+        .leftJoinAndSelect("user.extra", "extra").getMany();
   }
 
   findOne(fields: EntityCondition<UserEntity>) {

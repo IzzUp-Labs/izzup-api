@@ -17,32 +17,37 @@ export class ExtraJobRequestService {
   ) {}
 
   async create(jobOfferId: number, userId: number) {
-    const jobOffer = await this.jobOfferService.findOneWithRelations({ id: jobOfferId });
-    if(jobOffer != null) {
-      if(jobOffer.is_available) {
-        const extra = await this.extraService.findOne({ user_id: userId });
-        for(const request of jobOffer.requests) {
-          if(request.extraId == extra.id) {
-            throw new HttpException('Job request already exists', 400);
-          }
-        }
-        const extraJobRequestDto : ExtraJobRequestDto = {
-          extraId: extra.id,
-          status: JobRequestStatus.PENDING
-        };
-        const createdRequest = await this.extraJobRequestRepository.save(
-          this.extraJobRequestRepository.create(extraJobRequestDto)
-        );
-        jobOffer.requests.push(createdRequest);
-        return await this.jobOfferService.update(jobOfferId, jobOffer);
-      }
-      else {
-        throw new HttpException('Job offer is not available', 400);
-      }
-    }
-    else {
+    const jobOffer = await this.jobOfferService.findJobOfferWithRequests({ id: jobOfferId });
+    if (jobOffer == null)
       throw new HttpException('Job offer not found', 404);
-    }
+    if (!jobOffer.is_available)
+      throw new HttpException('Job offer is not available', 400);
+
+    const extra = await this.extraService.findOne({ user: { id: userId } });
+    if (extra == null)
+      throw new HttpException('Extra not found', 404);
+
+    jobOffer.requests.forEach(request => {
+        if (request.extra.id == extra.id)
+            throw new HttpException('Job request already exists', 400);
+    });
+
+    await this.extraJobRequestRepository.save({
+        status: JobRequestStatus.PENDING,
+        extra,
+        jobOffer
+    });
+  }
+
+  findAllJobRequestsByJobOfferId(jobOfferId: number) {
+    return this.extraJobRequestRepository.find({
+      relations: ['extra'],
+      where: {
+        jobOffer: {
+          id: jobOfferId
+        }
+      }
+    });
   }
 
   update(id: number, extraJobRequestDto: ExtraJobRequestDto) {
@@ -55,11 +60,10 @@ export class ExtraJobRequestService {
   }
 
   rejectRemainingRequests(requestIds: number[]) {
-    return this.extraJobRequestRepository
-      .createQueryBuilder()
-      .update(ExtraJobRequestEntity)
-      .set({ status: JobRequestStatus.REJECTED })
-      .where("extraId IN (:...offersIds) AND status = :status", { offersIds: requestIds, status: JobRequestStatus.PENDING })
-      .execute();
+    return this.extraJobRequestRepository.createQueryBuilder()
+        .update(ExtraJobRequestEntity)
+        .set({ status: JobRequestStatus.REJECTED })
+        .where("id IN (:...ids)", { ids: requestIds })
+        .execute();
   }
 }

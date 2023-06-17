@@ -1,10 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { RoleGuard } from "../../domain/guards/role.decorator";
-import { RoleEnum } from "../../domain/utils/enums/role.enum";
-import { AuthGuard } from "@nestjs/passport";
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('User')
@@ -22,8 +19,8 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  //@UseGuards(AuthGuard('jwt'))
+  //@RoleGuard(RoleEnum.ADMIN)
   @Get()
   findAll() {
     return this.userService.findAll();

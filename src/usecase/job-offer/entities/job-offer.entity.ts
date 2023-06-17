@@ -1,14 +1,12 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import { ExtraJobRequestEntity } from "../../extra/entities/extra-job-request.entity";
+import {CompanyEntity} from "../../company/entities/company.entity";
 
 @Entity('job-offer')
 export class JobOfferEntity {
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  company_id: number;
 
   @Column()
   job_title: string;
@@ -22,8 +20,9 @@ export class JobOfferEntity {
   @Column()
   spots: number;
 
-  @ManyToMany(() => ExtraJobRequestEntity)
-  @JoinTable()
-  requests: ExtraJobRequestEntity[];
+  @ManyToOne(() => CompanyEntity, (company) => company.jobOffers)
+  company: CompanyEntity;
 
+  @OneToMany(() => ExtraJobRequestEntity, (request) => request.jobOffer)
+  requests: ExtraJobRequestEntity[];
 }

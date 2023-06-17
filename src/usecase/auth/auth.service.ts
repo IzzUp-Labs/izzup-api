@@ -1,15 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { AuthLoginDto } from "./dto/auth-login.dto";
-import { AuthRegisterDto } from "./dto/auth-register.dto";
-import { JwtService } from "@nestjs/jwt";
-import { UserService } from "../user/user.service";
+import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
+import {AuthLoginDto} from "./dto/auth-login.dto";
+import {JwtService} from "@nestjs/jwt";
+import {UserService} from "../user/user.service";
 import * as bcrypt from "bcrypt";
-import { AuthRegisterExtraDto } from "./dto/auth-register-extra.dto";
-import { ExtraService } from "../extra/extra.service";
-import { AuthRegisterEmployerDto } from "./dto/auth-register-employer.dto";
-import { EmployerService } from "../employer/employer.service";
-import { CompanyService } from "../company/company.service";
-import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
+import {AuthRegisterExtraDto} from "./dto/auth-register-extra.dto";
+import {ExtraService} from "../extra/extra.service";
+import {AuthRegisterEmployerDto} from "./dto/auth-register-employer.dto";
+import {EmployerService} from "../employer/employer.service";
+import {CompanyService} from "../company/company.service";
+import {AuthMembershipCheckDto} from "./dto/auth-membership-check.dto";
+import {RoleEnum} from "../../domain/utils/enums/role.enum";
+import {UserEntity} from "../user/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -61,14 +62,6 @@ export class AuthService {
     return this.jwtService.decode(token);
   }
 
-  async register(authRegisterDto: AuthRegisterDto) : Promise<void> {
-    const hashedPassword = await bcrypt.hash(authRegisterDto.password, 10);
-    await this.userService.create({
-      ...authRegisterDto,
-      password: hashedPassword
-    });
-  }
-
   async isMember(authMembershipCheckDto: AuthMembershipCheckDto): Promise<boolean> {
     const user = await this.userService.findOne({
       email: authMembershipCheckDto.email
@@ -76,37 +69,32 @@ export class AuthService {
     return !!user;
   }
 
-  async registerExtra(authRegisterExtraDto: AuthRegisterExtraDto): Promise<void> {
+  async registerExtra(authRegisterExtraDto: AuthRegisterExtraDto): Promise<UserEntity> {
     const hashedPassword = await bcrypt.hash(authRegisterExtraDto.password, 10);
-    const createdUser = await this.userService.create({
-      ...authRegisterExtraDto,
-      email: authRegisterExtraDto.email,
-      role: 'EXTRA',
-      password: hashedPassword,
-      date_of_birth: authRegisterExtraDto.date_of_birth,
+    const extra = await this.extraService.create({
+        address: authRegisterExtraDto.address,
     });
-    await this.extraService.create({
+    return await this.userService.create({
       ...authRegisterExtraDto,
-      user_id: createdUser.id
+      password: hashedPassword,
+      role: RoleEnum.EXTRA,
+      extra: extra
     });
   }
 
-  async registerEmployer(authRegisterEmployer: AuthRegisterEmployerDto) {
+  async registerEmployer(authRegisterEmployer: AuthRegisterEmployerDto): Promise<UserEntity> {
     const hashedPassword = await bcrypt.hash(authRegisterEmployer.password, 10);
-    const createdUser = await this.userService.create({
-      ...authRegisterEmployer,
-      email: authRegisterEmployer.email,
-      role: 'EMPLOYER',
-      password: hashedPassword,
-      date_of_birth: authRegisterEmployer.date_of_birth,
-    });
-    const createdEmployer = await this.employerService.create({
-      ...authRegisterEmployer,
-      user_id: createdUser.id
+    const employer = await this.employerService.create({});
+    const user = await this.userService.create({
+        ...authRegisterEmployer,
+        password: hashedPassword,
+        role: RoleEnum.EMPLOYER,
+        employer: employer
     });
     await this.companyService.create({
       ...authRegisterEmployer.company,
-      employer_id: createdEmployer.id
+      employer: employer
     });
+    return user;
   }
 }

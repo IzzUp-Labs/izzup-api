@@ -21,12 +21,6 @@ export class AuthController {
     return this.authService.validateLogin(authLoginDto);
   }
 
-  @Post("register")
-  @HttpCode(HttpStatus.CREATED)
-  register(@Body() authLoginDto: AuthLoginDto) {
-    return this.authService.register(authLoginDto);
-  }
-
   @Post("check")
   @HttpCode(HttpStatus.OK)
   isMember(@Body() authMembershipCheckDto: AuthMembershipCheckDto) {

@@ -49,6 +49,19 @@ export class CompanyService {
     return this.companyRepository.delete(id);
   }
 
+  addJobOffer(companyId: number, jobOfferId: number) {
+    try{
+    return this.companyRepository
+      .createQueryBuilder()
+      .relation(CompanyEntity, "jobOffers")
+      .of(companyId)
+      .add(jobOfferId);
+    }
+    catch(error){
+      console.log("Job offer not found");
+    }
+  }
+
   addActivitySector(companyId: number, activitySectorId: number) {
     try{
     return this.companyRepository

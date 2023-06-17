@@ -1,28 +1,23 @@
-import { HttpException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { EntityCondition } from "../../domain/utils/types/entity-condition.type";
-import { EmployerEntity } from "./entities/employer.entity";
-import { EmployerDto } from "./dto/employer.dto";
-import { UpdateEmployerDto } from "./dto/update-employer.dto";
-import { JobOfferService } from "../job-offer/job-offer.service";
-import { JobOfferDto } from "../job-offer/dto/job-offer.dto";
-import { CompanyService } from "../company/company.service";
-import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
-import { ExtraJobRequestEntity } from "../extra/entities/extra-job-request.entity";
-import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
-import { ExtraJobRequestService } from "../extra/extra-job-request.service";
-import { ExtraJobRequestDto } from "../extra/dto/extra-job-request.dto";
+import {HttpException, Injectable} from "@nestjs/common";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {EntityCondition} from "../../domain/utils/types/entity-condition.type";
+import {EmployerEntity} from "./entities/employer.entity";
+import {EmployerDto} from "./dto/employer.dto";
+import {UpdateEmployerDto} from "./dto/update-employer.dto";
+import {JobOfferService} from "../job-offer/job-offer.service";
+import {JobOfferDto} from "../job-offer/dto/job-offer.dto";
+import {CompanyService} from "../company/company.service";
+import {ExtraJobRequestService} from "../extra/extra-job-request.service";
+import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
 
 @Injectable()
 export class EmployerService {
   constructor(
     @InjectRepository(EmployerEntity)
     private employerRepository: Repository<EmployerEntity>,
-
     private jobOfferService: JobOfferService,
     private readonly companyService: CompanyService,
-
     private readonly extraJobRequestService: ExtraJobRequestService
   ) {
   }
@@ -56,47 +51,75 @@ export class EmployerService {
     return this.employerRepository.delete(id);
   }
 
-  async createJobOffer(employerId: number, jobOfferDto: JobOfferDto) {
-    const employer = await this.findOne({ user_id: employerId });
-    const company = await this.companyService.findOne({ employer_id: employer.id });
-    jobOfferDto.company_id = company.id;
-    return this.jobOfferService.create(jobOfferDto);
+  async createJobOffer(userId: number, jobOfferDto: JobOfferDto, company_id: number) {
+    const jobOffer = await this.jobOfferService.create(jobOfferDto);
+    const myCompanies = await this.getMyCompanies(userId);
+    if(!myCompanies || !myCompanies.find(company => company.id === company_id)) {
+        throw new HttpException('Company not found', 404);
+    }
+    return await this.companyService.addJobOffer(company_id, jobOffer.id);
   }
 
-  async findAllByAuthEmployer(userId: number) {
-    const employer = await this.findOne({ user_id: userId });
-    const company = await this.companyService.findOne({ employer_id: employer.id });
-    return this.jobOfferService.findAllWithRelations(company.id);
-  }
-
-  async acceptExtraJobRequest(userId: number, jobOfferId: number, extraId: number) {
-    const jobOffers : JobOfferEntity[] = await this.findAllByAuthEmployer(userId);
-    const jobOffer = jobOffers.find(jobOffer => jobOffer.id === jobOfferId);
-    let acceptedCount = 0;
-    for (const accepted in jobOffer.requests) {
-      if(jobOffer.requests[accepted].status === JobRequestStatus.ACCEPTED) {
-        ++acceptedCount;
-      }
-      if(acceptedCount === jobOffer.spots) {
-        throw new HttpException('No more spots available', 400);
-      }
-    }
-    const extraJobRequest: ExtraJobRequestEntity = jobOffer.requests.find(request => request.extraId === extraId);
-    extraJobRequest.status = JobRequestStatus.ACCEPTED;
-    const updatedExtraJobRequest: ExtraJobRequestDto = {
-      ...extraJobRequest,
-      status: JobRequestStatus.ACCEPTED,
-    }
-    await this.extraJobRequestService.update(extraJobRequest.id, updatedExtraJobRequest);
-    if(acceptedCount + 1 === jobOffer.spots) {
-      jobOffer.is_available = false;
-      await this.jobOfferService.update(jobOffer.id, jobOffer);
-      const pendingOffers: number[] = [];
-      for (const rejectedRequest of jobOffer.requests) {
-        if(rejectedRequest.status === JobRequestStatus.PENDING) {
-          pendingOffers.push(rejectedRequest.extraId);
+  async getMyCompanies(userId: number) {
+    const employerCompanies = await this.employerRepository.findOne({
+      relations: ['companies'],
+      where: {
+        user: {
+          id: userId
         }
       }
+    })
+    return employerCompanies.companies;
+  }
+
+  async getMyJobOffers(userId: number) {
+    const companies = await this.getMyCompanies(userId);
+    return companies.flatMap(company => company.jobOffers);
+  }
+
+  async acceptExtraJobRequest(userId: number, request_id: number) {
+    const jobOffer = await this.jobOfferService.findJobOfferWithRequests({ requests: { id: request_id } });
+    if(jobOffer.company.employer.user.id !== userId) {
+      throw new HttpException('You are not the employer of this company', 403);
+    }
+    if(!jobOffer) {
+      throw new HttpException('Job offer not found for this request id', 404);
+    }
+    let acceptedCount = 0;
+    for (const acceptedSpot in jobOffer.requests) {
+        if(jobOffer.requests[acceptedSpot].status === JobRequestStatus.ACCEPTED) {
+            ++acceptedCount;
+        }
+        if(acceptedCount === jobOffer.spots) {
+            throw new HttpException('No more spots available', 400);
+        }
+    }
+
+    const request = jobOffer.requests.find(request => request.id === request_id);
+    if (!request) {
+      throw new HttpException('Request not found', 404);
+    }else if(request.status !== JobRequestStatus.PENDING) {
+      throw new HttpException('Request is not pending', 400);
+    }
+
+    try {
+      await this.extraJobRequestService.update(request.id, {
+          status: JobRequestStatus.ACCEPTED
+      });
+    }catch (e) {
+      throw new HttpException('Error while accepting request', 500);
+    }
+    request.status = JobRequestStatus.ACCEPTED;
+
+    acceptedCount++;
+    if(acceptedCount === jobOffer.spots) {
+      jobOffer.is_available = false;
+      await this.jobOfferService.update(jobOffer.id, jobOffer);
+      const pendingOffers = jobOffer.requests.map(request => {
+        if (request.status === JobRequestStatus.PENDING) {
+          return request.id;
+        }
+      });
       await this.extraJobRequestService.rejectRemainingRequests(pendingOffers);
     }
   }

@@ -3,22 +3,27 @@ import {
   CreateDateColumn, DeleteDateColumn,
   Entity,
   JoinTable,
-  ManyToMany,
+  ManyToMany, OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
 import { TagEntity } from "../../tag/entities/tag.entity";
+import {UserEntity} from "../../user/entities/user.entity";
+import {ExtraJobRequestEntity} from "./extra-job-request.entity";
 
 @Entity("extra")
 export class ExtraEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({type: 'int', nullable: false})
-  user_id: number;
-
   @Column()
   address: string;
+
+  @OneToOne(() => UserEntity, (user) => user.extra)
+  user: UserEntity;
+
+  @OneToMany(() => ExtraJobRequestEntity, (request) => request.extra)
+  requests: ExtraJobRequestEntity[];
 
   @ManyToMany(() => TagEntity)
   @JoinTable()

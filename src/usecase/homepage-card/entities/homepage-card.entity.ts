@@ -22,5 +22,4 @@ export class HomepageCardEntity {
 
   @Column( {type: 'varchar', length: 100, nullable: true} )
   company_id: number;
-
 }
