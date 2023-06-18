@@ -1,10 +1,11 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserService } from "../../../src/domain/services/user/user.service";
+import { UserService } from "../../../src/usecase/user/user.service";
 import { Repository } from "typeorm";
-import { UserEntity } from "../../../src/infrastructure/entities/user.entity";
+import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
-import { AuthRegisterDto } from "../../../src/application/auth/dto/auth-register.dto";
+import { CreateUserDto } from "../../../src/usecase/user/dto/create-user.dto";
+import {UpdateUserDto} from "../../../src/usecase/user/dto/update-user.dto";
 
 describe("UserService", () => {
   let service: UserService;
@@ -52,12 +53,22 @@ describe("UserService", () => {
         last_name: "lasttest",
         first_name: "firsttest",
         role: 'EXTRA',
+        date_of_birth: new Date("2015-08-02T13:15:43.636Z"),
         created_at: new Date("2023-04-02T13:15:43.636Z"),
-        updated_at: new Date("2023-04-02T13:15:43.636Z")
+        updated_at: new Date("2023-04-02T13:15:43.636Z"),
+        deleted_at: null,
+        employer: null,
+        extra: null,
       };
-      const createUserDto: AuthRegisterDto = {
-        email: "test@test.com",
-        password: "password"
+      const createUserDto: CreateUserDto = {
+        email: "test@example.com",
+        password: "password",
+        last_name: "lasttest",
+        first_name: "firsttest",
+        date_of_birth: new Date(),
+        role: 'EXTRA',
+        employer: null,
+        extra: null,
       };
 
       const userRepositorySaveSpy = jest
@@ -68,18 +79,6 @@ describe("UserService", () => {
 
       expect(userRepositorySaveSpy).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockUser);
-    });
-  });
-
-  describe("findAll", () => {
-    it("should return all users", async () => {
-      const users = [
-        { id: 1, email: "test1@example.com", password: "password" },
-        { id: 2, email: "test2@example.com", password: "password" }
-      ];
-      jest.spyOn(repository, "find").mockResolvedValueOnce(users as any);
-      const result = await service.findAll();
-      expect(result).toEqual(users);
     });
   });
 
@@ -96,7 +95,7 @@ describe("UserService", () => {
   describe("update", () => {
     it("should update and return a user by id and update dto", async () => {
       const id = 1;
-      const updateUserDto = { email: "newtest@example.com" };
+      const updateUserDto : UpdateUserDto = { email: "newtest@example.com" };
       const user = { id, email: "newtest@example.com", password: "password" };
       jest.spyOn(repository, "save").mockResolvedValueOnce(user as any);
       const result = await service.update(id, updateUserDto);

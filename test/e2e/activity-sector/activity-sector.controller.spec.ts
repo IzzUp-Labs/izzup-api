@@ -1,8 +1,8 @@
-import { ActivitySectorController } from "../../../src/application/activity-sector/activity-sector.controller";
+import { ActivitySectorController } from "../../../src/usecase/activity-sector/activity-sector.controller";
 import { Test, TestingModule } from "@nestjs/testing";
-import { ActivitySectorService } from "../../../src/domain/services/activity-sector/activity-sector.service";
+import { ActivitySectorService } from "../../../src/usecase/activity-sector/activity-sector.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { ActivitySectorEntity } from "../../../src/infrastructure/entities/activity-sector.entity";
+import { ActivitySectorEntity } from "../../../src/usecase/activity-sector/entities/activity-sector.entity";
 
 describe('ActivitySectorController', () => {
   let controller: ActivitySectorController;

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExtraService } from "../../../src/domain/services/extra/extra.service";
+import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
-import { ExtraController } from "../../../src/application/extra/extra.contoller";
+import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
+import { ExtraController } from "../../../src/usecase/extra/extra.contoller";
 
 describe('ExtraController', () => {
   let controller: ExtraController;

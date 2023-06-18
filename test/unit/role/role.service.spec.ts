@@ -1,9 +1,9 @@
-import { RoleService } from "../../../src/domain/services/role/role.service";
+import { RoleService } from "../../../src/usecase/role/role.service";
 import { Repository } from "typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { RoleDto } from "../../../src/application/role/dto/role.dto";
-import { RoleEntity } from "../../../src/infrastructure/entities/role.entity";
+import { RoleDto } from "../../../src/usecase/role/dto/role.dto";
+import { RoleEntity } from "../../../src/usecase/role/entities/role.entity";
 
 describe('RoleService', () => {
   let service: RoleService;

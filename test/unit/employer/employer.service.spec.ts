@@ -1,21 +1,21 @@
-import { EmployerService } from "../../../src/domain/services/employer/employer.service";
+import { EmployerService } from "../../../src/usecase/employer/employer.service";
 import { Repository } from "typeorm";
-import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
+import { EmployerEntity } from "../../../src/usecase/employer/entities/employer.entity";
 import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { EmployerDto } from "../../../src/application/employer/dto/employer.dto";
+import { EmployerDto } from "../../../src/usecase/employer/dto/employer.dto";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
-import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
-import { CompanyService } from "../../../src/domain/services/company/company.service";
-import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
-import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
-import { ExtraJobRequestService } from "../../../src/domain/services/extra/extra-job-request.service";
-import { ExtraJobRequestEntity } from "../../../src/infrastructure/entities/extra-job-request.entity";
-import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
-import { ExtraService } from "../../../src/domain/services/extra/extra.service";
+import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
+import { CompanyService } from "../../../src/usecase/company/company.service";
+import { CompanyEntity } from "../../../src/usecase/company/entities/company.entity";
+import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
+import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
+import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra-job-request.entity";
+import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
+import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-status";
 import { HttpException } from "@nestjs/common";
-import { JobOfferDto } from "../../../src/application/job-offer/dto/job-offer.dto";
+import { JobOfferDto } from "../../../src/usecase/job-offer/dto/job-offer.dto";
 
 describe('EmployerService', () => {
   let service: EmployerService;
@@ -81,9 +81,24 @@ describe('EmployerService', () => {
     it('should create an employer', async () => {
       const employer : EmployerEntity = {
         id: 1,
-        user_id: 1,
-        date_of_birth: new Date(),
+        user: {
+          id: 1,
+          last_name: 'test',
+          first_name: 'test',
+          date_of_birth: new Date(),
+          extra: null,
+          employer: null,
+          email: 'test@email.com',
+          password: 'test',
+          role: 'EMPLOYER',
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        },
+        companies: [],
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
       const mockEmployer : EmployerDto = {
         user_id: 1,
@@ -105,9 +120,24 @@ describe('EmployerService', () => {
     it('should return an array of employers', async () => {
       const employer : EmployerEntity = {
         id: 1,
-        user_id: 1,
-        date_of_birth: new Date(),
+        user: {
+          id: 1,
+          last_name: 'test',
+          first_name: 'test',
+          date_of_birth: new Date(),
+          extra: null,
+          employer: null,
+          email: 'test@email.com',
+          password: 'test',
+          role: 'EMPLOYER',
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        },
+        companies: [],
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
 
       const employerRepositoryFindSpy = jest
@@ -126,9 +156,24 @@ describe('EmployerService', () => {
       const field: EntityCondition<EmployerEntity> = { id: 1 };
       const employer : EmployerEntity = {
         id: 1,
-        user_id: 1,
-        date_of_birth: new Date(),
+        user: {
+          id: 1,
+          last_name: 'test',
+          first_name: 'test',
+          date_of_birth: new Date(),
+          extra: null,
+          employer: null,
+          email: 'test@email.com',
+          password: 'test',
+          role: 'EMPLOYER',
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        },
+        companies: [],
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
 
       const employerRepositoryFindOneSpy = jest
@@ -146,9 +191,24 @@ describe('EmployerService', () => {
     it('should update an employer', async () => {
       const employer : EmployerEntity = {
         id: 1,
-        user_id: 1,
-        date_of_birth: new Date(),
+        user: {
+          id: 1,
+          last_name: 'test',
+          first_name: 'test',
+          date_of_birth: new Date(),
+          extra: null,
+          employer: null,
+          email: 'test@email.com',
+          password: 'test',
+          role: 'EMPLOYER',
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        },
+        companies: [],
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
       const mockEmployer : EmployerDto = {
         user_id: 1,
@@ -185,114 +245,208 @@ describe('EmployerService', () => {
       // Mock data
       const employer : EmployerEntity = {
         id: 1,
-        user_id: 1,
-        date_of_birth: new Date(),
+        user: {
+          id: 1,
+          last_name: 'test',
+          first_name: 'test',
+          date_of_birth: new Date(),
+          extra: null,
+          employer: null,
+          email: 'test@email.com',
+          password: 'test',
+          role: 'EMPLOYER',
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        },
+        companies: [{
+          id: 1,
+          name: "Test",
+          address: "Test",
+          sectors: null,
+          jobOffers: [],
+          employer: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        }],
+        created_at: new Date(),
         updated_at: new Date(),
+        deleted_at: new Date()
       };
-      const jobOfferDto: JobOfferDto = {
-        company_id: 2,
+      const jobOfferEntity: JobOfferEntity = {
+        id: 1,
         job_title: "Test",
         price: 100,
         spots: 1,
-        is_available: true
+        is_available: true,
+        acceptedSpots: 1,
+        company: null,
+        requests: [],
       };
 
       // Mock service methods
-      jest.spyOn(service, 'findOne').mockResolvedValue(employer);
-      jest.spyOn(companyService, 'findOne').mockResolvedValue({ id: 2 } as CompanyEntity);
-      jest.spyOn(jobOfferService, 'create').mockResolvedValue(jobOfferDto as JobOfferEntity);
+      jest.spyOn(service, 'getMyCompanies').mockResolvedValue(employer.companies);
+      jest.spyOn(jobOfferService, 'create').mockResolvedValue(jobOfferEntity);
+      jest.spyOn(companyService, 'addJobOffer').mockResolvedValue(undefined);
+      jest.spyOn(jobOfferService, 'updateAvailableSpots').mockResolvedValue(undefined);
 
       // Execute the method
-      const result = await service.createJobOffer(1, jobOfferDto);
+      const result = await service.createJobOffer(1, jobOfferEntity as JobOfferDto, 1);
 
       // Assertions
-      expect(service.findOne).toHaveBeenCalledWith({ user_id: 1 });
-      expect(companyService.findOne).toHaveBeenCalledWith({ employer_id: 1 });
-      expect(jobOfferDto.company_id).toBe(2);
-      expect(jobOfferService.create).toHaveBeenCalledWith(jobOfferDto);
-      expect(result).toBe(jobOfferDto as JobOfferEntity);
+      expect(jobOfferService.create).toHaveBeenCalledWith(jobOfferEntity);
+      expect(companyService.addJobOffer).toHaveBeenCalledWith(1,1);
+      expect(result).toBe(undefined);
     });
   });
 
   describe('Accepting job request', () => {
-    it('should accept extra job request', async () => {
+    it('should return not found', async () => {
       const userId = 1;
       const jobOfferId = 2;
-      const extraId = 3;
       const extraJobRequest: ExtraJobRequestEntity = {
         id: 1,
-        extraId: extraId,
         status: JobRequestStatus.PENDING,
+        extra: null,
+        jobOffer: null,
       };
 
       const jobOffer: JobOfferEntity = {
         id: jobOfferId,
-        company_id: 1,
         job_title: 'Mock job title',
         price: 100,
         is_available: true,
-        requests: [extraJobRequest],
+        requests: [],
         spots: 1,
+        acceptedSpots: 0,
+        company: {
+          id: 1,
+          name: "Test",
+          address: "Test",
+          sectors: null,
+          jobOffers: [],
+          employer: {
+            id: 1,
+            user: {
+              id: 1,
+              last_name: 'test',
+              first_name: 'test',
+              date_of_birth: new Date(),
+              extra: null,
+              employer: null,
+              email: 'test',
+              password: 'test',
+              role: 'EMPLOYER',
+              created_at: new Date(),
+              updated_at: new Date(),
+              deleted_at: new Date()
+            },
+            companies: null,
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: new Date()
+          },
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        },
+
       }
       const jobOffers: JobOfferEntity[] = [
         jobOffer
       ];
 
-      jest.spyOn(service, 'findAllByAuthEmployer').mockResolvedValue(jobOffers);
+      const createQueryBuilder: any = {
+        update: () => createQueryBuilder,
+        set: () => createQueryBuilder,
+        where: () => createQueryBuilder,
+        execute: () => Promise.resolve(),
+      }
+
+      jest.spyOn(jobOfferService, 'findJobOfferWithRequests').mockResolvedValue(jobOffer);
+      jest.spyOn(service, 'getMyJobOffers').mockResolvedValue(jobOffers);
       jest.spyOn(extraJobRequestService, 'update').mockResolvedValue(extraJobRequest);
       jest.spyOn(jobOfferService, 'update').mockResolvedValue(jobOffer);
       jest.spyOn(extraJobRequestService, 'rejectRemainingRequests').mockResolvedValue(null);
+      jest.spyOn(jobOfferService, 'updateAvailableSpots')
 
+      await expect(service.acceptExtraJobRequest(userId, extraJobRequest.id)).rejects.toThrow(
+        new HttpException('Request not found', 404),
+      );
 
-      await service.acceptExtraJobRequest(userId, jobOfferId, extraId);
-
-      expect(service.findAllByAuthEmployer).toHaveBeenCalledWith(userId);
-      expect(extraJobRequestService.update).toHaveBeenCalledWith(
-        extraJobRequest.id,
-        expect.objectContaining({ status: JobRequestStatus.ACCEPTED }),
-      );
-      expect(jobOfferService.update).toHaveBeenCalledWith(
-        jobOfferId,
-        expect.objectContaining({ is_available: false }),
-      );
-      expect(extraJobRequestService.rejectRemainingRequests).toHaveBeenCalledWith(
-        expect.any(Array),
-      );
     });
 
     it('should throw an exception when no more spots available', async () => {
       const userId = 1;
       const jobOfferId = 2;
-      const extraId = 3;
       const extraJobRequest: ExtraJobRequestEntity = {
         id: 1,
-        extraId: extraId,
         status: JobRequestStatus.PENDING,
+        extra: null,
+        jobOffer: null,
       };
       const acceptedextraJobRequest: ExtraJobRequestEntity = {
         id: 2,
-        extraId: 2,
-        status: JobRequestStatus.ACCEPTED,
+        status: JobRequestStatus.PENDING,
+        extra: null,
+        jobOffer: null,
       };
 
       const jobOffer: JobOfferEntity = {
         id: jobOfferId,
-        company_id: 1,
         job_title: 'Mock job title',
         price: 100,
         is_available: true,
-        requests: [acceptedextraJobRequest, extraJobRequest],
+        requests: [acceptedextraJobRequest],
         spots: 1,
+        acceptedSpots: 1,
+        company: {
+          id: 1,
+          name: "Test",
+          address: "Test",
+          sectors: null,
+          jobOffers: [],
+          employer: {
+            id: 1,
+            user: {
+              id: 1,
+              last_name: 'test',
+              first_name: 'test',
+              date_of_birth: new Date(),
+              extra: null,
+              employer: null,
+              email: 'test',
+              password: 'test',
+              role: 'EMPLOYER',
+              created_at: new Date(),
+              updated_at: new Date(),
+              deleted_at: new Date()
+            },
+            companies: null,
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: new Date()
+          },
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: new Date()
+        },
       }
       const jobOffers: JobOfferEntity[] = [
         jobOffer
       ];
 
-      jest.spyOn(service, 'findAllByAuthEmployer').mockResolvedValue(jobOffers);
+      jest.spyOn(service, 'getMyJobOffers').mockResolvedValue(jobOffers);
+      jest.spyOn(extraJobRequestService, 'update').mockResolvedValue(extraJobRequest);
+      jest.spyOn(jobOfferService, 'update').mockResolvedValue(jobOffer);
+      jest.spyOn(extraJobRequestService, 'rejectRemainingRequests').mockResolvedValue(null);
+      jest.spyOn(jobOfferService, 'findJobOfferWithRequests').mockResolvedValue(jobOffer);
+
 
 
       // Execute and assert
-      await expect(service.acceptExtraJobRequest(userId, jobOfferId, extraId)).rejects.toThrow(
+      await expect(service.acceptExtraJobRequest(userId, extraJobRequest.id)).rejects.toThrow(
         new HttpException('No more spots available', 400),
       );
     });

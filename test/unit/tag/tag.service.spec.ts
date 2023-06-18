@@ -1,6 +1,6 @@
-import { TagEntity } from "../../../src/infrastructure/entities/tag.entity";
+import { TagEntity } from "../../../src/usecase/tag/entities/tag.entity";
 import { Repository } from "typeorm";
-import { TagService } from "../../../src/domain/services/tag/tag.service";
+import { TagService } from "../../../src/usecase/tag/tag.service";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 

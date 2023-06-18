@@ -1,6 +1,6 @@
-import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
+import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
 import { Repository } from "typeorm";
-import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
+import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
@@ -10,7 +10,7 @@ describe("JobOfferService", () => {
   let repository: Repository<JobOfferEntity>;
 
   beforeEach(async () => {
-const module: TestingModule = await Test.createTestingModule({
+  const module: TestingModule = await Test.createTestingModule({
       providers: [
         JobOfferService,
         {
@@ -43,12 +43,13 @@ const module: TestingModule = await Test.createTestingModule({
     it("should create a new job offer", async () => {
       const mockJobOffer: JobOfferEntity = {
         id: 1,
-        company_id: 1,
-        job_title: "test",
+        job_title: "Test",
         price: 100,
-        is_available: true,
-        requests: [],
         spots: 1,
+        is_available: true,
+        acceptedSpots: 1,
+        company: null,
+        requests: [],
       };
 
       jest.spyOn(repository, "save").mockResolvedValueOnce(mockJobOffer);
@@ -61,12 +62,13 @@ const module: TestingModule = await Test.createTestingModule({
     it("should return an array of job offers", async () => {
       const mockJobOffer: JobOfferEntity = {
         id: 1,
-        company_id: 1,
-        job_title: "test",
+        job_title: "Test",
         price: 100,
-        is_available: true,
-        requests: [],
         spots: 1,
+        is_available: true,
+        acceptedSpots: 1,
+        company: null,
+        requests: [],
       };
 
       jest.spyOn(repository, "find").mockResolvedValueOnce([mockJobOffer]);
@@ -80,12 +82,13 @@ const module: TestingModule = await Test.createTestingModule({
       const fields: EntityCondition<JobOfferEntity> = { id: 1 };
       const mockJobOffer: JobOfferEntity = {
         id: 1,
-        company_id: 1,
-        job_title: "test",
+        job_title: "Test",
         price: 100,
-        is_available: true,
-        requests: [],
         spots: 1,
+        is_available: true,
+        acceptedSpots: 1,
+        company: null,
+        requests: [],
       };
 
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(mockJobOffer);
@@ -98,12 +101,13 @@ const module: TestingModule = await Test.createTestingModule({
     it("should update a job offer", async () => {
       const mockJobOffer: JobOfferEntity = {
         id: 1,
-        company_id: 1,
-        job_title: "test",
+        job_title: "Test",
         price: 100,
-        is_available: true,
-        requests: [],
         spots: 1,
+        is_available: true,
+        acceptedSpots: 1,
+        company: null,
+        requests: [],
       };
 
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(mockJobOffer);
@@ -117,12 +121,13 @@ const module: TestingModule = await Test.createTestingModule({
     it("should delete a job offer", async () => {
       const mockJobOffer: JobOfferEntity = {
         id: 1,
-        company_id: 1,
-        job_title: "test",
+        job_title: "Test",
         price: 100,
-        is_available: true,
-        requests: [],
         spots: 1,
+        is_available: true,
+        acceptedSpots: 1,
+        company: null,
+        requests: [],
       };
 
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(mockJobOffer);

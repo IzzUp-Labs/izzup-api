@@ -1,7 +1,7 @@
-import { CompanyController } from "../../../src/application/company/company.controller";
+import { CompanyController } from "../../../src/usecase/company/company.controller";
 import { Test, TestingModule } from "@nestjs/testing";
-import { CompanyService } from "../../../src/domain/services/company/company.service";
-import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
+import { CompanyService } from "../../../src/usecase/company/company.service";
+import { CompanyEntity } from "../../../src/usecase/company/entities/company.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
 describe('CompanyController', () => {

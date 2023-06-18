@@ -1,27 +1,26 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AuthService } from "../../../src/domain/services/auth/auth.service";
-import { UserService } from "../../../src/domain/services/user/user.service";
-import { ExtraService } from "../../../src/domain/services/extra/extra.service";
+import { AuthService } from "../../../src/usecase/auth/auth.service";
+import { UserService } from "../../../src/usecase/user/user.service";
+import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { JwtService } from "@nestjs/jwt";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { UserEntity } from "../../../src/infrastructure/entities/user.entity";
-import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
-import { AuthLoginDto } from "../../../src/application/auth/dto/auth-login.dto";
-import * as bcrypt from "bcrypt";
+import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
+import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
+import { AuthLoginDto } from "../../../src/usecase/auth/dto/auth-login.dto";
+import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
-import { AuthRegisterDto } from "../../../src/application/auth/dto/auth-register.dto";
-import { AuthRegisterExtraDto } from "../../../src/application/auth/dto/auth-register-extra.dto";
-import { EmployerService } from "../../../src/domain/services/employer/employer.service";
-import { CompanyService } from "../../../src/domain/services/company/company.service";
-import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
-import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
-import { AuthRegisterEmployerDto } from "../../../src/application/auth/dto/auth-register-employer.dto";
-import { AuthMembershipCheckDto } from "../../../src/application/auth/dto/auth-membership-check.dto";
-import { CompanyDto } from "../../../src/application/company/dto/company.dto";
-import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
-import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
-import { ExtraJobRequestService } from "../../../src/domain/services/extra/extra-job-request.service";
-import { ExtraJobRequestEntity } from "../../../src/infrastructure/entities/extra-job-request.entity";
+import { AuthRegisterExtraDto } from "../../../src/usecase/auth/dto/auth-register-extra.dto";
+import { EmployerService } from "../../../src/usecase/employer/employer.service";
+import { CompanyService } from "../../../src/usecase/company/company.service";
+import { EmployerEntity } from "../../../src/usecase/employer/entities/employer.entity";
+import { CompanyEntity } from "../../../src/usecase/company/entities/company.entity";
+import { AuthRegisterEmployerDto } from "../../../src/usecase/auth/dto/auth-register-employer.dto";
+import { AuthMembershipCheckDto } from "../../../src/usecase/auth/dto/auth-membership-check.dto";
+import { CompanyDto } from "../../../src/usecase/company/dto/company.dto";
+import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
+import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
+import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
+import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra-job-request.entity";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -53,7 +52,10 @@ describe("AuthService", () => {
               password: "password",
               last_name: "lastName",
               first_name: "firstName",
-              role: 'USER'
+              date_of_birth: new Date(),
+              role: 'USER',
+              extra: null,
+              employer: null,
             }),
           },
         },
@@ -105,9 +107,13 @@ describe("AuthService", () => {
         password: await bcrypt.hash(authLoginDto.password, 10),
         last_name: "lastName",
         first_name: "firstName",
+        date_of_birth: new Date(),
         role: 'USER',
+        extra: null,
+        employer: null,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        deleted_at: null
       };
       jest.spyOn(userService, "findOne").mockResolvedValue(user);
       const jwtSignSpy = jest.spyOn(jwtService, "sign").mockReturnValue("test-token");
@@ -128,9 +134,13 @@ describe("AuthService", () => {
         password: await bcrypt.hash("wrong-password", 10),
         last_name: "lastName",
         first_name: "firstName",
+        date_of_birth: new Date(),
         role: "USER",
+        extra: null,
+        employer: null,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        deleted_at: null
       };
       jest.spyOn(userService, "findOne").mockResolvedValue(user);
 
@@ -165,39 +175,6 @@ describe("AuthService", () => {
     });
   });
 
-  describe("register", () => {
-    it("should register a new user", async () => {
-      const authRegisterDto: AuthRegisterDto = {
-        email: "test@example.com",
-        password: "password"
-      };
-      const hashedPassword = await bcrypt.hash(authRegisterDto.password, 10);
-
-      jest.spyOn<any, any>(bcrypt, "hash").mockResolvedValue(hashedPassword);
-
-      const createdUser: UserEntity = {
-        id: 1,
-        email: authRegisterDto.email,
-        password: hashedPassword,
-        last_name: "lastName",
-        first_name: "firstName",
-        role: 'USER',
-        created_at: new Date(),
-        updated_at: new Date()
-      };
-
-      jest.spyOn(userService, "create").mockResolvedValue(createdUser);
-
-      await expect(service.register(authRegisterDto)).resolves.toBeUndefined();
-
-      expect(bcrypt.hash).toHaveBeenCalledWith(authRegisterDto.password, 10);
-      expect(userService.create).toHaveBeenCalledWith({
-        ...authRegisterDto,
-        password: hashedPassword
-      });
-    });
-  });
-
   describe('registerExtra', () => {
     it('should create a new user and extra', async () => {
       // Arrange
@@ -223,13 +200,14 @@ describe("AuthService", () => {
 
       expect(userService.create).toHaveBeenCalledWith({
         ...authRegisterExtraDto,
-        email: authRegisterExtraDto.email,
-        role: 'EXTRA',
-        password: hashedPassword
+        extra: {
+          id: 1,
+        },
+        password: hashedPassword,
+        role: 'EXTRA'
       });
       expect(extraService.create).toHaveBeenCalledWith({
-        ...authRegisterExtraDto,
-        user_id: createdUser.id
+        address: authRegisterExtraDto.address,
       });
     });
   });
@@ -262,18 +240,20 @@ describe("AuthService", () => {
       expect(userService.create).toHaveBeenCalledWith({
         ...authRegisterEmployerDto,
         email: authRegisterEmployerDto.email,
+        employer: {
+          id: 1,
+        },
         role: 'EMPLOYER',
         password: hashedPassword
       });
 
       expect(employerService.create).toHaveBeenCalledWith({
-        ...authRegisterEmployerDto,
-        user_id: createdUser.id
       });
 
       expect(companyService.create).toHaveBeenCalledWith({
-        ...authRegisterEmployerDto.company,
-        employer_id: createdEmployer.id
+        employer: {
+          id: 1,
+        }
       });
     });
   });
@@ -289,9 +269,13 @@ describe("AuthService", () => {
         password: await bcrypt.hash("password", 10),
         last_name: "lastName",
         first_name: "firstName",
+        date_of_birth: new Date(),
         role: "USER",
+        extra: null,
+        employer: null,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        deleted_at: null
       };
       jest.spyOn(userService, "findOne").mockResolvedValueOnce(user);
       expect(await service.isMember(authMembershipCheckDto)).toBe(true);

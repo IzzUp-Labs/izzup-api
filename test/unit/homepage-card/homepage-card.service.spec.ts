@@ -1,9 +1,9 @@
-import { HomepageCardEntity } from "../../../src/infrastructure/entities/homepage-card.entity";
+import { HomepageCardEntity } from "../../../src/usecase/homepage-card/entities/homepage-card.entity";
 import { Test, TestingModule } from "@nestjs/testing";
-import { HomepageCardService } from "../../../src/domain/services/homepage-card/homepage-card.service";
+import { HomepageCardService } from "../../../src/usecase/homepage-card/homepage-card.service";
 import { Repository } from "typeorm";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { HomepageCardDto } from "../../../src/application/homepage-card/dto/homepage-card.dto";
+import { HomepageCardDto } from "../../../src/usecase/homepage-card/dto/homepage-card.dto";
 import { HomepageCardTypeEnum } from "../../../src/domain/utils/enums/homepage-card-type.enum";
 
 describe("HomepageCardService", () => {

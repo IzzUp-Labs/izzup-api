@@ -1,20 +1,20 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AuthController } from "../../../src/application/auth/auth.controller";
-import { AuthService } from "../../../src/domain/services/auth/auth.service";
+import { AuthController } from "../../../src/usecase/auth/auth.controller";
+import { AuthService } from "../../../src/usecase/auth/auth.service";
 import { JwtService } from "@nestjs/jwt";
-import { ExtraService } from "../../../src/domain/services/extra/extra.service";
-import { UserService } from "../../../src/domain/services/user/user.service";
+import { ExtraService } from "../../../src/usecase/extra/extra.service";
+import { UserService } from "../../../src/usecase/user/user.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { UserEntity } from "../../../src/infrastructure/entities/user.entity";
-import { ExtraEntity } from "../../../src/infrastructure/entities/extra.entity";
-import { EmployerEntity } from "../../../src/infrastructure/entities/employer.entity";
-import { CompanyEntity } from "../../../src/infrastructure/entities/company.entity";
-import { CompanyService } from "../../../src/domain/services/company/company.service";
-import { EmployerService } from "../../../src/domain/services/employer/employer.service";
-import { JobOfferEntity } from "../../../src/infrastructure/entities/job-offer.entity";
-import { JobOfferService } from "../../../src/domain/services/job-offer/job-offer.service";
-import { ExtraJobRequestService } from "../../../src/domain/services/extra/extra-job-request.service";
-import { ExtraJobRequestEntity } from "../../../src/infrastructure/entities/extra-job-request.entity";
+import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
+import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
+import { EmployerEntity } from "../../../src/usecase/employer/entities/employer.entity";
+import { CompanyEntity } from "../../../src/usecase/company/entities/company.entity";
+import { CompanyService } from "../../../src/usecase/company/company.service";
+import { EmployerService } from "../../../src/usecase/employer/employer.service";
+import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
+import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
+import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
+import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra-job-request.entity";
 
 describe("AuthController", () => {
   let controller: AuthController;

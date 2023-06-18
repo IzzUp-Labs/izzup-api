@@ -1,7 +1,7 @@
 import { RolesGuard } from "../../../src/domain/guards/role.guard";
 import { Reflector } from "@nestjs/core";
-import { AuthService } from "../../../src/domain/services/auth/auth.service";
-import { UserService } from "../../../src/domain/services/user/user.service";
+import { AuthService } from "../../../src/usecase/auth/auth.service";
+import { UserService } from "../../../src/usecase/user/user.service";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ExecutionContext } from "@nestjs/common";
 
