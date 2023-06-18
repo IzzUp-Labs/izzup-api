@@ -5,6 +5,7 @@ import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
 import { CreateUserDto } from "../../../src/usecase/user/dto/create-user.dto";
+import {UpdateUserDto} from "../../../src/usecase/user/dto/update-user.dto";
 
 describe("UserService", () => {
   let service: UserService;
@@ -94,7 +95,7 @@ describe("UserService", () => {
   describe("update", () => {
     it("should update and return a user by id and update dto", async () => {
       const id = 1;
-      const updateUserDto = { email: "newtest@example.com" };
+      const updateUserDto : UpdateUserDto = { email: "newtest@example.com" };
       const user = { id, email: "newtest@example.com", password: "password" };
       jest.spyOn(repository, "save").mockResolvedValueOnce(user as any);
       const result = await service.update(id, updateUserDto);
