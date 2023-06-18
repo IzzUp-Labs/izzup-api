@@ -15,6 +15,9 @@ import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offe
 import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.service";
 import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
 import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra-job-request.entity";
+import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
+import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
+import { Repository } from "typeorm";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -31,6 +34,7 @@ describe("AuthController", () => {
         CompanyService,
         JobOfferService,
         ExtraJobRequestService,
+        UserStatusService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -54,6 +58,10 @@ describe("AuthController", () => {
         {
           provide: getRepositoryToken(ExtraJobRequestEntity),
           useValue: ExtraJobRequestEntity
+        },
+        {
+          provide: getRepositoryToken(UserStatusEntity),
+          useValue: Repository
         }
       ]
     }).compile();

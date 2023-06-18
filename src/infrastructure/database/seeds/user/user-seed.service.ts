@@ -30,6 +30,7 @@ export class UserSeedService {
           email: this.configService.get("seed-user.seed_admin_email"),
           password: hashedPassword,
           role: RoleEnum.ADMIN,
+          date_of_birth: new Date(),
         }),
       );
     }

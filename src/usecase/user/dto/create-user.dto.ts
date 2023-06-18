@@ -1,6 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {EmployerEntity} from "../../employer/entities/employer.entity";
 import {ExtraEntity} from "../../extra/entities/extra.entity";
+import { CreateUserStatusDto } from "../../user-status/dto/create-user-status.dto";
 
 export class CreateUserDto {
     @ApiProperty()
@@ -19,4 +20,6 @@ export class CreateUserDto {
     employer?: EmployerEntity;
     @ApiProperty()
     extra?: ExtraEntity;
+    @ApiProperty()
+    statuses?: CreateUserStatusDto[];
 }

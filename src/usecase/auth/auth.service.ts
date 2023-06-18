@@ -1,16 +1,17 @@
-import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
-import {AuthLoginDto} from "./dto/auth-login.dto";
-import {JwtService} from "@nestjs/jwt";
-import {UserService} from "../user/user.service";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { AuthLoginDto } from "./dto/auth-login.dto";
+import { JwtService } from "@nestjs/jwt";
+import { UserService } from "../user/user.service";
 import * as bcrypt from "bcryptjs";
-import {AuthRegisterExtraDto} from "./dto/auth-register-extra.dto";
-import {ExtraService} from "../extra/extra.service";
-import {AuthRegisterEmployerDto} from "./dto/auth-register-employer.dto";
-import {EmployerService} from "../employer/employer.service";
-import {CompanyService} from "../company/company.service";
-import {AuthMembershipCheckDto} from "./dto/auth-membership-check.dto";
-import {RoleEnum} from "../../domain/utils/enums/role.enum";
-import {UserEntity} from "../user/entities/user.entity";
+import { AuthRegisterExtraDto } from "./dto/auth-register-extra.dto";
+import { ExtraService } from "../extra/extra.service";
+import { AuthRegisterEmployerDto } from "./dto/auth-register-employer.dto";
+import { EmployerService } from "../employer/employer.service";
+import { CompanyService } from "../company/company.service";
+import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
+import { RoleEnum } from "../../domain/utils/enums/role.enum";
+import { UserEntity } from "../user/entities/user.entity";
+import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 
 @Injectable()
 export class AuthService {
@@ -78,7 +79,10 @@ export class AuthService {
       ...authRegisterExtraDto,
       password: hashedPassword,
       role: RoleEnum.EXTRA,
-      extra: extra
+      extra: extra,
+    }).then((user) => {
+      this.userService.addStatus(user.id, UserStatusEnum.UNVERIFIED);
+      return user;
     });
   }
 
@@ -90,6 +94,9 @@ export class AuthService {
         password: hashedPassword,
         role: RoleEnum.EMPLOYER,
         employer: employer
+    }).then((user) => {
+      this.userService.addStatus(user.id, UserStatusEnum.UNVERIFIED);
+      return user;
     });
     await this.companyService.create({
       ...authRegisterEmployer.company,

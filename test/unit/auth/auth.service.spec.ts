@@ -21,6 +21,10 @@ import { JobOfferService } from "../../../src/usecase/job-offer/job-offer.servic
 import { JobOfferEntity } from "../../../src/usecase/job-offer/entities/job-offer.entity";
 import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
 import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra-job-request.entity";
+import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
+import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
+import { Repository } from "typeorm";
+import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -29,6 +33,7 @@ describe("AuthService", () => {
   let extraService: ExtraService;
   let employerService: EmployerService;
   let companyService: CompanyService;
+  let userStatusService: UserStatusService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -41,6 +46,7 @@ describe("AuthService", () => {
         CompanyService,
         JobOfferService,
         ExtraJobRequestService,
+        UserStatusService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -56,6 +62,7 @@ describe("AuthService", () => {
               role: 'USER',
               extra: null,
               employer: null,
+              statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}]
             }),
           },
         },
@@ -78,6 +85,10 @@ describe("AuthService", () => {
         {
           provide: getRepositoryToken(ExtraJobRequestEntity),
           useValue: ExtraJobRequestEntity
+        },
+        {
+          provide: getRepositoryToken(UserStatusEntity),
+          useValue: Repository
         }
       ]
     }).compile();
@@ -88,6 +99,7 @@ describe("AuthService", () => {
     service = module.get<AuthService>(AuthService);
     employerService = module.get<EmployerService>(EmployerService);
     companyService = module.get<CompanyService>(CompanyService);
+    userStatusService = module.get<UserStatusService>(UserStatusService);
   });
 
   it("should be defined", () => {
@@ -111,6 +123,7 @@ describe("AuthService", () => {
         role: 'USER',
         extra: null,
         employer: null,
+        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null
@@ -138,6 +151,7 @@ describe("AuthService", () => {
         role: "USER",
         extra: null,
         employer: null,
+        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null
@@ -195,6 +209,7 @@ describe("AuthService", () => {
       const createdExtra = { id: 1 } as ExtraEntity;
       jest.spyOn(userService, "create").mockResolvedValue(createdUser);
       jest.spyOn(extraService, "create").mockResolvedValue(createdExtra);
+      jest.spyOn(userStatusService, "findOne").mockResolvedValue({id: 1, name: UserStatusEnum.UNVERIFIED} as UserStatusEntity);
 
       await service.registerExtra(authRegisterExtraDto);
 
@@ -234,6 +249,7 @@ describe("AuthService", () => {
       jest.spyOn(userService, "create").mockResolvedValue(createdUser);
       jest.spyOn(employerService, "create").mockResolvedValue(createdEmployer);
       jest.spyOn(companyService, "create").mockResolvedValue(createdCompany);
+      jest.spyOn(userStatusService, "findOne").mockResolvedValue({id: 1, name: UserStatusEnum.UNVERIFIED} as UserStatusEntity);
 
       await service.registerEmployer(authRegisterEmployerDto);
 
@@ -273,6 +289,7 @@ describe("AuthService", () => {
         role: "USER",
         extra: null,
         employer: null,
+        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null

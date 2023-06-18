@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
+import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 
 @ApiTags('User')
 @Controller({
@@ -39,5 +40,10 @@ export class UserController {
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Get("users/unverfied")
+  getUnverifiedUsers() {
+    return this.userService.getUsersByStatus(UserStatusEnum.UNVERIFIED);
   }
 }

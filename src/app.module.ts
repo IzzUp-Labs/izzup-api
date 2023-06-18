@@ -18,6 +18,7 @@ import { JobOfferModule } from "./usecase/job-offer/job-offer.module";
 import { JobStatusModule } from "./usecase/job-status/job-status.module";
 import { ExtraJobRequestModule } from "./usecase/extra/extra-job-request.module";
 import { HomepageCardModule } from "./usecase/homepage-card/homepage-card.module";
+import { UserStatusModule } from "./usecase/user-status/user-status.module";
 
 @Module({
   imports: [
@@ -46,7 +47,8 @@ import { HomepageCardModule } from "./usecase/homepage-card/homepage-card.module
     JobOfferModule,
     JobStatusModule,
     ExtraJobRequestModule,
-    HomepageCardModule
+    HomepageCardModule,
+    UserStatusModule
   ],
   controllers: [],
   providers: [
