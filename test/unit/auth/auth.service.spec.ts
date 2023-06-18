@@ -7,7 +7,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
 import { AuthLoginDto } from "../../../src/usecase/auth/dto/auth-login.dto";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { AuthRegisterExtraDto } from "../../../src/usecase/auth/dto/auth-register-extra.dto";
 import { EmployerService } from "../../../src/usecase/employer/employer.service";

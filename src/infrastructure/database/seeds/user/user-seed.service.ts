@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { UserEntity } from "../../../../usecase/user/entities/user.entity";
 import { RoleEnum } from "../../../../domain/utils/enums/role.enum";
 import { ConfigService } from "@nestjs/config";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 @Injectable()
 export class UserSeedService {
