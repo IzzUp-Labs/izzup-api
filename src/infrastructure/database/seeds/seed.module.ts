@@ -6,11 +6,13 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { TypeOrmConfigService } from "../../config/typeorm-config.service";
 import { UserSeedModule } from "./user/user-seed.module";
 import { RoleSeedModule } from "./role/role-seed.module";
+import { UserStatusSeedModule } from "./user-status/user-status-seed.module";
 
 @Module({
   imports: [
     UserSeedModule,
     RoleSeedModule,
+    UserStatusSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],

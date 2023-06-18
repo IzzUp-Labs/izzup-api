@@ -82,4 +82,18 @@ export class UserService {
       .where("status.name = :name", { name: status })
       .getMany();
   }
+
+  async verifyUser(id: number) {
+     const unverifiedStatus = await this.userStatusService.findOne({
+      name: UserStatusEnum.UNVERIFIED
+    })
+     const verifiedStatus = await this.userStatusService.findOne({
+      name: UserStatusEnum.VERIFIED
+    })
+
+    return this.usersRepository.createQueryBuilder("user")
+      .relation(UserEntity, "statuses")
+      .of(id)
+      .addAndRemove([verifiedStatus.id], [unverifiedStatus.id])
+  }
 }

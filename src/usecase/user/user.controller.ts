@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
+import { AuthGuard } from "@nestjs/passport";
+import { RoleGuard } from "../../domain/guards/role.decorator";
+import { RoleEnum } from "../../domain/utils/enums/role.enum";
 
 @ApiTags('User')
 @Controller({
@@ -42,8 +45,19 @@ export class UserController {
     return this.userService.remove(+id);
   }
 
-  @Get("users/unverfied")
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard(RoleEnum.ADMIN)
+  @Get("users/unverified")
   getUnverifiedUsers() {
     return this.userService.getUsersByStatus(UserStatusEnum.UNVERIFIED);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard(RoleEnum.ADMIN)
+  @Patch(":id/verify")
+  verifyUser(@Param("id") id: string) {
+    return this.userService.verifyUser(+id);
   }
 }
