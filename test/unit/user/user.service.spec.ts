@@ -6,6 +6,9 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
 import { CreateUserDto } from "../../../src/usecase/user/dto/create-user.dto";
 import {UpdateUserDto} from "../../../src/usecase/user/dto/update-user.dto";
+import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
+import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
+import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 
 describe("UserService", () => {
   let service: UserService;
@@ -15,6 +18,7 @@ describe("UserService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        UserStatusService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -34,6 +38,10 @@ describe("UserService", () => {
             ),
             delete: jest.fn()
           }
+        },
+        {
+          provide: getRepositoryToken(UserStatusEntity),
+          useValue: Repository
         }
       ]
     }).compile();
@@ -59,6 +67,7 @@ describe("UserService", () => {
         deleted_at: null,
         employer: null,
         extra: null,
+        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}]
       };
       const createUserDto: CreateUserDto = {
         email: "test@example.com",

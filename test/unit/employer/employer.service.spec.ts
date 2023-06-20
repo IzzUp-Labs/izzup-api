@@ -16,6 +16,7 @@ import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-status";
 import { HttpException } from "@nestjs/common";
 import { JobOfferDto } from "../../../src/usecase/job-offer/dto/job-offer.dto";
+import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
 
 describe('EmployerService', () => {
   let service: EmployerService;
@@ -91,6 +92,7 @@ describe('EmployerService', () => {
           email: 'test@email.com',
           password: 'test',
           role: 'EMPLOYER',
+          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -130,6 +132,7 @@ describe('EmployerService', () => {
           email: 'test@email.com',
           password: 'test',
           role: 'EMPLOYER',
+          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -166,6 +169,7 @@ describe('EmployerService', () => {
           email: 'test@email.com',
           password: 'test',
           role: 'EMPLOYER',
+          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -201,6 +205,7 @@ describe('EmployerService', () => {
           email: 'test@email.com',
           password: 'test',
           role: 'EMPLOYER',
+          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -255,6 +260,7 @@ describe('EmployerService', () => {
           email: 'test@email.com',
           password: 'test',
           role: 'EMPLOYER',
+          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -338,6 +344,7 @@ describe('EmployerService', () => {
               email: 'test',
               password: 'test',
               role: 'EMPLOYER',
+              statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
               created_at: new Date(),
               updated_at: new Date(),
               deleted_at: new Date()
@@ -419,6 +426,7 @@ describe('EmployerService', () => {
               email: 'test',
               password: 'test',
               role: 'EMPLOYER',
+              statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
               created_at: new Date(),
               updated_at: new Date(),
               deleted_at: new Date()
