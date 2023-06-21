@@ -30,6 +30,9 @@ export class UserEntity {
   @Column({type: 'date', nullable: false})
   date_of_birth: Date;
 
+  @Column( {type: 'varchar', nullable: true })
+  photo: string;
+
   @Column()
   role: string;
 

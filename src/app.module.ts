@@ -19,6 +19,9 @@ import { JobStatusModule } from "./usecase/job-status/job-status.module";
 import { ExtraJobRequestModule } from "./usecase/extra/extra-job-request.module";
 import { HomepageCardModule } from "./usecase/homepage-card/homepage-card.module";
 import { UserStatusModule } from "./usecase/user-status/user-status.module";
+import { FirebaseModule } from "nestjs-firebase";
+import firebaseConfig from "./infrastructure/config/firebase.config";
+import { FirebaseStorageService } from "./infrastructure/config/firebase-storage.service";
 
 @Module({
   imports: [
@@ -27,13 +30,19 @@ import { UserStatusModule } from "./usecase/user-status/user-status.module";
       load: [
         databaseConfig,
         appConfig,
-        authConfig
+        authConfig,
+        firebaseConfig
       ],
       envFilePath: [".env"]
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: TypeOrmConfigService,
+      inject: [ConfigService]
+    }),
+    FirebaseModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: FirebaseStorageService,
       inject: [ConfigService]
     }),
     UserModule,

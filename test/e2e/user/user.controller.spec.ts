@@ -6,6 +6,9 @@ import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { Repository } from "typeorm";
 import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
+import { ParamCheckService } from "../../../src/domain/middleware/param-check/param-check.service";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 
 describe("UserController", () => {
   let controller: UserController;
@@ -16,6 +19,9 @@ describe("UserController", () => {
       providers: [
         UserService,
         UserStatusService,
+        ParamCheckService,
+        JwtService,
+        ConfigService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -23,7 +29,11 @@ describe("UserController", () => {
         {
           provide: getRepositoryToken(UserStatusEntity),
           useValue: Repository
-        }
+        },
+        {
+          provide: 'FIREBASE_TOKEN',
+          useValue: 'FIREBASE_TOKEN',
+        },
       ]
     }).compile();
 

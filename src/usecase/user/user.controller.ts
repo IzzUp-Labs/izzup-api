@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile, Headers
+} from "@nestjs/common";
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,6 +18,8 @@ import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 import { AuthGuard } from "@nestjs/passport";
 import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
 
 @ApiTags('User')
 @Controller({
@@ -14,7 +27,8 @@ import { RoleEnum } from "../../domain/utils/enums/role.enum";
   version: "1"
 })
 export class UserController {
-  constructor(private readonly userService: UserService) {
+  constructor(private readonly userService: UserService,
+              private readonly paramCheckService: ParamCheckService) {
   }
 
   @Post()
@@ -59,5 +73,14 @@ export class UserController {
   @Patch(":id/verify")
   verifyUser(@Param("id") id: string) {
     return this.userService.verifyUser(+id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('upload/photo')
+  uploadFile(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.userService.uploadFile(userId, file);
   }
 }
