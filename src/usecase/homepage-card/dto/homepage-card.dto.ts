@@ -8,7 +8,7 @@ export class HomepageCardDto{
   description: string;
   @ApiProperty({required: false})
   photo: string | null;
-  @ApiProperty({type: HomepageCardTypeEnum})
+  @ApiProperty( {required: true})
   type: HomepageCardTypeEnum;
   @ApiProperty({required: false})
   link: string | null;

@@ -14,5 +14,6 @@ export default registerAs("firebase", () => ({
     client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
     universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN,
     storage_name: process.env.FIREBASE_STORAGE_URL,
-    image_bucket_name: process.env.FIREBASE_STORAGE_IMAGE_BUCKET_IMAGE
+    image_bucket_name: process.env.FIREBASE_STORAGE_IMAGE_BUCKET_IMAGE,
+    homepage_bucket_name: process.env.FIREBASE_STORAGE_IMAGE_BUCKET_HOMEPAGE_CARD
 }));

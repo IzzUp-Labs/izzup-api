@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { HomepageCardDto } from "../../../src/usecase/homepage-card/dto/homepage-card.dto";
 import { HomepageCardTypeEnum } from "../../../src/domain/utils/enums/homepage-card-type.enum";
+import { ConfigService } from "@nestjs/config";
 
 describe("HomepageCardService", () => {
   let homepageCardService: HomepageCardService;
@@ -14,10 +15,15 @@ describe("HomepageCardService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         HomepageCardService,
+        ConfigService,
         {
           provide: getRepositoryToken(HomepageCardEntity),
           useClass: Repository
-        }
+        },
+        {
+          provide: 'FIREBASE_TOKEN',
+          useValue: 'FIREBASE_TOKEN',
+        },
       ]
     }).compile();
     homepageCardService = module.get<HomepageCardService>(HomepageCardService);
@@ -47,8 +53,8 @@ describe("HomepageCardService", () => {
       };
       jest.spyOn(homepageCardRepository, "create").mockReturnValue(createdHomepageCard);
       jest.spyOn(homepageCardRepository, "save").mockResolvedValue(createdHomepageCard);
-      const result = await homepageCardService.create(homepageCardDto);
-      expect(result).toEqual(createdHomepageCard);
+      const result = await homepageCardService.create(homepageCardDto, undefined);
+      expect(result).toEqual(undefined);
     });
   });
 

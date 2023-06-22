@@ -11,7 +11,7 @@ export class HomepageCardEntity {
   @Column( {type: 'varchar', length: 100, nullable: false} )
   description: string;
 
-  @Column( {type: 'varchar', length: 100, nullable: true} )
+  @Column( {type: 'varchar', nullable: true} )
   photo: string;
 
   @Column( {type: 'varchar', length: 20, nullable: false} )
