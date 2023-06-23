@@ -19,6 +19,7 @@ import { UserStatusService } from "../../../src/usecase/user-status/user-status.
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -37,6 +38,7 @@ describe("AuthController", () => {
         ExtraJobRequestService,
         UserStatusService,
         ConfigService,
+        FileExtensionChecker,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity

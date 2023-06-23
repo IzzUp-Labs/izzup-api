@@ -6,6 +6,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { HomepageCardDto } from "../../../src/usecase/homepage-card/dto/homepage-card.dto";
 import { HomepageCardTypeEnum } from "../../../src/domain/utils/enums/homepage-card-type.enum";
 import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 
 describe("HomepageCardService", () => {
   let homepageCardService: HomepageCardService;
@@ -16,6 +17,7 @@ describe("HomepageCardService", () => {
       providers: [
         HomepageCardService,
         ConfigService,
+        FileExtensionChecker,
         {
           provide: getRepositoryToken(HomepageCardEntity),
           useClass: Repository

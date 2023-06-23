@@ -10,6 +10,7 @@ import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum
 import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 
 describe("UserService", () => {
   let service: UserService;
@@ -21,6 +22,7 @@ describe("UserService", () => {
         UserService,
         UserStatusService,
         ConfigService,
+        FileExtensionChecker,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {

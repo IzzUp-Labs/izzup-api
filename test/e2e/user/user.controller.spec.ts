@@ -9,6 +9,7 @@ import { UserStatusService } from "../../../src/usecase/user-status/user-status.
 import { ParamCheckService } from "../../../src/domain/middleware/param-check/param-check.service";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 
 describe("UserController", () => {
   let controller: UserController;
@@ -22,6 +23,7 @@ describe("UserController", () => {
         ParamCheckService,
         JwtService,
         ConfigService,
+        FileExtensionChecker,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity

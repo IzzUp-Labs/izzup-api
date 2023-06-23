@@ -9,6 +9,7 @@ import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 import { UserStatusService } from "../user-status/user-status.service";
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
 import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
 
 @Injectable()
 export class UserService {
@@ -18,7 +19,8 @@ export class UserService {
     private readonly userStatusService: UserStatusService,
     @InjectFirebaseAdmin() private readonly firebase: FirebaseAdmin,
 
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly fileExtensionChecker: FileExtensionChecker
   ) {
   }
 
@@ -104,6 +106,9 @@ export class UserService {
 
   async uploadFile(userId: number, file: Express.Multer.File) {
     const fileExtension = file.originalname.split('.').pop();
+    if (!this.fileExtensionChecker.check(fileExtension)) {
+      throw new HttpException("Invalid file extension", 400);
+    }
     const bucket = this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
       .file(this.configService.get("firebase.image_bucket_name") + userId + "." + fileExtension);
 

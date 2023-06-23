@@ -6,6 +6,7 @@ import { EntityCondition } from "../../domain/utils/types/entity-condition.type"
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
 import { ConfigService } from "@nestjs/config";
 import { HomepageCardDto } from "./dto/homepage-card.dto";
+import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
 
 @Injectable()
 export class HomepageCardService{
@@ -14,7 +15,8 @@ export class HomepageCardService{
     private readonly homepageCardRepository: Repository<HomepageCardEntity>,
     @InjectFirebaseAdmin() private readonly firebase: FirebaseAdmin,
 
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly fileExtensionChecker: FileExtensionChecker
   ) {
   }
 
@@ -51,6 +53,9 @@ export class HomepageCardService{
 
   async updatePhoto(id: number, file: Express.Multer.File) {
     const fileExtension = file.originalname.split('.').pop();
+    if (!this.fileExtensionChecker.check(fileExtension)) {
+      throw new HttpException("Invalid file extension", 400);
+    }
     const bucket = this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
       .file(this.configService.get("firebase.homepage_bucket_name") + id + "." + fileExtension);
 
