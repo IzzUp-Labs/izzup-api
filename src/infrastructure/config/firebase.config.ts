@@ -15,5 +15,6 @@ export default registerAs("firebase", () => ({
     universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN,
     storage_name: process.env.FIREBASE_STORAGE_URL,
     image_bucket_name: process.env.FIREBASE_STORAGE_IMAGE_BUCKET_IMAGE,
-    homepage_bucket_name: process.env.FIREBASE_STORAGE_IMAGE_BUCKET_HOMEPAGE_CARD
+    homepage_bucket_name: process.env.FIREBASE_STORAGE_IMAGE_BUCKET_HOMEPAGE_CARD,
+    id_bucket_name: process.env.FIREBASE_STORAGE_IMAGE_BUCKET_ID
 }));

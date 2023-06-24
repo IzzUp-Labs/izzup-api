@@ -98,10 +98,12 @@ export class UserService {
       name: UserStatusEnum.VERIFIED
     })
 
-    return this.usersRepository.createQueryBuilder("user")
+    await this.usersRepository.createQueryBuilder("user")
       .relation(UserEntity, "statuses")
       .of(id)
-      .addAndRemove([verifiedStatus.id], [unverifiedStatus.id])
+      .addAndRemove([verifiedStatus.id], [unverifiedStatus.id]);
+
+     return await this.deleteIdPhoto(id);
   }
 
   async uploadFile(userId: number, file: Express.Multer.File) {
@@ -131,5 +133,48 @@ export class UserService {
       });
     });
     blobStream.end(file.buffer);
+  }
+
+  async uploadId(userId: number, file: Express.Multer.File) {
+      const fileExtension = file.originalname.split('.').pop();
+      if (!this.fileExtensionChecker.check(fileExtension)) {
+        throw new HttpException("Invalid file extension", 400);
+      }
+      const bucket = this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
+        .file(this.configService.get("firebase.id_bucket_name") + userId + "." + fileExtension);
+
+      const blobStream = bucket.createWriteStream({
+        resumable: false,
+      });
+      blobStream.on('error', () => {
+        return new HttpException("Something went wrong with the upload", 500)
+      });
+      blobStream.on('finish', () => {
+        bucket.getSignedUrl({
+          action: 'read',
+          expires: '03-09-2491'
+        }).then(signedUrls => {
+          this.usersRepository.createQueryBuilder()
+            .where("id = :id", { id: userId })
+            .update(UserEntity)
+            .set({ id_photo: signedUrls[0] })
+            .execute();
+        });
+      });
+      blobStream.end(file.buffer);
+  }
+
+  async deleteIdPhoto(userId: number) {
+    await this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
+      .deleteFiles({
+        prefix: this.configService.get("firebase.id_bucket_name") + userId
+      })
+      .then(() => {
+        this.usersRepository.createQueryBuilder()
+          .where("id = :id", { id: userId })
+          .update(UserEntity)
+          .set({ id_photo: null })
+          .execute();
+      });
   }
 }

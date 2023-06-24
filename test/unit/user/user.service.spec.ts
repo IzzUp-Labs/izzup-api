@@ -70,6 +70,7 @@ describe("UserService", () => {
         first_name: "firsttest",
         photo: null,
         role: 'EXTRA',
+        id_photo: null,
         date_of_birth: new Date("2015-08-02T13:15:43.636Z"),
         created_at: new Date("2023-04-02T13:15:43.636Z"),
         updated_at: new Date("2023-04-02T13:15:43.636Z"),
