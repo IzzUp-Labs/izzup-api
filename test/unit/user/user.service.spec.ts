@@ -9,6 +9,8 @@ import {UpdateUserDto} from "../../../src/usecase/user/dto/update-user.dto";
 import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
 import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
+import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 
 describe("UserService", () => {
   let service: UserService;
@@ -19,6 +21,8 @@ describe("UserService", () => {
       providers: [
         UserService,
         UserStatusService,
+        ConfigService,
+        FileExtensionChecker,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -42,7 +46,11 @@ describe("UserService", () => {
         {
           provide: getRepositoryToken(UserStatusEntity),
           useValue: Repository
-        }
+        },
+        {
+          provide: 'FIREBASE_TOKEN',
+          useValue: 'FIREBASE_TOKEN',
+        },
       ]
     }).compile();
 
@@ -60,6 +68,7 @@ describe("UserService", () => {
         password: "password",
         last_name: "lasttest",
         first_name: "firsttest",
+        photo: null,
         role: 'EXTRA',
         date_of_birth: new Date("2015-08-02T13:15:43.636Z"),
         created_at: new Date("2023-04-02T13:15:43.636Z"),

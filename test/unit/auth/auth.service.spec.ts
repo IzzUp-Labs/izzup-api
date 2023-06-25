@@ -25,6 +25,8 @@ import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum
 import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
 import { Repository } from "typeorm";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
+import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -47,6 +49,8 @@ describe("AuthService", () => {
         JobOfferService,
         ExtraJobRequestService,
         UserStatusService,
+        ConfigService,
+        FileExtensionChecker,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -89,7 +93,11 @@ describe("AuthService", () => {
         {
           provide: getRepositoryToken(UserStatusEntity),
           useValue: Repository
-        }
+        },
+        {
+          provide: 'FIREBASE_TOKEN',
+          useValue: 'FIREBASE_TOKEN',
+        },
       ]
     }).compile();
 
@@ -120,6 +128,7 @@ describe("AuthService", () => {
         last_name: "lastName",
         first_name: "firstName",
         date_of_birth: new Date(),
+        photo: null,
         role: 'USER',
         extra: null,
         employer: null,
@@ -148,6 +157,7 @@ describe("AuthService", () => {
         last_name: "lastName",
         first_name: "firstName",
         date_of_birth: new Date(),
+        photo: null,
         role: "USER",
         extra: null,
         employer: null,
@@ -286,6 +296,7 @@ describe("AuthService", () => {
         last_name: "lastName",
         first_name: "firstName",
         date_of_birth: new Date(),
+        photo: null,
         role: "USER",
         extra: null,
         employer: null,

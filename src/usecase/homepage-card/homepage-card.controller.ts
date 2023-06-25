@@ -1,9 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors
+} from "@nestjs/common";
 import { HomepageCardService } from "./homepage-card.service";
 import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { AuthGuard } from "@nestjs/passport";
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { HomepageCardDto } from "./dto/homepage-card.dto";
 
 @ApiTags('Homepage Cards')
 @Controller( {
@@ -19,9 +32,11 @@ export class HomepageCardController {
   @ApiBearerAuth()
   @RoleGuard(RoleEnum.ADMIN)
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
   @Post()
-  create(@Body() homepageCardDto) {
-    return this.homepageCardService.create(homepageCardDto);
+  create(@Body() homepageCardDto: HomepageCardDto, @UploadedFile() file: Express.Multer.File,) {
+    console.log(file);
+    return this.homepageCardService.create(homepageCardDto, file);
   }
 
   @Get()

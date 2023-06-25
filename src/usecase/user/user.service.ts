@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -7,13 +7,20 @@ import { UserEntity } from "./entities/user.entity";
 import { EntityCondition } from "../../domain/utils/types/entity-condition.type";
 import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 import { UserStatusService } from "../user-status/user-status.service";
+import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
+import { ConfigService } from "@nestjs/config";
+import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-    private readonly userStatusService: UserStatusService
+    private readonly userStatusService: UserStatusService,
+    @InjectFirebaseAdmin() private readonly firebase: FirebaseAdmin,
+
+    private readonly configService: ConfigService,
+    private readonly fileExtensionChecker: FileExtensionChecker
   ) {
   }
 
@@ -95,5 +102,34 @@ export class UserService {
       .relation(UserEntity, "statuses")
       .of(id)
       .addAndRemove([verifiedStatus.id], [unverifiedStatus.id])
+  }
+
+  async uploadFile(userId: number, file: Express.Multer.File) {
+    const fileExtension = file.originalname.split('.').pop();
+    if (!this.fileExtensionChecker.check(fileExtension)) {
+      throw new HttpException("Invalid file extension", 400);
+    }
+    const bucket = this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
+      .file(this.configService.get("firebase.image_bucket_name") + userId + "." + fileExtension);
+
+    const blobStream = bucket.createWriteStream({
+      resumable: false,
+    });
+    blobStream.on('error', () => {
+      return new HttpException("Something went wrong with the upload", 500)
+    });
+    blobStream.on('finish', () => {
+      bucket.getSignedUrl({
+        action: 'read',
+        expires: '03-09-2491'
+      }).then(signedUrls => {
+        this.usersRepository.createQueryBuilder()
+          .where("id = :id", { id: userId })
+          .update(UserEntity)
+          .set({ photo: signedUrls[0] })
+          .execute();
+      });
+    });
+    blobStream.end(file.buffer);
   }
 }
