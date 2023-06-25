@@ -36,6 +36,9 @@ export class UserEntity {
   @Column()
   role: string;
 
+  @Column({type: 'varchar', nullable: true })
+  id_photo: string;
+
   @OneToOne(() => EmployerEntity, (employer) => employer.user, {cascade: true})
   @JoinColumn()
   employer: EmployerEntity;

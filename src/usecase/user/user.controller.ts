@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
   UseInterceptors,
-  UploadedFile, Headers
+  UploadedFile, Headers, HttpException
 } from "@nestjs/common";
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -80,7 +80,22 @@ export class UserController {
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload/photo')
   uploadFile(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
+    if(file === undefined) {
+      throw new HttpException("Photo not provided", 400);
+    }
     const userId = this.paramCheckService.decodeId(authorization);
     return this.userService.uploadFile(userId, file);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('upload/id_photo')
+  uploadId(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
+    if(file === undefined) {
+      throw new HttpException("Id photo not provided", 400);
+    }
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.userService.uploadId(userId, file);
   }
 }
