@@ -89,6 +89,7 @@ export class AuthService {
   }
 
   async registerEmployer(authRegisterEmployer: AuthRegisterEmployerDto): Promise<UserEntity> {
+    console.log(authRegisterEmployer.password)
     const hashedPassword = await bcrypt.hash(authRegisterEmployer.password, 10);
     const employer = await this.employerService.create({});
     const user = await this.userService.create({
