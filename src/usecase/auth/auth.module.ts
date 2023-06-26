@@ -8,6 +8,7 @@ import { JwtStrategy } from "../../domain/strategies/jwt.strategy";
 import { ExtraModule } from "../extra/extra.module";
 import { CompanyModule } from "../company/company.module";
 import { EmployerModule } from "../employer/employer.module";
+import {LocationModule} from "../location/location.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EmployerModule } from "../employer/employer.module";
     ExtraModule,
     EmployerModule,
     CompanyModule,
+    LocationModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

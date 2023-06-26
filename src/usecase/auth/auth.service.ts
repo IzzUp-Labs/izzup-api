@@ -12,6 +12,7 @@ import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { UserEntity } from "../user/entities/user.entity";
 import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
+import {LocationService} from "../location/location.service";
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,8 @@ export class AuthService {
     private userService: UserService,
     private extraService: ExtraService,
     private employerService: EmployerService,
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private locationService: LocationService
   ) {
   }
 
@@ -98,9 +100,13 @@ export class AuthService {
       this.userService.addStatus(user.id, UserStatusEnum.UNVERIFIED);
       return user;
     });
+    const company_location = await this.locationService.create({
+        ...authRegisterEmployer.location
+    });
     await this.companyService.create({
       ...authRegisterEmployer.company,
-      employer: employer
+      employer: employer,
+      location: company_location
     });
     return user;
   }

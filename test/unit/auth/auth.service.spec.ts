@@ -27,6 +27,9 @@ import { Repository } from "typeorm";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
+import {LocationService} from "../../../src/usecase/location/location.service";
+import {CreateLocationDto} from "../../../src/usecase/location/dto/create-location.dto";
+import {LocationEntity} from "../../../src/usecase/location/entities/location.entity";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -36,6 +39,7 @@ describe("AuthService", () => {
   let employerService: EmployerService;
   let companyService: CompanyService;
   let userStatusService: UserStatusService;
+  let locationService: LocationService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -51,6 +55,7 @@ describe("AuthService", () => {
         UserStatusService,
         ConfigService,
         FileExtensionChecker,
+        LocationService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -98,6 +103,10 @@ describe("AuthService", () => {
           provide: 'FIREBASE_TOKEN',
           useValue: 'FIREBASE_TOKEN',
         },
+        {
+          provide: getRepositoryToken(LocationEntity),
+          useValue: LocationEntity
+        }
       ]
     }).compile();
 
@@ -108,6 +117,7 @@ describe("AuthService", () => {
     employerService = module.get<EmployerService>(EmployerService);
     companyService = module.get<CompanyService>(CompanyService);
     userStatusService = module.get<UserStatusService>(UserStatusService);
+    locationService = module.get<LocationService>(LocationService);
   });
 
   it("should be defined", () => {
@@ -248,6 +258,7 @@ describe("AuthService", () => {
         first_name: "John",
         last_name: "Doe",
         date_of_birth: new Date(),
+        location: new CreateLocationDto(),
         company: new CompanyDto()
       }
 
@@ -257,9 +268,11 @@ describe("AuthService", () => {
 
       const createdUser = { id: 1 } as UserEntity;
       const createdEmployer = { id: 1 } as EmployerEntity;
+      const createdLocation = { id: 1 } as LocationEntity;
       const createdCompany = { id: 1 } as CompanyEntity;
       jest.spyOn(userService, "create").mockResolvedValue(createdUser);
       jest.spyOn(employerService, "create").mockResolvedValue(createdEmployer);
+      jest.spyOn(locationService, "create").mockResolvedValue(createdLocation);
       jest.spyOn(companyService, "create").mockResolvedValue(createdCompany);
       jest.spyOn(userStatusService, "findOne").mockResolvedValue({id: 1, name: UserStatusEnum.UNVERIFIED} as UserStatusEntity);
 
@@ -275,12 +288,16 @@ describe("AuthService", () => {
         password: hashedPassword
       });
 
-      expect(employerService.create).toHaveBeenCalledWith({
-      });
+      expect(employerService.create).toHaveBeenCalledWith({});
+
+      expect(locationService.create).toHaveBeenCalledWith({});
 
       expect(companyService.create).toHaveBeenCalledWith({
         employer: {
           id: 1,
+        },
+        location: {
+            id: 1,
         }
       });
     });

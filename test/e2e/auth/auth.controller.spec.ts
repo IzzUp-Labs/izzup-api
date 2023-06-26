@@ -20,6 +20,8 @@ import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user
 import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
+import {LocationEntity} from "../../../src/usecase/location/entities/location.entity";
+import {LocationService} from "../../../src/usecase/location/location.service";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -39,6 +41,7 @@ describe("AuthController", () => {
         UserStatusService,
         ConfigService,
         FileExtensionChecker,
+        LocationService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -71,6 +74,10 @@ describe("AuthController", () => {
           provide: 'FIREBASE_TOKEN',
           useValue: 'FIREBASE_TOKEN',
         },
+        {
+          provide: getRepositoryToken(LocationEntity),
+          useValue: LocationEntity
+        }
       ]
     }).compile();
 

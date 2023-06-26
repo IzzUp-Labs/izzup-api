@@ -22,6 +22,9 @@ import { UserStatusModule } from "./usecase/user-status/user-status.module";
 import { FirebaseModule } from "nestjs-firebase";
 import firebaseConfig from "./infrastructure/config/firebase.config";
 import { FirebaseStorageService } from "./infrastructure/config/firebase-storage.service";
+import { GooglePlacesModule } from './usecase/google-places/google-places.module';
+import googleApiConfig from "./infrastructure/config/google-api.config";
+import {LocationModule} from "./usecase/location/location.module";
 
 @Module({
   imports: [
@@ -31,7 +34,9 @@ import { FirebaseStorageService } from "./infrastructure/config/firebase-storage
         databaseConfig,
         appConfig,
         authConfig,
-        firebaseConfig
+        firebaseConfig,
+        authConfig,
+        googleApiConfig
       ],
       envFilePath: [".env"]
     }),
@@ -57,7 +62,10 @@ import { FirebaseStorageService } from "./infrastructure/config/firebase-storage
     JobStatusModule,
     ExtraJobRequestModule,
     HomepageCardModule,
-    UserStatusModule
+    UserStatusModule,
+    HomepageCardModule,
+    GooglePlacesModule,
+    LocationModule
   ],
   controllers: [],
   providers: [
