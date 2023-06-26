@@ -8,7 +8,6 @@ import {JobOfferEntity} from "../../../src/usecase/job-offer/entities/job-offer.
 
 describe('LocationService', () => {
   let service: LocationService;
-  let jobOfferService: JobOfferService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,7 +23,6 @@ describe('LocationService', () => {
     }).compile();
 
     service = module.get<LocationService>(LocationService);
-    jobOfferService = module.get<JobOfferService>(JobOfferService);
   });
 
   it('should be defined', () => {

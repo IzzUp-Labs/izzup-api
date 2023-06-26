@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LocationController } from '../../../src/usecase/location/location.controller';
 import { LocationService } from '../../../src/usecase/location/location.service';
-import {HttpService} from "@nestjs/axios";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {LocationEntity} from "../../../src/usecase/location/entities/location.entity";
 import {JobOfferService} from "../../../src/usecase/job-offer/job-offer.service";
