@@ -1,8 +1,6 @@
 import {Controller, Get, Param, UseGuards} from "@nestjs/common";
 import {GooglePlacesService} from "./google-places.service";
 import {ApiBearerAuth} from "@nestjs/swagger";
-import {RoleGuard} from "../../domain/guards/role.decorator";
-import {RoleEnum} from "../../domain/utils/enums/role.enum";
 import {AuthGuard} from "@nestjs/passport";
 
 @Controller({
