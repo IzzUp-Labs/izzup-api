@@ -12,7 +12,7 @@ export class GooglePlacesService {
   }
 
     async findPlaceFromText(nameOrAddress: string){
-        const fields = 'formatted_address%2Cname%2Cplace_id%2Ctype%2Cuser_ratings_total%2Crating'
+        const fields = 'formatted_address%2Cname%2Cplace_id%2Ctype%2Cuser_ratings_total%2Crating%2Cgeometry'
         const {data} = await firstValueFrom(
             this.httpService.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?fields=${fields}&input=${nameOrAddress}&inputtype=textquery&key=${this.configService.get('google_api_key')}`).pipe(
                 catchError((error: AxiosError) => {
