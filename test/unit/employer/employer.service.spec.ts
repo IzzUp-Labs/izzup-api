@@ -281,6 +281,8 @@ describe('EmployerService', () => {
           address: "Test",
           sectors: null,
           jobOffers: [],
+          place_id: "Test",
+          location: null,
           employer: null,
           created_at: new Date(),
           updated_at: new Date(),
@@ -341,7 +343,9 @@ describe('EmployerService', () => {
           name: "Test",
           address: "Test",
           sectors: null,
+          place_id: "Test",
           jobOffers: [],
+          location: null,
           employer: {
             id: 1,
             user: {
@@ -425,7 +429,9 @@ describe('EmployerService', () => {
           name: "Test",
           address: "Test",
           sectors: null,
+          place_id: "Test",
           jobOffers: [],
+          location: null,
           employer: {
             id: 1,
             user: {
