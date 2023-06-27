@@ -13,7 +13,7 @@ export class RolesGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const roles = this.reflector.get<string>("role", context.getHandler());
+    const roles = this.reflector.get<string[]>("role", context.getHandler());
     if (!roles) {
       return true;
     }
@@ -26,6 +26,6 @@ export class RolesGuard implements CanActivate {
     if(!userEntity){
       return false;
     }
-    return userEntity?.role == roles;
+    return roles.includes(userEntity.role);
   }
 }

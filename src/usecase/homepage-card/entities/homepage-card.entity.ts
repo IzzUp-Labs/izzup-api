@@ -17,9 +17,9 @@ export class HomepageCardEntity {
   @Column( {type: 'varchar', length: 20, nullable: false} )
   type: string;
 
-  @Column( {type: 'varchar', length: 100, nullable: true} )
+  @Column( {type: 'varchar', nullable: true} )
   link: string;
 
-  @Column( {type: 'varchar', length: 100, nullable: true} )
+  @Column( {nullable: true} )
   company_id: number;
 }

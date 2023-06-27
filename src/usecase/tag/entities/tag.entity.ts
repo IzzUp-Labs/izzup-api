@@ -5,9 +5,9 @@ export class TagEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false, unique: true})
   name: string;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   color: string;
 }

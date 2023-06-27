@@ -7,7 +7,7 @@ export class ExtraJobRequestEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   status: string;
 
   @ManyToOne(() => ExtraEntity, (extra) => extra.requests)

@@ -9,16 +9,16 @@ export class ParamCheckService {
     private readonly jwtService: JwtService
   ) {}
 
-check(token: string, paramId: number): boolean {
-    const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: number };
-    if(!tokenDecoded) {
-      return false;
+    check(token: string, paramId: number): boolean {
+        const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: number };
+        if(!tokenDecoded) {
+          return false;
+        }
+        return tokenDecoded.id == paramId;
     }
-    return tokenDecoded.id == paramId;
-}
 
-decodeId(token: string): number {
-  const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: number };
-  return tokenDecoded.id;
-}
+    decodeId(token: string): number {
+      const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: number };
+      return tokenDecoded.id;
+    }
 }

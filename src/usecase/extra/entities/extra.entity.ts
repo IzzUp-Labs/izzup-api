@@ -16,7 +16,7 @@ export class ExtraEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: "varchar", nullable: false })
   address: string;
 
   @OneToOne(() => UserEntity, (user) => user.extra)

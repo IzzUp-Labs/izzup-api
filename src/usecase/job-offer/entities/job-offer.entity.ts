@@ -8,19 +8,19 @@ export class JobOfferEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   job_title: string;
 
-  @Column()
+  @Column({nullable: false})
   price: number;
 
-  @Column()
+  @Column({type: 'boolean', nullable: false})
   is_available: boolean;
 
-  @Column()
+  @Column({nullable: false})
   spots: number;
 
-  @Column()
+  @Column({nullable: false})
   acceptedSpots: number;
 
   @ManyToOne(() => CompanyEntity, (company) => company.jobOffers)

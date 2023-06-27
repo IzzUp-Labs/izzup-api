@@ -12,13 +12,14 @@ import { JobOfferEntity } from "../../../../usecase/job-offer/entities/job-offer
 import { CompanyEntity } from "../../../../usecase/company/entities/company.entity";
 import { ActivitySectorEntity } from "../../../../usecase/activity-sector/entities/activity-sector.entity";
 import { UserStatusEntity } from "../../../../usecase/user-status/entities/user-status.entity";
+import {LocationEntity} from "../../../../usecase/location/entities/location.entity";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       UserEntity, EmployerEntity, ExtraEntity, ExtraJobRequestEntity,
       TagEntity, JobOfferEntity, CompanyEntity, ActivitySectorEntity,
-      UserStatusEntity]),
+      UserStatusEntity, LocationEntity]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [seedUserConfig],

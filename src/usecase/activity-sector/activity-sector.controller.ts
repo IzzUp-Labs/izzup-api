@@ -18,17 +18,23 @@ export class ActivitySectorController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Post()
   create(@Body() activitySectorDto: ActivitySectorDto) {
     return this.activitySectorService.create(activitySectorDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
     return this.activitySectorService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.activitySectorService.findOne({ id: +id });
@@ -36,7 +42,7 @@ export class ActivitySectorController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateActivitySectorDto: UpdateActivitySectorDto) {
     return this.activitySectorService.update(+id, updateActivitySectorDto);
@@ -44,7 +50,7 @@ export class ActivitySectorController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.activitySectorService.remove(+id);
