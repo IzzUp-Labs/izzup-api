@@ -30,8 +30,8 @@ export class HomepageCardController {
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.ADMIN)
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @UseInterceptors(FileInterceptor('file'))
   @Post()
   create(@Body() homepageCardDto: HomepageCardDto, @UploadedFile() file: Express.Multer.File,) {
@@ -39,31 +39,33 @@ export class HomepageCardController {
     return this.homepageCardService.create(homepageCardDto, file);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll() {
     return this.homepageCardService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get(":id")
   findOne(@Body() homepageCardDto) {
     return this.homepageCardService.findOne(homepageCardDto);
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.ADMIN)
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Patch(":id")
   update(@Param("id") id: number ,@Body() homepageCardDto) {
     return this.homepageCardService.update(id, homepageCardDto);
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.ADMIN)
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Delete(":id")
   remove(@Param("id") id: number) {
     return this.homepageCardService.remove(id);
   }
-
-
 }

@@ -17,7 +17,7 @@ export class UserStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Post()
   create(@Body() createUserStatusDto: CreateUserStatusDto) {
     return this.userStatusService.create(createUserStatusDto);
@@ -25,7 +25,7 @@ export class UserStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
     return this.userStatusService.findAll();
@@ -33,7 +33,7 @@ export class UserStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userStatusService.findOne( { id: +id} );
@@ -41,7 +41,7 @@ export class UserStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserStatusDto: UpdateUserStatusDto) {
     return this.userStatusService.update(+id, updateUserStatusDto);
@@ -49,7 +49,7 @@ export class UserStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userStatusService.remove(+id);

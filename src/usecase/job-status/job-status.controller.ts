@@ -18,7 +18,7 @@ export class JobStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Post()
   create(@Body() jobStatusDto: JobStatusDto) {
     return this.jobStatusService.create(jobStatusDto);
@@ -26,7 +26,7 @@ export class JobStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
     return this.jobStatusService.findAll();
@@ -34,7 +34,7 @@ export class JobStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.jobStatusService.findOne({ id: +id });
@@ -42,7 +42,7 @@ export class JobStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Patch(":id")
   update(@Param("id") id: string, @Body() updatedJobStatus: UpdateJobStatusDto) {
     return this.jobStatusService.update(+id, updatedJobStatus);
@@ -50,7 +50,7 @@ export class JobStatusController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.jobStatusService.remove(+id);

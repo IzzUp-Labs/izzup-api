@@ -20,6 +20,7 @@ import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
+import {StatusGuard} from "../../domain/guards/status.decorator";
 
 @ApiTags('User')
 @Controller({
@@ -31,29 +32,38 @@ export class UserController {
               private readonly paramCheckService: ParamCheckService) {
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @ApiBearerAuth()
-  //@UseGuards(AuthGuard('jwt'))
-  //@RoleGuard(RoleEnum.ADMIN)
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.userService.findOne({ id: +id });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.userService.remove(+id);
@@ -61,7 +71,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Get("users/unverified")
   getUnverifiedUsers() {
     return this.userService.getUsersByStatus(UserStatusEnum.UNVERIFIED);
@@ -69,7 +79,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard(RoleEnum.ADMIN)
+  @RoleGuard([RoleEnum.ADMIN])
   @Patch(":id/verify")
   verifyUser(@Param("id") id: string) {
     return this.userService.verifyUser(+id);

@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch } from "@nestjs/common";
-import { ExtraService } from "./extra.service";
-import { UpdateExtraDto } from "./dto/update-extra.dto";
-import { TagDto } from "../tag/dto/tag.dto";
-import {ApiTags} from "@nestjs/swagger";
+import {Body, Controller, Delete, Get, Param, Patch, UseGuards} from "@nestjs/common";
+import {ExtraService} from "./extra.service";
+import {UpdateExtraDto} from "./dto/update-extra.dto";
+import {TagDto} from "../tag/dto/tag.dto";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
+import {RoleGuard} from "../../domain/guards/role.decorator";
+import {RoleEnum} from "../../domain/utils/enums/role.enum";
+import {AuthGuard} from "@nestjs/passport";
 
 @ApiTags('Extras')
 @Controller({
@@ -13,36 +16,56 @@ export class ExtraController {
   constructor(private readonly extraService: ExtraService) {
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
     return this.extraService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.extraService.findOne({ id: +id });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateExtraDto: UpdateExtraDto) {
     return this.extraService.update(+id, updateExtraDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.extraService.remove(+id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Patch(":id/tag/:tagId")
   addTag(@Param("id") id: string, @Param("tagId") tagId: string) {
     return this.extraService.addTag(+id, +tagId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Patch(":id/add/tags")
   addTags(@Param("id") id: string, @Body() tags: TagDto[]) {
     return this.extraService.addTags({id: +id}, tags);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Delete(":id/tag/:tagId")
   removeTag(@Param("id") id: string, @Param("tagId") tagId: string) {
     return this.extraService.removeTag(+id, +tagId);

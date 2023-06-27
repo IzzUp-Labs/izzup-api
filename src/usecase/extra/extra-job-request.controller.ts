@@ -1,10 +1,12 @@
 import {Controller, Get, Headers, Param, Post, UseGuards} from "@nestjs/common";
-import { ExtraJobRequestService } from "./extra-job-request.service";
-import { AuthGuard } from "@nestjs/passport";
-import { RoleEnum } from "../../domain/utils/enums/role.enum";
-import { RoleGuard } from "../../domain/guards/role.decorator";
-import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
+import {ExtraJobRequestService} from "./extra-job-request.service";
+import {AuthGuard} from "@nestjs/passport";
+import {RoleEnum} from "../../domain/utils/enums/role.enum";
+import {RoleGuard} from "../../domain/guards/role.decorator";
+import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
+import {StatusGuard} from "../../domain/guards/status.decorator";
+import {UserStatusEnum} from "../../domain/utils/enums/user-status.enum";
 
 @ApiTags('Extra Job Requests')
 @Controller({
@@ -19,8 +21,9 @@ export class ExtraJobRequestController {
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.EXTRA)
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EXTRA])
+  @StatusGuard(UserStatusEnum.VERIFIED)
   @Post(":jobOfferId")
   create(@Param("jobOfferId") jobOfferId: string, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
@@ -28,7 +31,9 @@ export class ExtraJobRequestController {
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.EMPLOYER)
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER, RoleEnum.ADMIN])
+  @StatusGuard(UserStatusEnum.VERIFIED)
   @Get(":jobOfferId")
   findAllJobRequestsByJobOfferId(@Param("jobOfferId") jobOfferId: string) {
     return this.extraJobRequestService.findAllJobRequestsByJobOfferId(+jobOfferId);

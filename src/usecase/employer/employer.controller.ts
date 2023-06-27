@@ -11,13 +11,15 @@ import {
   Post,
   UseGuards
 } from "@nestjs/common";
-import { EmployerService } from "./employer.service";
-import { UpdateEmployerDto } from "./dto/update-employer.dto";
-import { AuthGuard } from "@nestjs/passport";
-import { RoleGuard } from "../../domain/guards/role.decorator";
-import { RoleEnum } from "../../domain/utils/enums/role.enum";
-import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
+import {EmployerService} from "./employer.service";
+import {UpdateEmployerDto} from "./dto/update-employer.dto";
+import {AuthGuard} from "@nestjs/passport";
+import {RoleGuard} from "../../domain/guards/role.decorator";
+import {RoleEnum} from "../../domain/utils/enums/role.enum";
+import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
+import {StatusGuard} from "../../domain/guards/status.decorator";
+import {UserStatusEnum} from "../../domain/utils/enums/user-status.enum";
 
 @ApiTags('Employers')
 @Controller({
@@ -29,29 +31,41 @@ export class EmployerController {
               private readonly paramCheckService: ParamCheckService) {
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
     return this.employerService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.employerService.findOne({ id: +id });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateEmployerDto: UpdateEmployerDto) {
     return this.employerService.update(+id, updateEmployerDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.employerService.remove(+id);
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
   @Post(":id/job-offer/:companyId")
   createJobOffer(@Param("id") id: string, @Param("companyId") companyId: string, @Body() jobOfferDto, @Headers("Authorization") authorization: string) {
     const result = this.paramCheckService.check(authorization, +id)
@@ -70,8 +84,9 @@ export class EmployerController {
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
   @Get("my/joboffers")
   getMyJobOffers(@Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
@@ -79,8 +94,9 @@ export class EmployerController {
   }
 
   @ApiBearerAuth()
-  @RoleGuard(RoleEnum.EMPLOYER)
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
   @Patch("accept/request/:requestId")
   acceptExtraJobRequest(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
