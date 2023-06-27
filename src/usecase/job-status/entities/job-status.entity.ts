@@ -5,6 +5,6 @@ export class JobStatusEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false, unique: true})
   status: string;
 }

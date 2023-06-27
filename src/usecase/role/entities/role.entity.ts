@@ -5,6 +5,6 @@ export class RoleEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false, unique: true})
   name: string;
 }

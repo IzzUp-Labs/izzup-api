@@ -20,7 +20,6 @@ import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
-import {StatusGuard} from "../../domain/guards/status.decorator";
 
 @ApiTags('User')
 @Controller({

@@ -15,16 +15,16 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false, unique: true})
   email: string;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   password: string;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   last_name: string;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   first_name: string;
 
   @Column({type: 'date', nullable: false})
@@ -33,7 +33,7 @@ export class UserEntity {
   @Column( {type: 'varchar', nullable: true })
   photo: string;
 
-  @Column()
+  @Column({type: 'varchar', nullable: false})
   role: string;
 
   @Column({type: 'varchar', nullable: true })
