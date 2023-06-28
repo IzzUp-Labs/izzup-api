@@ -39,8 +39,8 @@ export class HomepageCardController {
     return this.homepageCardService.create(homepageCardDto, file);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  /*@ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))*/
   @Get()
   findAll() {
     return this.homepageCardService.findAll();
