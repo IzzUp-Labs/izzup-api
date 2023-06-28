@@ -21,7 +21,7 @@ export class GooglePlacesService {
                 }),
             ),
         );
-        return data;
+        return data.candidates.filter(candidate => candidate.types.includes('establishment'));
     }
 
     async getPlaceDetails(placeId: string){
