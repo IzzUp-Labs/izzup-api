@@ -55,9 +55,9 @@ export class LocationController {
     return this.locationService.remove(+id);
   }
 
-  @ApiBearerAuth()
+  /*@ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @RoleGuard([RoleEnum.EXTRA, RoleEnum.ADMIN])
+  @RoleGuard([RoleEnum.EXTRA, RoleEnum.ADMIN])*/
   @Post('job-offers-in-range')
   findJobOffersInArea(@Body() checkJobOffersInRangeDto: CheckJobOffersInRangeDto) {
     return this.locationService.findJobOffersInArea(checkJobOffersInRangeDto);
