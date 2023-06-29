@@ -79,6 +79,7 @@ export class AuthService {
     });
     return await this.userService.create({
       ...authRegisterExtraDto,
+      email: authRegisterExtraDto.email.toLowerCase(),
       password: hashedPassword,
       role: RoleEnum.EXTRA,
       extra: extra,
@@ -94,6 +95,7 @@ export class AuthService {
     const employer = await this.employerService.create({});
     const user = await this.userService.create({
         ...authRegisterEmployer,
+        email: authRegisterEmployer.email.toLowerCase(),
         password: hashedPassword,
         role: RoleEnum.EMPLOYER,
         employer: employer
