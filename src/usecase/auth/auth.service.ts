@@ -67,7 +67,7 @@ export class AuthService {
 
   async isMember(authMembershipCheckDto: AuthMembershipCheckDto): Promise<boolean> {
     const user = await this.userService.findOne({
-      email: authMembershipCheckDto.email
+      email: authMembershipCheckDto.email.toLowerCase()
     });
     return !!user;
   }
