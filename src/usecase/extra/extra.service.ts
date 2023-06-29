@@ -65,6 +65,9 @@ export class ExtraService {
 
   async addTags(extraId: number, tagIds: number[]) {
     const extra = await this.extrasRepository.findOne({
+      relations: {
+        tags: true
+      },
       where: {
         user: {
           id: extraId
