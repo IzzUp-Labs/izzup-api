@@ -76,7 +76,8 @@ export class ExtraService {
         .createQueryBuilder()
         .relation(ExtraEntity, "tags")
         .of(extra.id)
-        .add(tagIds);
+      //add tags if not already added
+        .addAndRemove(tagIds, extra.tags.map(tag => tag.id))
     }
     catch (error) {
       throw new Error("Tag not found");
