@@ -65,11 +65,23 @@ export class ExtraService {
     }
   }
 
-  async addTags(extraId: EntityCondition<UserEntity>, tagIds: TagDto[]) {
+  async addTags(extraId: number, tagIds: number[]) {
+    const extra = await this.extrasRepository.findOne({
+      relations: {
+        tags: true
+      },
+      where: {
+        user: {
+          id: extraId
+        }
+      }
+    })
     try {
-      const user = await this.extrasRepository.findOne( {where: extraId});
-      user.tags = tagIds;
-      return this.extrasRepository.save(user);
+      return this.extrasRepository
+          .createQueryBuilder()
+          .relation(ExtraEntity, "tags")
+          .of(extra.id)
+          .addAndRemove(tagIds, extra.tags.map(tag => tag.id))
     }
     catch (error) {
       throw new Error("Tag not found");

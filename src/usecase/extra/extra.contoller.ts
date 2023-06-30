@@ -1,11 +1,11 @@
-import {Body, Controller, Delete, Get, Param, Patch, UseGuards} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Patch, UseGuards, Headers} from "@nestjs/common";
 import {ExtraService} from "./extra.service";
 import {UpdateExtraDto} from "./dto/update-extra.dto";
-import {TagDto} from "../tag/dto/tag.dto";
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import {RoleGuard} from "../../domain/guards/role.decorator";
 import {RoleEnum} from "../../domain/utils/enums/role.enum";
 import {AuthGuard} from "@nestjs/passport";
+import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
 
 @ApiTags('Extras')
 @Controller({
@@ -13,8 +13,10 @@ import {AuthGuard} from "@nestjs/passport";
   version: "1"
 })
 export class ExtraController {
-  constructor(private readonly extraService: ExtraService) {
-  }
+  constructor(
+      private readonly extraService: ExtraService,
+      private readonly paramCheckService: ParamCheckService
+  ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
@@ -58,9 +60,10 @@ export class ExtraController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
-  @Patch(":id/add/tags")
-  addTags(@Param("id") id: string, @Body() tags: TagDto[]) {
-    return this.extraService.addTags({id: +id}, tags);
+  @Patch("add/tags")
+  addTags(@Body() tagsIds: number[], @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization)
+    return this.extraService.addTags(+userId, tagsIds);
   }
 
   @ApiBearerAuth()
