@@ -25,6 +25,8 @@ import { FirebaseStorageService } from "./infrastructure/config/firebase-storage
 import { GooglePlacesModule } from './usecase/google-places/google-places.module';
 import googleApiConfig from "./infrastructure/config/google-api.config";
 import {LocationModule} from "./usecase/location/location.module";
+import {MessagingRoomModule} from "./usecase/messaging/messaging-room.module";
+import {MessagingModule} from "./usecase/messaging/messaging.module";
 
 @Module({
   imports: [
@@ -65,7 +67,9 @@ import {LocationModule} from "./usecase/location/location.module";
     UserStatusModule,
     HomepageCardModule,
     GooglePlacesModule,
-    LocationModule
+    LocationModule,
+    MessagingRoomModule,
+    MessagingModule
   ],
   controllers: [],
   providers: [

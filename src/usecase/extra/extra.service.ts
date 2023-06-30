@@ -1,12 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "../user/entities/user.entity";
 import { Repository } from "typeorm";
 import { EntityCondition } from "../../domain/utils/types/entity-condition.type";
 import { ExtraEntity } from "./entities/extra.entity";
 import { UpdateExtraDto } from "./dto/update-extra.dto";
 import { ExtraDto } from "./dto/extra.dto";
-import { TagDto } from "../tag/dto/tag.dto";
 
 @Injectable()
 export class ExtraService {
@@ -65,11 +63,23 @@ export class ExtraService {
     }
   }
 
-  async addTags(extraId: EntityCondition<UserEntity>, tagIds: TagDto[]) {
+  async addTags(extraId: number, tagIds: number[]) {
+    const extra = await this.extrasRepository.findOne({
+      relations: {
+        tags: true
+      },
+      where: {
+        user: {
+          id: extraId
+        }
+      }
+    })
     try {
-      const user = await this.extrasRepository.findOne( {where: extraId});
-      user.tags = tagIds;
-      return this.extrasRepository.save(user);
+      return this.extrasRepository
+          .createQueryBuilder()
+          .relation(ExtraEntity, "tags")
+          .of(extra.id)
+          .addAndRemove(tagIds, extra.tags.map(tag => tag.id))
     }
     catch (error) {
       throw new Error("Tag not found");
