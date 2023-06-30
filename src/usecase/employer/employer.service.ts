@@ -63,7 +63,9 @@ export class EmployerService {
 
   async getMyCompanies(userId: number) {
     const employerCompanies = await this.employerRepository.findOne({
-      relations: ['companies'],
+      relations: {
+        companies: true
+      },
       where: {
         user: {
           id: userId
@@ -71,6 +73,19 @@ export class EmployerService {
       }
     })
     return employerCompanies.companies;
+  }
+
+  async getEmployerWithCompanies(userId: number) {
+    return await this.employerRepository.findOne({
+      relations: {
+        companies: true
+      },
+      where: {
+        user: {
+          id: userId
+        }
+      }
+    })
   }
 
   async getMyJobOffers(userId: number) {
