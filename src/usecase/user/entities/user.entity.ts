@@ -2,13 +2,14 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity, JoinColumn, JoinTable, ManyToMany, OneToOne,
+  Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
 import {EmployerEntity} from "../../employer/entities/employer.entity";
 import {ExtraEntity} from "../../extra/entities/extra.entity";
 import { UserStatusEntity } from "../../user-status/entities/user-status.entity";
+import {MessagingRoomEntity} from "../../messaging/entities/messaging-room.entity";
 
 @Entity("user")
 export class UserEntity {
@@ -50,6 +51,9 @@ export class UserEntity {
   @ManyToMany(() => UserStatusEntity)
   @JoinTable()
   statuses: UserStatusEntity[];
+
+  @OneToMany(()=> MessagingRoomEntity, (messageRoom) => messageRoom.participant)
+  rooms: MessagingRoomEntity[];
 
   @CreateDateColumn()
   created_at: Date;

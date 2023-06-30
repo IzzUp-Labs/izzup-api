@@ -1,12 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "../user/entities/user.entity";
 import { Repository } from "typeorm";
 import { EntityCondition } from "../../domain/utils/types/entity-condition.type";
 import { ExtraEntity } from "./entities/extra.entity";
 import { UpdateExtraDto } from "./dto/update-extra.dto";
 import { ExtraDto } from "./dto/extra.dto";
-import { TagDto } from "../tag/dto/tag.dto";
 
 @Injectable()
 export class ExtraService {
