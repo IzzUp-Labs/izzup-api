@@ -15,6 +15,12 @@ export class JobOfferEntity {
   job_description: string;
 
   @Column({nullable: false})
+  starting_date: Date;
+
+  @Column({nullable: false})
+  working_hours: number;
+
+  @Column({nullable: false})
   price: number;
 
   @Column({type: 'boolean', nullable: false})
