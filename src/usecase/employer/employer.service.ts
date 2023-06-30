@@ -20,8 +20,7 @@ export class EmployerService {
     private jobOfferService: JobOfferService,
     private readonly companyService: CompanyService,
     private readonly extraJobRequestService: ExtraJobRequestService
-  ) {
-  }
+  ) {}
 
   create(employerDto: EmployerDto) {
     return this.employerRepository.save(
@@ -71,6 +70,19 @@ export class EmployerService {
       }
     })
     return employerCompanies.companies;
+  }
+
+  async getEmployerWithCompanies(userId: number) {
+    return await this.employerRepository.findOne({
+      relations: {
+        companies: true
+      },
+      where: {
+        user: {
+          id: userId
+        }
+      }
+    })
   }
 
   async getMyJobOffers(userId: number) {

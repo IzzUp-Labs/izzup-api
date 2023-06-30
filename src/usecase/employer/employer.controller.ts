@@ -96,6 +96,26 @@ export class EmployerController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard([RoleEnum.EMPLOYER])
+  @Get("my/company")
+  getMyCompany(@Headers("Authorization") authorization: string) {
+    const result = this.paramCheckService.decodeId(authorization);
+    if(result) {
+      return this.employerService.getEmployerWithCompanies(result);
+    }
+    else {
+      throw new HttpException(
+          {
+            status: HttpStatus.UNAUTHORIZED,
+            reason: "Invalid user"
+          },
+          HttpStatus.UNAUTHORIZED
+      );
+    }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Patch("accept/request/:requestId")
   acceptExtraJobRequest(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
