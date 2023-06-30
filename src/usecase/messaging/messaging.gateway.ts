@@ -87,7 +87,7 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
   }
 
   @SubscribeMessage('request_all_room_messages')
-  async findAllRoomMessages(@ConnectedSocket() client: Socket, @MessageBody('roomId') roomId: number) {
+  async findAllRoomMessages(@ConnectedSocket() client: Socket, @MessageBody('roomId') roomId: string) {
     const messages = await this.messagingService.findAllRoomMessages(roomId);
     client.emit('receive_all_room_messages', messages);
   }

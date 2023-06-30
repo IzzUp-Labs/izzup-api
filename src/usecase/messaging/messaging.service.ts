@@ -41,7 +41,7 @@ export class MessagingService {
     return this.messagingRepository.find({relations: ["author"], order:{creationDate:'ASC'}});
   }
 
-  findAllRoomMessages(roomId: number) {
+  findAllRoomMessages(roomId: string) {
     return this.messagingRepository.createQueryBuilder("messaging")
         .leftJoinAndSelect("messaging.author", "author")
         .where("messaging.room = :roomId", {roomId: roomId})
