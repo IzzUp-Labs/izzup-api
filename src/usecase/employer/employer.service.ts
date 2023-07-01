@@ -74,9 +74,7 @@ export class EmployerService {
 
   async getEmployerWithCompanies(userId: number) {
     return await this.employerRepository.findOne({
-      relations: {
-        companies: true
-      },
+      relations: ["companies", "companies.jobOffers"],
       where: {
         user: {
           id: userId

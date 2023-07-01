@@ -9,6 +9,7 @@ import { RoleSeedModule } from "./role/role-seed.module";
 import { UserStatusSeedModule } from "./user-status/user-status-seed.module";
 import {TagsSeedModule} from "./tags/tags-seed.module";
 import {ActivitySectorSeedModule} from "./activity-sector/activity-sector-seed.module";
+import {HomepageCardSeedModule} from "./homepage-card/homepage-card-seed.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import {ActivitySectorSeedModule} from "./activity-sector/activity-sector-seed.m
     UserStatusSeedModule,
     TagsSeedModule,
     ActivitySectorSeedModule,
+    HomepageCardSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
