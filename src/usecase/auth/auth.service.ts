@@ -28,7 +28,7 @@ export class AuthService {
 
   validateLogin(authLoginDto: AuthLoginDto): Promise<{ token: string }> {
     return this.userService.findOne({
-      email: authLoginDto.email
+      email: authLoginDto.email.toLowerCase()
     }).then((user) => {
       if (!user) {
         throw new HttpException(
