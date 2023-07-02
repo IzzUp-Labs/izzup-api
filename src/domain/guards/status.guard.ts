@@ -1,8 +1,9 @@
-import {CanActivate, ExecutionContext} from "@nestjs/common";
+import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {Reflector} from "@nestjs/core";
 import {UserService} from "../../usecase/user/user.service";
 import {AuthService} from "../../usecase/auth/auth.service";
 
+@Injectable()
 export class StatusGuard implements CanActivate{
     constructor(
         private readonly reflector: Reflector,
