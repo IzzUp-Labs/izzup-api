@@ -22,7 +22,7 @@ export class ExtraJobRequestService {
       throw new HttpException('Job offer not found', 404);
     if (!jobOffer.is_available)
       throw new HttpException('Job offer is not available', 400);
-    const extra = await this.extraService.findOne({ user: { id: userId } });
+    const extra = await this.extraService.findExtraWithRequestsAndJobOffers({ user: { id: userId } });
 
     if (extra == null)
       throw new HttpException('Extra not found', 404);

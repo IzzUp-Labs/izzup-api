@@ -38,6 +38,13 @@ export class ExtraService {
     });
   }
 
+  findExtraWithRequestsAndJobOffers(fields: EntityCondition<ExtraEntity>) {
+    return this.extrasRepository.findOne({
+      relations: ['requests', 'requests.jobOffer'],
+      where: fields
+    });
+  }
+
   update(id: number, updateExtraDto: UpdateExtraDto) {
     return this.extrasRepository.save(
       this.extrasRepository.create({
