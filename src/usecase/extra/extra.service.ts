@@ -5,7 +5,6 @@ import {EntityCondition} from "../../domain/utils/types/entity-condition.type";
 import {ExtraEntity} from "./entities/extra.entity";
 import {UpdateExtraDto} from "./dto/update-extra.dto";
 import {ExtraDto} from "./dto/extra.dto";
-import {ExtraJobRequestService} from "./extra-job-request.service";
 import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
 
 @Injectable()
@@ -13,7 +12,6 @@ export class ExtraService {
   constructor(
     @InjectRepository(ExtraEntity)
     private extrasRepository: Repository<ExtraEntity>,
-    private readonly extraJobRequestService: ExtraJobRequestService
   ) {}
 
   create(extraDto: ExtraDto) {
