@@ -52,6 +52,9 @@ export class EmployerService {
   }
 
   async createJobOffer(userId: number, jobOfferDto: JobOfferDto, company_id: number) {
+    if(jobOfferDto.starting_date.getTime() < new Date().getTime()) {
+        throw new HttpException('Starting date must be in the future', 400);
+    }
     const jobOffer = await this.jobOfferService.create(jobOfferDto);
     const myCompanies = await this.getMyCompanies(userId);
     if(!myCompanies || !myCompanies.find(company => company.id === company_id)) {
@@ -70,6 +73,11 @@ export class EmployerService {
       }
     })
     return employerCompanies.companies;
+  }
+
+  async getMyJobOffersWithExtraUsers(userId: number) {
+    const employer = await this.getEmployerWithCompanies(userId);
+    return await this.jobOfferService.findJobOffersWithRequestsAndExtraUsers(employer.companies[0].id);
   }
 
   async getEmployerWithCompanies(userId: number) {
@@ -130,5 +138,119 @@ export class EmployerService {
       .then(requests => requests.filter(request => request.status === JobRequestStatus.PENDING)
         .map(request => request.id));
     return await this.extraJobRequestService.rejectRemainingRequests(requestIdsToReject);
+  }
+
+  async rejectExtraJobRequest(userId: number, request_id: number) {
+    const jobOffer = await this.jobOfferService.findJobOfferWithRequests({ requests: { id: request_id } });
+    if(jobOffer.company.employer.user.id !== userId) {
+      throw new HttpException('You are not the employer of this company', 403);
+    }
+    if(!jobOffer) {
+      throw new HttpException('Job offer not found for this request id', 404);
+    }
+
+    const request = jobOffer.requests.find(request => request.id === request_id);
+    if (!request) {
+      throw new HttpException('Request not found', 404);
+    }else if(request.status !== JobRequestStatus.PENDING) {
+      throw new HttpException('Request is not pending', 400);
+    }
+
+    try {
+      await this.extraJobRequestService.update(request.id, {
+        status: JobRequestStatus.REJECTED
+      });
+    }catch (e) {
+      throw new HttpException('Error while rejecting request', 500);
+    }
+    request.status = JobRequestStatus.REJECTED;
+  }
+
+  async confirmWork(userId: number, request_id: number) {
+    const jobOffer = await this.jobOfferService.findJobOfferWithRequests({ requests: { id: request_id } });
+    if(jobOffer.company.employer.user.id !== userId) {
+      throw new HttpException('You are not the employer of this company', 403);
+    }
+    if(!jobOffer) {
+      throw new HttpException('Job offer not found for this request id', 404);
+    }
+
+    const request = jobOffer.requests.find(request => request.id === request_id);
+    if (!request) {
+      throw new HttpException('Request not found', 404);
+    }else if(request.status !== JobRequestStatus.ACCEPTED) {
+      throw new HttpException('Request is not accepted', 400);
+    }
+
+    if(jobOffer.starting_date.getTime() > new Date().getTime()) {
+      throw new HttpException('Starting date is not passed yet', 400);
+    }
+
+    try {
+      await this.extraJobRequestService.update(request.id, {
+        status: JobRequestStatus.WAITING_FOR_VERIFICATION,
+        verification_code: Math.floor(1000 + Math.random() * 9000)
+      });
+    }catch (e) {
+      throw new HttpException('Error while confirming request', 500);
+    }
+    request.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
+  }
+
+  async finishWork(userId: number, request_id: number, verification_code: number) {
+    const jobOffer = await this.jobOfferService.findJobOfferWithRequests({ requests: { id: request_id } });
+    if(jobOffer.company.employer.user.id !== userId) {
+      throw new HttpException('You are not the employer of this company', 403);
+    }
+    if(!jobOffer) {
+      throw new HttpException('Job offer not found for this request id', 404);
+    }
+
+    const request = jobOffer.requests.find(request => request.id === request_id);
+    if (!request) {
+      throw new HttpException('Request not found', 404);
+    }else if(request.status !== JobRequestStatus.WAITING_FOR_VERIFICATION) {
+      throw new HttpException('Request is not waiting for verification', 400);
+    }
+
+    if(request.verification_code !== verification_code) {
+      throw new HttpException('Invalid verification code', 400);
+    }
+
+    try {
+      await this.extraJobRequestService.update(request.id, {
+        status: JobRequestStatus.FINISHED,
+        verification_code: null
+      });
+    }catch (e) {
+      throw new HttpException('Error while finishing request', 500);
+    }
+    request.status = JobRequestStatus.FINISHED;
+  }
+
+  async getStatistics(userId: number) {
+    const employer = await this.getEmployerWithCompanies(userId);
+    if(!employer) {
+      throw new HttpException('Employer not found', 404);
+    }
+    const companies = employer.companies;
+    const jobOffers = companies.flatMap(company => company.jobOffers);
+    const jobRequests = jobOffers.flatMap(jobOffer => jobOffer.requests);
+
+    const totalJobOffers = jobOffers.length;
+    const totalJobRequests = jobRequests.length;
+    const totalAcceptedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.ACCEPTED).length;
+    const totalFinishedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.FINISHED).length;
+    const totalRejectedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.REJECTED).length;
+    const totalWaitingForVerificationJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.WAITING_FOR_VERIFICATION).length;
+
+    return {
+      total_job_offers : totalJobOffers,
+      total_job_requests : totalJobRequests,
+      total_accepted_job_requests : totalAcceptedJobRequests,
+      total_finished_job_requests : totalFinishedJobRequests,
+      total_rejected_job_requests : totalRejectedJobRequests,
+      total_waiting_job_requests : totalWaitingForVerificationJobRequests
+    };
   }
 }

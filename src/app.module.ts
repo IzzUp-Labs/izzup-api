@@ -27,6 +27,7 @@ import googleApiConfig from "./infrastructure/config/google-api.config";
 import {LocationModule} from "./usecase/location/location.module";
 import {MessagingRoomModule} from "./usecase/messaging/messaging-room.module";
 import {MessagingModule} from "./usecase/messaging/messaging.module";
+import {StatusGuard} from "./domain/guards/status.guard";
 
 @Module({
   imports: [
@@ -76,6 +77,10 @@ import {MessagingModule} from "./usecase/messaging/messaging.module";
     {
       provide: 'APP_GUARD',
       useClass: RolesGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: StatusGuard,
     }
   ],
 })

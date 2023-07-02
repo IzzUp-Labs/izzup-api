@@ -334,6 +334,7 @@ describe('EmployerService', () => {
       const extraJobRequest: ExtraJobRequestEntity = {
         id: 1,
         status: JobRequestStatus.PENDING,
+        verification_code: null,
         extra: null,
         jobOffer: null,
       };
@@ -419,12 +420,14 @@ describe('EmployerService', () => {
         id: 1,
         status: JobRequestStatus.PENDING,
         extra: null,
+        verification_code: null,
         jobOffer: null,
       };
       const acceptedextraJobRequest: ExtraJobRequestEntity = {
         id: 2,
         status: JobRequestStatus.PENDING,
         extra: null,
+        verification_code: null,
         jobOffer: null,
       };
 

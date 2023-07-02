@@ -32,6 +32,10 @@ export class CompanyService {
 
   findOne(fields: EntityCondition<CompanyEntity>) {
     return this.companyRepository.findOne({
+      relations: {
+        sectors: true,
+        jobOffers: true
+      },
       where: fields
     });
   }

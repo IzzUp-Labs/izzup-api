@@ -38,6 +38,7 @@ export class UserService {
 
   findOne(fields: EntityCondition<UserEntity>) {
     return this.usersRepository.findOne({
+      relations: ["statuses"],
       where: fields
     });
   }

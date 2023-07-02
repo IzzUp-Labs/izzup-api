@@ -71,7 +71,16 @@ describe('ExtraJobRequestService', () => {
         const extraJobRequestDto : ExtraJobRequestDto = {
           status: JobRequestStatus.PENDING,
         }
-        const extra = { id: extraId };
+        const extra: ExtraEntity = {
+            id: extraId,
+            user: null,
+            requests: [],
+            address: null,
+            tags: [],
+            created_at: null,
+            deleted_at: null,
+            updated_at: null,
+        };
         const jobOffer = { id: jobOfferId, is_available: true, requests: [], spots: 1 };
         const createdRequest = { id: 4 };
 
