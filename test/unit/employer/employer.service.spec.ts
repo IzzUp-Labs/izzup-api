@@ -303,7 +303,7 @@ describe('EmployerService', () => {
         price: 100,
         spots: 1,
         job_description: "Test",
-        starting_date: new Date(),
+        starting_date: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
         working_hours: 1,
         is_available: true,
         acceptedSpots: 1,
