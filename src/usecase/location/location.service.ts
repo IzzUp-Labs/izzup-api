@@ -25,7 +25,9 @@ export class LocationService {
   }
 
   findAll() {
-    return this.locationRepository.find();
+    return this.locationRepository.find({
+        relations: ["company", "company.jobOffers"]
+    });
   }
 
   findOne(fields: EntityCondition<LocationEntity>) {
