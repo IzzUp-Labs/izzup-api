@@ -52,6 +52,7 @@ export class EmployerService {
   }
 
   async createJobOffer(userId: number, jobOfferDto: JobOfferDto, company_id: number) {
+    jobOfferDto.starting_date = new Date(jobOfferDto.starting_date);
     if(jobOfferDto.starting_date.getTime() < new Date().getTime()) {
         throw new HttpException('Starting date must be in the future', 400);
     }
