@@ -52,12 +52,17 @@ export class LocationService {
         center: [checkJobOffersInRangeDto.latitude, checkJobOffersInRangeDto.longitude],
         radius: 10000 // 10km
     }
-    return await this.locationRepository.createQueryBuilder("location")
+    const locationOfferAvailable = await this.locationRepository.createQueryBuilder("location")
         .leftJoinAndSelect("location.company", "company")
         .leftJoinAndSelect("company.jobOffers", "jobOffer")
         .where("jobOffer.is_available = :isAvailable", {isAvailable: true})
-        .andWhere(isInsideCircle(circle.center, ["location.latitude", "location.longitude"], circle.radius))
+        //.andWhere(isInsideCircle(circle.center, ["location.latitude", "location.longitude"], circle.radius))
         .getMany();
+
+    // Check if the job offer is in the circle
+    return locationOfferAvailable.filter(location => {
+      return isInsideCircle(circle.center, [location.latitude, location.longitude], circle.radius);
+    });
   }
 }
 
