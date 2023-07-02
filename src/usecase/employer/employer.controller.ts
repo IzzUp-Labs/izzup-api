@@ -117,9 +117,59 @@ export class EmployerController {
   @UseGuards(AuthGuard('jwt'))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
+  @Get("my/jobOffers/requests")
+  findMyJobOffersWithRequests(@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.getMyJobOffersWithExtraUsers(userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
   @Patch("accept/request/:requestId")
   acceptExtraJobRequest(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
     return this.employerService.acceptExtraJobRequest(userId, +requestId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
+  @Patch("reject/request/:requestId")
+  rejectExtraJobRequest(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.rejectExtraJobRequest(userId, +requestId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
+  @Patch("comfirm-work/:requestId")
+  confirmWork(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.confirmWork(userId, +requestId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
+  @Patch("finish-work/:requestId/:code")
+  finishWork(@Param("requestId") requestId, @Param("code") code,@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.finishWork(userId, +requestId, +code);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
+  @Get("statistics")
+  getStatistics(@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.getStatistics(userId);
   }
 }

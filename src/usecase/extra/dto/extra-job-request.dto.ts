@@ -4,4 +4,6 @@ import {ApiProperty} from "@nestjs/swagger";
 export class ExtraJobRequestDto {
   @ApiProperty({type: JobRequestStatus})
   status: JobRequestStatus;
+  @ApiProperty()
+  verification_code?: number;
 }

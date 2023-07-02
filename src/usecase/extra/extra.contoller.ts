@@ -73,4 +73,22 @@ export class ExtraController {
   removeTag(@Param("id") id: string, @Param("tagId") tagId: string) {
     return this.extraService.removeTag(+id, +tagId);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
+  @Get(":requestId/verification-code")
+  getVerificationCode(@Param("requestId") requestId: string, @Headers("Authorization") authorization: string){
+    const userId = this.paramCheckService.decodeId(authorization)
+    return this.extraService.getVerificationCode(userId, +requestId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
+  @Get("statistics")
+  getStatistics(@Headers("Authorization") authorization: string){
+    const userId = this.paramCheckService.decodeId(authorization)
+    return this.extraService.getStatistics(userId);
+  }
 }

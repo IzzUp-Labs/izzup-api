@@ -22,10 +22,17 @@ export class ExtraJobRequestService {
       throw new HttpException('Job offer not found', 404);
     if (!jobOffer.is_available)
       throw new HttpException('Job offer is not available', 400);
-
     const extra = await this.extraService.findOne({ user: { id: userId } });
+
     if (extra == null)
       throw new HttpException('Extra not found', 404);
+
+    extra.requests.forEach(request => {
+        if (request.jobOffer.starting_date.getTime() < jobOffer.starting_date.getTime() + jobOffer.working_hours * 60 * 60 * 1000 &&
+            request.jobOffer.starting_date.getTime() + request.jobOffer.working_hours * 60 * 60 * 1000 > jobOffer.starting_date.getTime() &&
+            request.status == JobRequestStatus.ACCEPTED)
+            throw new HttpException('Already have a request accepted at the same time', 400);
+    })
 
     jobOffer.requests.forEach(request => {
         if (request.extra.id == extra.id)

@@ -40,6 +40,17 @@ export class JobOfferService {
     });
   }
 
+  async findJobOffersWithRequestsAndExtraUsers(companyId: number) {
+    return await this.jobOfferRepository.find({
+      relations: ['requests', 'requests.extra', 'requests.extra.user'],
+      where: {
+        company: {
+          id: companyId
+        }
+      }
+    });
+  }
+
   update(id: number, jobOfferDto: JobOfferDto) {
     return this.jobOfferRepository.save(
       this.jobOfferRepository.create({
