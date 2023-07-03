@@ -5,6 +5,6 @@ export class AppSocketSessionEntity{
     @PrimaryColumn("varchar")
     clientId!: string;
 
-    @PrimaryColumn("varchar")
+    @PrimaryColumn()
     userId!: number;
 }

@@ -14,7 +14,10 @@ export class SocketService {
     ) {}
 
     async createSocketSession(clientId: string, userId: number) {
-        return this.appSocketSessionRepository.save({
+        await this.appSocketSessionRepository.delete({
+            userId: userId
+        })
+        return await this.appSocketSessionRepository.save({
             clientId: clientId,
             userId: userId,
         });
@@ -31,6 +34,6 @@ export class SocketService {
                 userId: userId
             }
         })
-        return user.clientId
+        return user?.clientId
     }
 }
