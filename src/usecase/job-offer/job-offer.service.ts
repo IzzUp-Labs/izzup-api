@@ -35,7 +35,7 @@ export class JobOfferService {
 
   findJobOfferWithRequests(fields: EntityCondition<JobOfferEntity>) {
     return this.jobOfferRepository.findOne({
-      relations: ['requests', 'company', 'company.employer.user', 'requests.extra', 'extra.user'],
+      relations: ['requests', 'company', 'company.employer.user', 'requests.extra.user'],
       where: fields
     });
   }
