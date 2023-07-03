@@ -121,19 +121,19 @@ export class UserService {
     blobStream.on('error', () => {
       return new HttpException("Something went wrong with the upload", 500)
     });
-    blobStream.on('finish', () => {
+    await blobStream.on('finish', () => {
       bucket.getSignedUrl({
         action: 'read',
         expires: '03-09-2491'
-      }).then(signedUrls => {
-        this.usersRepository.createQueryBuilder()
+      }).then(signedUrls => async () => {
+        await this.usersRepository.createQueryBuilder()
           .where("id = :id", { id: userId })
           .update(UserEntity)
           .set({ photo: signedUrls[0] })
           .execute();
       });
     });
-    blobStream.end(file.buffer);
+    await blobStream.end(file.buffer);
   }
 
   async uploadId(userId: number, file: Express.Multer.File) {
