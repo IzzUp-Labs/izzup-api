@@ -93,6 +93,7 @@ export class UserController {
       throw new HttpException("Photo not provided", 400);
     }
     const userId = this.paramCheckService.decodeId(authorization);
+    // Await photo upload
     return await this.userService.uploadFile(userId, file);
   }
 
