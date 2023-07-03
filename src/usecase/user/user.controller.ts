@@ -88,12 +88,12 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload/photo')
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
     if(file === undefined) {
       throw new HttpException("Photo not provided", 400);
     }
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.userService.uploadFile(userId, file);
+    return await this.userService.uploadFile(userId, file);
   }
 
   @ApiBearerAuth()
