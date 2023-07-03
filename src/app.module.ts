@@ -28,6 +28,7 @@ import {LocationModule} from "./usecase/location/location.module";
 import {MessagingRoomModule} from "./usecase/messaging/messaging-room.module";
 import {MessagingModule} from "./usecase/messaging/messaging.module";
 import {StatusGuard} from "./domain/guards/status.guard";
+import {SocketModule} from "./usecase/app-socket/socket.module";
 
 @Module({
   imports: [
@@ -70,7 +71,8 @@ import {StatusGuard} from "./domain/guards/status.guard";
     GooglePlacesModule,
     LocationModule,
     MessagingRoomModule,
-    MessagingModule
+    MessagingModule,
+    SocketModule
   ],
   controllers: [],
   providers: [

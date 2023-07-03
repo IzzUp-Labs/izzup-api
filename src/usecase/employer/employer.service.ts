@@ -11,6 +11,7 @@ import {CompanyService} from "../company/company.service";
 import {ExtraJobRequestService} from "../extra/extra-job-request.service";
 import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
 import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
+import {SocketService} from "../app-socket/socket.service";
 
 @Injectable()
 export class EmployerService {
@@ -19,7 +20,8 @@ export class EmployerService {
     private employerRepository: Repository<EmployerEntity>,
     private jobOfferService: JobOfferService,
     private readonly companyService: CompanyService,
-    private readonly extraJobRequestService: ExtraJobRequestService
+    private readonly extraJobRequestService: ExtraJobRequestService,
+    private readonly socketService: SocketService,
   ) {}
 
   create(employerDto: EmployerDto) {
@@ -128,6 +130,13 @@ export class EmployerService {
     }
     request.status = JobRequestStatus.ACCEPTED;
 
+    //SOCKET : EMIT EVENT "JOB-REQUEST-ACCEPTED"
+    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+    this.socketService.socket.to(clientId).emit('job-request-accepted', {
+        jobOffer: jobOffer.id,
+        request: request.id
+    });
+
     if(jobOffer.acceptedSpots + 1 === jobOffer.spots) {
       return await this.setJobOfferExpired(jobOffer);
     }
@@ -192,6 +201,13 @@ export class EmployerService {
         status: JobRequestStatus.WAITING_FOR_VERIFICATION,
         verification_code: Math.floor(1000 + Math.random() * 9000)
       });
+
+      //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
+      const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+      this.socketService.socket.to(clientId).emit('job-request-confirmed', {
+        jobOffer: jobOffer.id,
+        request: request.id
+      });
     }catch (e) {
       throw new HttpException('Error while confirming request', 500);
     }
@@ -217,6 +233,13 @@ export class EmployerService {
     if(request.verification_code !== verification_code) {
       throw new HttpException('Invalid verification code', 400);
     }
+
+    //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
+    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+    this.socketService.socket.to(clientId).emit('job-request-finished', {
+      jobOffer: jobOffer.id,
+      request: request.id
+    });
 
     try {
       await this.extraJobRequestService.update(request.id, {
