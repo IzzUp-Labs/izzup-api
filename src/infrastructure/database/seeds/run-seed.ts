@@ -10,12 +10,12 @@ import {HomepageCardSeedService} from "./homepage-card/homepage-card-seed.servic
 const runSeed = async () => {
     const app = await NestFactory.create(SeedModule);
     // run
-    await app.get(UserSeedService).run();
+    await app.get(ActivitySectorSeedService).run();
     await app.get(RoleSeedService).run();
     await app.get(UserStatusSeedService).run();
-    await app.get(ActivitySectorSeedService).run();
     await app.get(TagsSeedService).run();
     await app.get(HomepageCardSeedService).run();
+    await app.get(UserSeedService).run();
     await app.close();
 };
 

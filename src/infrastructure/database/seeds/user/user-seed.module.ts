@@ -7,10 +7,8 @@ import seedUserConfig from "../../../config/seed-user.config";
 import { EmployerEntity } from "../../../../usecase/employer/entities/employer.entity";
 import { ExtraEntity } from "../../../../usecase/extra/entities/extra.entity";
 import { ExtraJobRequestEntity } from "../../../../usecase/extra/entities/extra-job-request.entity";
-import { TagEntity } from "../../../../usecase/tag/entities/tag.entity";
 import { JobOfferEntity } from "../../../../usecase/job-offer/entities/job-offer.entity";
 import { CompanyEntity } from "../../../../usecase/company/entities/company.entity";
-import { ActivitySectorEntity } from "../../../../usecase/activity-sector/entities/activity-sector.entity";
 import { UserStatusEntity } from "../../../../usecase/user-status/entities/user-status.entity";
 import {LocationEntity} from "../../../../usecase/location/entities/location.entity";
 import {MessagingRoomEntity} from "../../../../usecase/messaging/entities/messaging-room.entity";
@@ -20,8 +18,7 @@ import {MessagingSessionEntity} from "../../../../usecase/messaging/entities/mes
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      UserEntity, EmployerEntity, ExtraEntity, ExtraJobRequestEntity,
-      TagEntity, JobOfferEntity, CompanyEntity, ActivitySectorEntity,
+      UserEntity, EmployerEntity, ExtraEntity, ExtraJobRequestEntity, JobOfferEntity, CompanyEntity,
       UserStatusEntity, LocationEntity, MessagingRoomEntity, MessagingEntity, MessagingSessionEntity]),
     ConfigModule.forRoot({
       isGlobal: true,
