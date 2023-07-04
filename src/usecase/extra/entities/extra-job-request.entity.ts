@@ -1,4 +1,12 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from "typeorm";
 import {ExtraEntity} from "./extra.entity";
 import {JobOfferEntity} from "../../job-offer/entities/job-offer.entity";
 
@@ -18,4 +26,13 @@ export class ExtraJobRequestEntity {
 
   @ManyToOne(() => JobOfferEntity, (jobOffer) => jobOffer.requests)
   jobOffer: JobOfferEntity;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
 }

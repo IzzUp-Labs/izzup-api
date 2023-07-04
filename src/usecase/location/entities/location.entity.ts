@@ -1,4 +1,12 @@
-import {Column, Entity, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 import {CompanyEntity} from "../../company/entities/company.entity";
 
 @Entity("company_location")
@@ -14,4 +22,13 @@ export class LocationEntity {
 
     @OneToOne(() => CompanyEntity, (company) => company.location)
     company: CompanyEntity;
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
+
+    @DeleteDateColumn()
+    deleted_at: Date;
 }
