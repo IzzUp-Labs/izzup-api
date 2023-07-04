@@ -24,6 +24,11 @@ export class JobRequestTaskService {
     const now = moment();
     for (const jobOffer of jobOffers) {
       const startingDate = moment(jobOffer.starting_date);
+
+      console.log("STARTING DATE JOB OFFER : " + startingDate);
+      console.log("DATE TIME NOW : " +now);
+      console.log("IS BEFORE NOW ? : " + startingDate.isBefore(now));
+
       if (startingDate.isBefore(now) && jobOffer.is_available == true) {
         await this.jobOfferService.updateAvailable(jobOffer.id, false);
       }
