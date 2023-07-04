@@ -79,7 +79,7 @@ export class JobOfferService {
   }
 
   remove(id: number) {
-    return this.jobOfferRepository.delete(id);
+    return this.jobOfferRepository.softDelete(id);
   }
 
 }

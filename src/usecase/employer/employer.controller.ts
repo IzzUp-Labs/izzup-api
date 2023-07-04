@@ -172,4 +172,14 @@ export class EmployerController {
     const userId = this.paramCheckService.decodeId(authorization);
     return this.employerService.finishWork(userId, +requestId, +code);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.EMPLOYER, RoleEnum.ADMIN])
+  @StatusGuard(UserStatusEnum.VERIFIED)
+  @Delete("job-offer/:id")
+  deleteJobOffer(@Param("id") id: string, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.deleteJobOffer(+id, userId);
+  }
 }

@@ -283,4 +283,24 @@ export class EmployerService {
       total_waiting_job_requests : totalWaitingForVerificationJobRequests
     };
   }
+
+  async deleteJobOffer(userId: number, jobOfferId: number) {
+    const employer = await this.getEmployerWithCompanies(userId);
+    if(!employer) {
+        throw new HttpException('Employer not found', 404);
+    }
+    const companies = employer.companies;
+    const jobOffer = companies.flatMap(company => company.jobOffers).find(jobOffer => jobOffer.id === jobOfferId);
+    if(!jobOffer) {
+        throw new HttpException('Job offer not found', 404);
+    }
+    if(jobOffer.company.employer.user.id !== userId) {
+        throw new HttpException('You are not the employer of this company', 403);
+    }
+    try {
+        await this.jobOfferService.remove(jobOfferId)
+    }catch (e) {
+        throw new HttpException('Error while deleting job offer', 500);
+    }
+  }
 }
