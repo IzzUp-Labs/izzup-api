@@ -12,6 +12,7 @@ import {ExtraJobRequestService} from "../extra/extra-job-request.service";
 import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
 import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
 import {SocketService} from "../app-socket/socket.service";
+import * as moment from 'moment';
 
 @Injectable()
 export class EmployerService {
@@ -54,8 +55,8 @@ export class EmployerService {
   }
 
   async createJobOffer(userId: number, jobOfferDto: JobOfferDto, company_id: number) {
-    jobOfferDto.starting_date = new Date(jobOfferDto.starting_date);
-    if(jobOfferDto.starting_date.getTime() < new Date().getTime()) {
+    const currentStartingDate = moment(jobOfferDto.starting_date);
+    if(currentStartingDate.isBefore(moment())) {
         throw new HttpException('Starting date must be in the future', 400);
     }
     const jobOffer = await this.jobOfferService.create(jobOfferDto);
@@ -198,7 +199,8 @@ export class EmployerService {
       throw new HttpException('Request is not accepted', 400);
     }
 
-    if(jobOffer.starting_date.getTime() > new Date().getTime()) {
+    const currentStartingDate = moment(jobOffer.starting_date);
+    if (currentStartingDate.isAfter(moment())) {
       throw new HttpException('Starting date is not passed yet', 400);
     }
 

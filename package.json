@@ -40,6 +40,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",
     "geofencer": "^1.0.2",
+    "moment": "^2.29.4",
     "nestjs-firebase": "^9.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",

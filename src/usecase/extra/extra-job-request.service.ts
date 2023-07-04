@@ -7,6 +7,7 @@ import { ExtraJobRequestDto } from "./dto/extra-job-request.dto";
 import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
 import { ExtraService } from "./extra.service";
 import {JobOfferEntity} from "../job-offer/entities/job-offer.entity";
+import * as moment from 'moment';
 
 @Injectable()
 export class ExtraJobRequestService {
@@ -28,12 +29,21 @@ export class ExtraJobRequestService {
     if (extra == null)
       throw new HttpException('Extra not found', 404);
 
+    const currentStartingDate = moment(jobOffer.starting_date);
+    const currentEndingDate = moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours');
+
     extra.requests.forEach(request => {
-        if (request.jobOffer.starting_date.getTime() < jobOffer.starting_date.getTime() + jobOffer.working_hours * 60 * 60 * 1000 &&
-            request.jobOffer.starting_date.getTime() + request.jobOffer.working_hours * 60 * 60 * 1000 > jobOffer.starting_date.getTime() &&
-            request.status == JobRequestStatus.ACCEPTED)
+        const requestStartingDate = moment(request.jobOffer.starting_date);
+        const requestEndingDate = moment(request.jobOffer.starting_date).add(request.jobOffer.working_hours, 'hours');
+
+        if (
+            requestStartingDate.isBefore(currentEndingDate) &&
+            requestEndingDate.isAfter(currentStartingDate) &&
+            request.status === JobRequestStatus.ACCEPTED
+        ) {
             throw new HttpException('Already have a request accepted at the same time', 400);
-    })
+        }
+    });
 
     jobOffer.requests.forEach(request => {
         if (request.extra.id == extra.id)
@@ -78,11 +88,20 @@ export class ExtraJobRequestService {
   async rejectExtraRequestWhenAccepted(extraId: number, jobOffer: JobOfferEntity) {
       const extraWithRequests = await this.extraService.findExtraWithRequestsAndJobOffers({ id: extraId });
       extraWithRequests.requests.forEach(request => {
-          if (request.jobOffer.starting_date.getTime() < jobOffer.starting_date.getTime() + jobOffer.working_hours * 60 * 60 * 1000 &&
-              request.jobOffer.starting_date.getTime() + request.jobOffer.working_hours * 60 * 60 * 1000 > jobOffer.starting_date.getTime() &&
-              request.status == JobRequestStatus.PENDING)
+          const currentStartingDate = moment(jobOffer.starting_date);
+          const currentEndingDate = moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours');
+          const requestStartingDate = moment(request.jobOffer.starting_date);
+          const requestEndingDate = moment(request.jobOffer.starting_date).add(request.jobOffer.working_hours, 'hours');
+
+          if (
+              requestStartingDate.isBefore(currentEndingDate) &&
+              requestEndingDate.isAfter(currentStartingDate) &&
+              request.status === JobRequestStatus.PENDING
+          ) {
               // Update status to REJECTED
               this.update(request.id, { status: JobRequestStatus.REJECTED });
+          }
       });
   }
+
 }

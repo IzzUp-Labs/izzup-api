@@ -4,6 +4,7 @@ import {JobOfferService} from "../job-offer/job-offer.service";
 import {ExtraJobRequestService} from "../extra/extra-job-request.service";
 import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
 import {SocketService} from "../app-socket/socket.service";
+import * as moment from 'moment';
 
 @Injectable()
 export class JobRequestTaskService {
@@ -20,12 +21,14 @@ export class JobRequestTaskService {
     this.logger.log('Called every minute')
     const jobOffers= await this.jobOfferService.findAll();
     if (!jobOffers) return;
+    const now = moment();
     for (const jobOffer of jobOffers) {
-      if (jobOffer.starting_date.getTime() < new Date().getTime() && jobOffer.is_available == true) {
+      const startingDate = moment(jobOffer.starting_date);
+      if (startingDate.isBefore(now) && jobOffer.is_available == true) {
         await this.jobOfferService.updateAvailable(jobOffer.id, false);
       }
       for (const request of jobOffer.requests) {
-        if (request.status == JobRequestStatus.ACCEPTED && jobOffer.starting_date.getTime() + jobOffer.working_hours * 60 * 60 * 1000 >= new Date().getTime()) {
+        if (request.status == JobRequestStatus.ACCEPTED && moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isAfter(now)) {
           await this.extraJobRequestService.update(request.id, {
             status: JobRequestStatus.WAITING_FOR_VERIFICATION,
             verification_code: Math.floor(1000 + Math.random() * 9000)
