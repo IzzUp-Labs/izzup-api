@@ -122,9 +122,10 @@ export class ExtraService {
   async getStatistics(userId: number) {
     const extra = await this.findOne({user: {id: userId}});
     const requests = extra.requests;
+
     const total_earned = requests.filter(request => request.status === JobRequestStatus.FINISHED)
-        .map(request => request.jobOffer.price)
-        .reduce((a, b) => a + b, 0);
+      .map(request => request.jobOffer.price * request.jobOffer.working_hours)
+      .reduce((a, b) => a + b, 0);
 
     return {
       total_request: requests.length,
