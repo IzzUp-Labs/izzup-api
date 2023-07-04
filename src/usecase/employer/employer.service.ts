@@ -101,6 +101,7 @@ export class EmployerService {
 
   async acceptExtraJobRequest(userId: number, request_id: number) {
     const jobOffer = await this.jobOfferService.findJobOfferWithRequests({ requests: { id: request_id } });
+    console.log(jobOffer);
     if(jobOffer.company.employer.user.id !== userId) {
       throw new HttpException('You are not the employer of this company', 403);
     }
@@ -147,6 +148,9 @@ export class EmployerService {
     const requestIdsToReject = await this.extraJobRequestService.findAllJobRequestsByJobOfferId(jobOffer.id)
       .then(requests => requests.filter(request => request.status === JobRequestStatus.PENDING)
         .map(request => request.id));
+    if (requestIdsToReject.length === 0) {
+      return;
+    }
     return await this.extraJobRequestService.rejectRemainingRequests(requestIdsToReject);
   }
 
