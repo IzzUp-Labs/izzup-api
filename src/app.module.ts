@@ -29,6 +29,8 @@ import {MessagingRoomModule} from "./usecase/messaging/messaging-room.module";
 import {MessagingModule} from "./usecase/messaging/messaging.module";
 import {StatusGuard} from "./domain/guards/status.guard";
 import {SocketModule} from "./usecase/app-socket/socket.module";
+import { ScheduleModule } from "@nestjs/schedule";
+import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task.module";
 
 @Module({
   imports: [
@@ -54,6 +56,8 @@ import {SocketModule} from "./usecase/app-socket/socket.module";
       useClass: FirebaseStorageService,
       inject: [ConfigService]
     }),
+    JobRequestTaskModule,
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     ExtraModule,
