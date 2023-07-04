@@ -28,9 +28,26 @@ export class ExtraController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
+  @Get("statistics")
+  getStatistics(@Headers("Authorization") authorization: string){
+    const userId = this.paramCheckService.decodeId(authorization)
+    return this.extraService.getStatistics(userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.extraService.findOne({ id: +id });
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Get("with/request")
+  findExtraWithRequest(@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization)
+    return this.extraService.findOne({user : {id: userId}});
   }
 
   @ApiBearerAuth()
@@ -81,14 +98,5 @@ export class ExtraController {
   getVerificationCode(@Param("requestId") requestId: string, @Headers("Authorization") authorization: string){
     const userId = this.paramCheckService.decodeId(authorization)
     return this.extraService.getVerificationCode(userId, +requestId);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
-  @Get("statistics")
-  getStatistics(@Headers("Authorization") authorization: string){
-    const userId = this.paramCheckService.decodeId(authorization)
-    return this.extraService.getStatistics(userId);
   }
 }

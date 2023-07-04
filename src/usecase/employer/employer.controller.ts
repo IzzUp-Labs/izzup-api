@@ -41,6 +41,16 @@ export class EmployerController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
+  @StatusGuard(UserStatusEnum.VERIFIED)
+  @Get("statistics")
+  getStatistics(@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.employerService.getStatistics(userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.employerService.findOne({ id: +id });
@@ -161,15 +171,5 @@ export class EmployerController {
   finishWork(@Param("requestId") requestId, @Param("code") code,@Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
     return this.employerService.finishWork(userId, +requestId, +code);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
-  @StatusGuard(UserStatusEnum.VERIFIED)
-  @Get("statistics")
-  getStatistics(@Headers("Authorization") authorization: string) {
-    const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.getStatistics(userId);
   }
 }

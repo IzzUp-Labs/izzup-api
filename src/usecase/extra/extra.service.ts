@@ -33,6 +33,7 @@ export class ExtraService {
       relations: {
         tags: true,
         requests: true,
+        user: true
       },
       where: fields
     });
