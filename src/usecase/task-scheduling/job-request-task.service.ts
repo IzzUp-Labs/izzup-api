@@ -21,10 +21,8 @@ export class JobRequestTaskService {
     const jobOffers= await this.jobOfferService.findAll();
     if (!jobOffers) return;
     for (const jobOffer of jobOffers) {
-      // If the job offer is passed, we set it to unavailable
-      if ( jobOffer.starting_date.getTime() > new Date().getTime()) {
+      if (jobOffer.starting_date.getTime() > new Date().getTime() && jobOffer.is_available == true) {
         await this.jobOfferService.updateAvailable(jobOffer.id, false);
-        continue;
       }
       for (const request of jobOffer.requests) {
         if (request.status == JobRequestStatus.ACCEPTED && jobOffer.starting_date.getTime() + jobOffer.working_hours * 60 * 60 * 1000 >= new Date().getTime()) {
