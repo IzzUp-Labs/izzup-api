@@ -6,6 +6,7 @@ import { JobOfferService } from "../job-offer/job-offer.service";
 import { ExtraJobRequestDto } from "./dto/extra-job-request.dto";
 import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
 import { ExtraService } from "./extra.service";
+import {JobOfferEntity} from "../job-offer/entities/job-offer.entity";
 
 @Injectable()
 export class ExtraJobRequestService {
@@ -72,5 +73,16 @@ export class ExtraJobRequestService {
       .set({ status: JobRequestStatus.REJECTED })
       .where('id IN (:...ids)', { ids: requestIds })
       .execute();
+  }
+
+  async rejectExtraRequestWhenAccepted(extraId: number, jobOffer: JobOfferEntity) {
+      const extraWithRequests = await this.extraService.findExtraWithRequestsAndJobOffers({ id: extraId });
+      extraWithRequests.requests.forEach(request => {
+          if (request.jobOffer.starting_date.getTime() < jobOffer.starting_date.getTime() + jobOffer.working_hours * 60 * 60 * 1000 &&
+              request.jobOffer.starting_date.getTime() + request.jobOffer.working_hours * 60 * 60 * 1000 > jobOffer.starting_date.getTime() &&
+              request.status == JobRequestStatus.PENDING)
+              // Update status to REJECTED
+              this.update(request.id, { status: JobRequestStatus.REJECTED });
+      });
   }
 }

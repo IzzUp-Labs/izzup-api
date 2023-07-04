@@ -127,6 +127,8 @@ export class EmployerService {
     }catch (e) {
       throw new HttpException('Error while accepting request', 500);
     } finally {
+      // If the request is accepted, we update the number of accepted spots and all other requests are rejected for the extra at the same time
+      await this.extraJobRequestService.rejectExtraRequestWhenAccepted(request.extra.id, jobOffer);
       await this.jobOfferService.updateAvailableSpots(jobOffer.id, jobOffer.acceptedSpots + 1)
     }
     request.status = JobRequestStatus.ACCEPTED;

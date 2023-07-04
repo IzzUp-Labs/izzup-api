@@ -22,7 +22,9 @@ export class JobOfferService {
   }
 
   findAll() {
-    return this.jobOfferRepository.find();
+    return this.jobOfferRepository.find({
+        relations: ['requests', 'company', 'company.employer.user', 'requests.extra.user']
+    });
   }
 
   findAllAvailable() {
