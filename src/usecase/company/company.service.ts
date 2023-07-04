@@ -24,7 +24,8 @@ export class CompanyService {
     return this.companyRepository.find(
       {
         relations: {
-          sectors: true
+          sectors: true,
+          jobOffers: true,
         }
       }
     );

@@ -265,8 +265,6 @@ export class EmployerService {
     const jobOffers = companies.flatMap(company => company.jobOffers);
     const jobRequests = jobOffers.flatMap(jobOffer => jobOffer.requests);
 
-    console.log(employer);
-
     const totalJobOffers = jobOffers.length;
     const totalJobRequests = jobRequests.length;
     const totalAcceptedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.ACCEPTED).length;
