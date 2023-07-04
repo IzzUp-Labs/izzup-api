@@ -58,6 +58,7 @@ export class LocationService {
         .leftJoinAndSelect("location.company", "company")
         .leftJoinAndSelect("company.jobOffers", "jobOffer")
         .where("jobOffer.is_available = :isAvailable", {isAvailable: true})
+        //.andWhere("jobOffer.starting_date >= :startingDate", {startingDate: new Date()})
         //.andWhere(isInsideCircle(circle.center, ["location.latitude", "location.longitude"], circle.radius))
         .getMany();
 

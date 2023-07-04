@@ -85,7 +85,7 @@ export class EmployerService {
 
   async getEmployerWithCompanies(userId: number) {
     return await this.employerRepository.findOne({
-      relations: ["companies", "companies.jobOffers", "user"],
+      relations: ["companies", "companies.jobOffers.requests","user"],
       where: {
         user: {
           id: userId
@@ -264,6 +264,8 @@ export class EmployerService {
     const companies = employer.companies;
     const jobOffers = companies.flatMap(company => company.jobOffers);
     const jobRequests = jobOffers.flatMap(jobOffer => jobOffer.requests);
+
+    console.log(employer);
 
     const totalJobOffers = jobOffers.length;
     const totalJobRequests = jobRequests.length;
