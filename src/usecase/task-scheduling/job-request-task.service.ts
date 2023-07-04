@@ -21,8 +21,8 @@ export class JobRequestTaskService {
     const jobOffers= await this.jobOfferService.findAll();
     if (!jobOffers) return;
     for (const jobOffer of jobOffers) {
-      // If job offer starting date + working hours + 1hours is passed, set is_available to false and pass to next job offer
-      if (jobOffer.starting_date.getTime() + jobOffer.working_hours * 60 * 60 * 1000 + 60 * 60 * 1000 > new Date().getTime()) {
+      // If the job offer is passed, we set it to unavailable
+      if ( jobOffer.starting_date.getTime() > new Date().getTime()) {
         await this.jobOfferService.updateAvailable(jobOffer.id, false);
         continue;
       }
