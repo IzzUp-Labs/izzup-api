@@ -101,7 +101,7 @@ export class EmployerService {
 
   async acceptExtraJobRequest(userId: number, request_id: number) {
     const jobOffer = await this.jobOfferService.findJobOfferWithRequests({ requests: { id: request_id } });
-    console.log(jobOffer);
+
     if(jobOffer.company.employer.user.id !== userId) {
       throw new HttpException('You are not the employer of this company', 403);
     }
@@ -134,8 +134,8 @@ export class EmployerService {
     //SOCKET : EMIT EVENT "JOB-REQUEST-ACCEPTED"
     const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
     this.socketService.socket.to(clientId).emit('job-request-accepted', {
-        jobOffer: jobOffer.id,
-        request: request.id
+        jobOffer: jobOffer,
+        request: request
     });
 
     if(jobOffer.acceptedSpots + 1 === jobOffer.spots) {
@@ -209,8 +209,8 @@ export class EmployerService {
       //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
       const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
       this.socketService.socket.to(clientId).emit('job-request-confirmed', {
-        jobOffer: jobOffer.id,
-        request: request.id
+        jobOffer: jobOffer,
+        request: request
       });
     }catch (e) {
       throw new HttpException('Error while confirming request', 500);
@@ -241,8 +241,8 @@ export class EmployerService {
     //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
     const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
     this.socketService.socket.to(clientId).emit('job-request-finished', {
-      jobOffer: jobOffer.id,
-      request: request.id
+      jobOffer: jobOffer,
+      request: request
     });
 
     try {
