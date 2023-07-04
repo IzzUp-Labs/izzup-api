@@ -21,7 +21,7 @@ export class JobRequestTaskService {
     const jobOffers= await this.jobOfferService.findAll();
     if (!jobOffers) return;
     for (const jobOffer of jobOffers) {
-      if (jobOffer.starting_date.getTime() > new Date().getTime() && jobOffer.is_available == true) {
+      if (jobOffer.starting_date.getTime() < new Date().getTime() && jobOffer.is_available == true) {
         await this.jobOfferService.updateAvailable(jobOffer.id, false);
       }
       for (const request of jobOffer.requests) {
