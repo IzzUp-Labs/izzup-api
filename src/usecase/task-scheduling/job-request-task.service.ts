@@ -26,12 +26,18 @@ export class JobRequestTaskService {
       const startingDate = moment(jobOffer.starting_date);
       if (startingDate.isBefore(now) && jobOffer.is_available == true) {
         await this.jobOfferService.updateAvailable(jobOffer.id, false);
+        jobOffer.is_available = false;
       }
-      for (const request of jobOffer.requests) {
+      for (let request of jobOffer.requests) {
+
+        console.log("JOB STARTING + WORKING HOURS" + moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours'))
+        console.log("NOW" + now)
+        console.log(moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isBefore(now))
+
         if (request.status == JobRequestStatus.ACCEPTED &&
             moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isBefore(now)
         ) {
-          await this.extraJobRequestService.update(request.id, {
+          request = await this.extraJobRequestService.update(request.id, {
             status: JobRequestStatus.WAITING_FOR_VERIFICATION,
             verification_code: Math.floor(1000 + Math.random() * 9000)
           });
