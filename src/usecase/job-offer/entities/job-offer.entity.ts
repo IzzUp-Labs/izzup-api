@@ -22,7 +22,7 @@ export class JobOfferEntity {
   @Column({type: 'varchar', nullable: false})
   job_description: string;
 
-  @Column({nullable: false})
+  @Column({type:'timestamptz', nullable: false})
   starting_date: Date;
 
   @Column({nullable: false})

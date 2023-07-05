@@ -21,7 +21,7 @@ export class ExtraJobRequestEntity {
   @ManyToOne(() => ExtraEntity, (extra) => extra.requests)
   extra: ExtraEntity;
 
-  @Column({type: "numeric", nullable: true, precision: 6, scale: 0})
+  @Column({type: "numeric", nullable: true, precision: 4, scale: 0})
   verification_code: number;
 
   @ManyToOne(() => JobOfferEntity, (jobOffer) => jobOffer.requests)

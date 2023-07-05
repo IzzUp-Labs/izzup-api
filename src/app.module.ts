@@ -31,6 +31,10 @@ import {StatusGuard} from "./domain/guards/status.guard";
 import {SocketModule} from "./usecase/app-socket/socket.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task.module";
+import { MailingModule } from './usecase/mailing/mailing.module';
+import { MailerModule } from "@nestjs-modules/mailer";
+import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import verificationEmailConfig from "./infrastructure/config/verification-email.config";
 
 @Module({
   imports: [
@@ -42,7 +46,8 @@ import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task
         authConfig,
         firebaseConfig,
         authConfig,
-        googleApiConfig
+        googleApiConfig,
+        verificationEmailConfig
       ],
       envFilePath: [".env"]
     }),
@@ -58,6 +63,17 @@ import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task
     }),
     JobRequestTaskModule,
     ScheduleModule.forRoot(),
+    MailingModule,
+    MailerModule.forRoot({
+      transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+      template: {
+        dir: process.cwd() + '/templates/',
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     UserModule,
     AuthModule,
     ExtraModule,
@@ -76,7 +92,8 @@ import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task
     LocationModule,
     MessagingRoomModule,
     MessagingModule,
-    SocketModule
+    SocketModule,
+    MailingModule
   ],
   controllers: [],
   providers: [

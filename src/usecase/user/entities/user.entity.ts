@@ -19,6 +19,12 @@ export class UserEntity {
   @Column({type: 'varchar', nullable: false, unique: true})
   email: string;
 
+  @Column({type: 'boolean', nullable: false, default: false})
+  is_email_confirmed: boolean;
+
+  @Column({type: "numeric", nullable: true, precision: 5, scale: 0})
+  email_confirmation_code: number;
+
   @Column({type: 'varchar', nullable: false})
   password: string;
 

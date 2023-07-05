@@ -21,6 +21,7 @@
     "test:e2e": "jest --config test/e2e/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
@@ -40,8 +41,11 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",
     "geofencer": "^1.0.2",
+    "googleapis": "^120.0.0",
+    "handlebars": "^4.7.7",
     "moment": "^2.29.4",
     "nestjs-firebase": "^9.0.0",
+    "nodemailer": "^6.9.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.10.0",
@@ -59,6 +63,7 @@
     "@types/express": "^4.17.13",
     "@types/jest": "29.2.4",
     "@types/node": "18.11.18",
+    "@types/nodemailer": "^6.4.8",
     "@types/passport-jwt": "^3.0.8",
     "@types/socket.io": "^3.0.2",
     "@types/supertest": "^2.0.11",
