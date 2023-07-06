@@ -10,7 +10,7 @@ export class NotificationService {
 
     sendNotificationToUser()  {
         this.firebase.messaging.send({
-            token: 'cf9zoNPYTOmlVGLeS77O8I:APA91bHJi8al3G8nzEb-tVGCNxuYI7-PqBWmbeVKYhGwtpxc5NuIPE9NRk7aa02ya26hTwEnnuKpOKN3rKeiFB1H4EBc6G2SE3zOnCzBQ8c5W1H7Z5vfmBvZKPF0V257r7a8AlhQg4GN',
+            token: 'ewG2CuaUTDemMade9kEcWz:APA91bHfKUsoS5ynblg59eYaqDGfiGatO9CDQE7Avok9lKg3thdf2jHPe0YC3DAl3WqHj6Hj0f0Kd62lfUnnrDEYjq3DntfAkqzn8azu4J-zZchwyXS988u_0jDJua5ok-mklkPnAT55',
             notification: {
                 title: 'Hello',
                 body: 'World',
