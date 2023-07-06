@@ -102,7 +102,9 @@ export class UserService {
     })
     //SOCKET : EMIT EVENT "JOB-REQUEST-ACCEPTED"
     const clientId = await this.socketService.findClientByUserId(id);
-    this.socketService.socket.to(clientId).emit('account_verified');
+    this.socketService.socket.to(clientId).emit('account_verified',{
+        message: "Your account has been verified"
+    });
     await this.usersRepository.createQueryBuilder("user")
       .relation(UserEntity, "statuses")
       .of(id)
