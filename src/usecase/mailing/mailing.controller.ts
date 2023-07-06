@@ -1,4 +1,4 @@
-import { Controller, Get, Headers, Param, Post, UseGuards } from "@nestjs/common";
+import { Controller, Get, Headers, Param, Patch, UseGuards } from "@nestjs/common";
 import { MailingService } from './mailing.service';
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
@@ -24,7 +24,7 @@ export class MailingController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Post('check-code/:code')
+  @Patch('check-code/:code')
   public checkVerificationCode(@Param("code") code:number, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
     this.mailingService.checkVerificationCode(userId, code);
@@ -32,9 +32,17 @@ export class MailingController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Get('change-email/:email')
+  @Patch('change-email/:email')
   public changeEmail(@Param("email") email:string, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
     this.mailingService.changeEmailToSendCode(userId, email);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('send-problem/:requestId')
+  public sendProblemEmail(@Param('requestId') requestId: number, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    this.mailingService.sendProblemEmail(userId, requestId);
   }
 }

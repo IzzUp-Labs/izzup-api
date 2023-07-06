@@ -4,6 +4,9 @@ import { MailerService } from "@nestjs-modules/mailer";
 import { google } from "googleapis";
 import { Options } from 'nodemailer/lib/smtp-transport';
 import { UserService } from "../user/user.service";
+import { JobOfferService } from "../job-offer/job-offer.service";
+import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
+import { ExtraJobRequestService } from "../extra/extra-job-request.service";
 
 @Injectable()
 export class MailingService {
@@ -12,6 +15,8 @@ export class MailingService {
     private readonly configService: ConfigService,
     private readonly mailerService: MailerService,
     private readonly userService: UserService,
+    private readonly jobOfferService: JobOfferService,
+    private readonly extraJobRequestService: ExtraJobRequestService
   ) {}
 
   private async setTransport() {
@@ -96,5 +101,38 @@ export class MailingService {
       email: email,
     });
     await this.sendVerificationEmail(userId);
+  }
+
+  public async sendProblemEmail(userId: number, requestId: number) {
+    // Find user
+    //const user = await this.userService.findOne({ id: userId });
+
+    console.log("USER ID for MALING : " + userId);
+    console.log("REQUEST ID for MALING : " + requestId);
+
+    await this.extraJobRequestService.update(requestId, {
+      status: JobRequestStatus.REJECTED,
+      verification_code: null,
+    });
+
+    await this.setTransport();
+    this.mailerService
+      .sendMail({
+        transporterName: 'gmail',
+        to: this.configService.get('EMAIL'), // list of receivers
+        subject: 'Problem on JobOffer', // Subject line
+        template: 'problem',
+        context: {
+          // Data to be sent to template engine
+          requestId: requestId,
+          userId: userId,
+        },
+      })
+      .then((success) => {
+        console.log(success);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }

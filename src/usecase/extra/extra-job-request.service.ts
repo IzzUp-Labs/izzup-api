@@ -69,12 +69,11 @@ export class ExtraJobRequestService {
   }
 
   update(id: number, extraJobRequestDto: ExtraJobRequestDto) {
-    return this.extraJobRequestRepository.save(
-      this.extraJobRequestRepository.create({
-        id,
-        ...extraJobRequestDto
-      })
-    );
+    return this.extraJobRequestRepository.createQueryBuilder("extraJobRequest")
+      .update(ExtraJobRequestEntity)
+      .set(extraJobRequestDto)
+      .where("id = :id", { id })
+      .execute();
   }
 
   rejectRemainingRequests(requestIds: number[]) {

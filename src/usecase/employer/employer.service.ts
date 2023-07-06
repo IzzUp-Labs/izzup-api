@@ -13,6 +13,7 @@ import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
 import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
 import {SocketService} from "../app-socket/socket.service";
 import * as moment from 'moment';
+import { ExtraJobRequestEntity } from "../extra/entities/extra-job-request.entity";
 
 @Injectable()
 export class EmployerService {
@@ -203,23 +204,24 @@ export class EmployerService {
     if (currentStartingDate.isAfter(moment())) {
       throw new HttpException('Starting date is not passed yet', 400);
     }
-
+    const newRequest: ExtraJobRequestEntity = request;
+    const verification_code = Math.floor(1000 + Math.random() * 9000);
     try {
       await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.WAITING_FOR_VERIFICATION,
-        verification_code: Math.floor(1000 + Math.random() * 9000)
-      });
-
-      //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
-      const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-      this.socketService.socket.to(clientId).emit('job-request-confirmed', {
-        jobOffer: jobOffer,
-        request: request
+        verification_code: verification_code
       });
     }catch (e) {
       throw new HttpException('Error while confirming request', 500);
     }
-    request.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
+    newRequest.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
+    newRequest.verification_code = verification_code;
+    //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
+    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+    this.socketService.socket.to(clientId).emit('job-request-confirmed', {
+      jobOffer: jobOffer,
+      request: newRequest
+    });
   }
 
   async finishWork(userId: number, request_id: number, verification_code: number) {
@@ -238,17 +240,12 @@ export class EmployerService {
       throw new HttpException('Request is not waiting for verification', 400);
     }
 
-    if(request.verification_code !== verification_code) {
+    console.log("VERIFICATION CODE ON REQUEST : " + request.verification_code);
+    console.log("VERIFICATION CODE ON PARAMETER : " + verification_code);
+    if(Number(request.verification_code) !== Number(verification_code)) {
       throw new HttpException('Invalid verification code', 400);
     }
-
-    //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
-    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-    this.socketService.socket.to(clientId).emit('job-request-finished', {
-      jobOffer: jobOffer,
-      request: request
-    });
-
+    const newRequest: ExtraJobRequestEntity = request;
     try {
       await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.FINISHED,
@@ -257,7 +254,14 @@ export class EmployerService {
     }catch (e) {
       throw new HttpException('Error while finishing request', 500);
     }
-    request.status = JobRequestStatus.FINISHED;
+    newRequest.status = JobRequestStatus.FINISHED;
+    newRequest.verification_code = null;
+    //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
+    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+    this.socketService.socket.to(clientId).emit('job-request-finished', {
+      jobOffer: jobOffer,
+      request: newRequest
+    });
   }
 
   async getStatistics(userId: number) {
@@ -275,14 +279,16 @@ export class EmployerService {
     const totalFinishedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.FINISHED).length;
     const totalRejectedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.REJECTED).length;
     const totalWaitingForVerificationJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.WAITING_FOR_VERIFICATION).length;
+    const totalFinishedJobOffers = jobOffers.filter(jobOffer => moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isBefore(moment())).length;
 
     return {
       total_job_offers : totalJobOffers,
       total_job_requests : totalJobRequests,
+      total_finished_job_offers : totalFinishedJobOffers,
       total_accepted_job_requests : totalAcceptedJobRequests,
       total_finished_job_requests : totalFinishedJobRequests,
       total_rejected_job_requests : totalRejectedJobRequests,
-      total_waiting_job_requests : totalWaitingForVerificationJobRequests
+      total_waiting_job_requests : totalWaitingForVerificationJobRequests,
     };
   }
 

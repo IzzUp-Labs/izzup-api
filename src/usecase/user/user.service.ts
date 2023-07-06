@@ -107,7 +107,7 @@ export class UserService {
      return await this.deleteIdPhoto(id);
   }
 
-  uploadFile(userId: number, file: Express.Multer.File) {
+  async uploadFile(userId: number, file: Express.Multer.File) {
     const fileExtension = file.originalname.split('.').pop();
     if (!this.fileExtensionChecker.check(fileExtension)) {
       throw new HttpException("Invalid file extension", 400);
@@ -121,18 +121,19 @@ export class UserService {
     blobStream.on('error', () => {
       return new HttpException("Something went wrong with the upload", 500)
     });
-    return blobStream.on('finish', () => {
+    blobStream.on('finish', () => {
       bucket.getSignedUrl({
         action: 'read',
         expires: '03-09-2491'
-      }).then(signedUrls =>  async () => {
-        await this.usersRepository.createQueryBuilder()
+      }).then(signedUrls => {
+        this.usersRepository.createQueryBuilder()
           .where("id = :id", { id: userId })
           .update(UserEntity)
           .set({ photo: signedUrls[0] })
           .execute();
       });
-    }).end(file.buffer);
+    });
+    blobStream.end(file.buffer);
   }
 
   async uploadId(userId: number, file: Express.Multer.File) {
