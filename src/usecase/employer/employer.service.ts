@@ -279,14 +279,16 @@ export class EmployerService {
     const totalFinishedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.FINISHED).length;
     const totalRejectedJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.REJECTED).length;
     const totalWaitingForVerificationJobRequests = jobRequests.filter(request => request.status === JobRequestStatus.WAITING_FOR_VERIFICATION).length;
+    const totalFinishedJobOffers = jobOffers.filter(jobOffer => moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isBefore(moment())).length;
 
     return {
       total_job_offers : totalJobOffers,
       total_job_requests : totalJobRequests,
+      total_finished_job_offers : totalFinishedJobOffers,
       total_accepted_job_requests : totalAcceptedJobRequests,
       total_finished_job_requests : totalFinishedJobRequests,
       total_rejected_job_requests : totalRejectedJobRequests,
-      total_waiting_job_requests : totalWaitingForVerificationJobRequests
+      total_waiting_job_requests : totalWaitingForVerificationJobRequests,
     };
   }
 
