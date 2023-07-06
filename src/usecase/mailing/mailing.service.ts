@@ -5,6 +5,8 @@ import { google } from "googleapis";
 import { Options } from 'nodemailer/lib/smtp-transport';
 import { UserService } from "../user/user.service";
 import { JobOfferService } from "../job-offer/job-offer.service";
+import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
+import { ExtraJobRequestService } from "../extra/extra-job-request.service";
 
 @Injectable()
 export class MailingService {
@@ -14,6 +16,7 @@ export class MailingService {
     private readonly mailerService: MailerService,
     private readonly userService: UserService,
     private readonly jobOfferService: JobOfferService,
+    private readonly extraJobRequestService: ExtraJobRequestService
   ) {}
 
   private async setTransport() {
@@ -100,20 +103,25 @@ export class MailingService {
     await this.sendVerificationEmail(userId);
   }
 
-  public async sendProblemEmail(userId: number, jobOfferId: number) {
+  public async sendProblemEmail(userId: number, requestId: number) {
     // Find user
-    const user = await this.userService.findOne({ id: userId });
-    const jobOffer = await this.jobOfferService.findOne({ id: jobOfferId });
+    //const user = await this.userService.findOne({ id: userId });
+
+    await this.extraJobRequestService.update(requestId, {
+      status: JobRequestStatus.REJECTED,
+      verification_code: null,
+    });
+
     await this.setTransport();
     this.mailerService
       .sendMail({
         transporterName: 'gmail',
-        to: user.email, // list of receivers
+        to: this.configService.get('EMAIL'), // list of receivers
         subject: 'Problem on JobOffer', // Subject line
         template: 'action',
         context: {
           // Data to be sent to template engine
-          jobOfferId: jobOfferId,
+          requestId: requestId,
           userId: userId,
         },
       })

@@ -40,9 +40,9 @@ export class MailingController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Get('send-problem/:jobOfferId')
-  public sendProblemEmail(@Param('jobOfferId') jobOfferId: number,@Headers("Authorization") authorization: string) {
+  @Get('send-problem/:requestId')
+  public sendProblemEmail(@Param('requestId') requestId: number,@Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    this.mailingService.sendProblemEmail(userId, jobOfferId);
+    this.mailingService.sendProblemEmail(userId, requestId);
   }
 }
