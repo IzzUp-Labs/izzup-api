@@ -209,17 +209,15 @@ export class EmployerService {
         status: JobRequestStatus.WAITING_FOR_VERIFICATION,
         verification_code: Math.floor(1000 + Math.random() * 9000)
       });
-
-      //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
-      const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-      this.socketService.socket.to(clientId).emit('job-request-confirmed', {
-        jobOffer: jobOffer,
-        request: request
-      });
     }catch (e) {
       throw new HttpException('Error while confirming request', 500);
     }
-    request.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
+    //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
+    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+    this.socketService.socket.to(clientId).emit('job-request-confirmed', {
+      jobOffer: jobOffer,
+      request: request
+    });
   }
 
   async finishWork(userId: number, request_id: number, verification_code: number) {
@@ -231,7 +229,7 @@ export class EmployerService {
       throw new HttpException('Job offer not found for this request id', 404);
     }
 
-    const request = jobOffer.requests.find(request => request.id === request_id);
+    let request = jobOffer.requests.find(request => request.id === request_id);
     if (!request) {
       throw new HttpException('Request not found', 404);
     }else if(request.status !== JobRequestStatus.WAITING_FOR_VERIFICATION) {
@@ -244,22 +242,20 @@ export class EmployerService {
       throw new HttpException('Invalid verification code', 400);
     }
 
-    //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
-    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-    this.socketService.socket.to(clientId).emit('job-request-finished', {
-      jobOffer: jobOffer,
-      request: request
-    });
-
     try {
-      await this.extraJobRequestService.update(request.id, {
+      request = await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.FINISHED,
         verification_code: null
       });
     }catch (e) {
       throw new HttpException('Error while finishing request', 500);
     }
-    request.status = JobRequestStatus.FINISHED;
+    //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
+    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+    this.socketService.socket.to(clientId).emit('job-request-finished', {
+      jobOffer: jobOffer,
+      request: request
+    });
   }
 
   async getStatistics(userId: number) {
