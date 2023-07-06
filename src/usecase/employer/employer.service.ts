@@ -14,6 +14,7 @@ import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
 import {SocketService} from "../app-socket/socket.service";
 import * as moment from 'moment';
 import { ExtraJobRequestEntity } from "../extra/entities/extra-job-request.entity";
+import {NotificationService} from "../notification/notification.service";
 
 @Injectable()
 export class EmployerService {
@@ -24,6 +25,7 @@ export class EmployerService {
     private readonly companyService: CompanyService,
     private readonly extraJobRequestService: ExtraJobRequestService,
     private readonly socketService: SocketService,
+    private readonly notificationService: NotificationService
   ) {}
 
   create(employerDto: EmployerDto) {
@@ -141,6 +143,7 @@ export class EmployerService {
         jobOffer: jobOffer,
         request: request
     });
+    await this.notificationService.sendNotificationAll();
 
     if(jobOffer.acceptedSpots + 1 === jobOffer.spots) {
       return await this.setJobOfferExpired(jobOffer);

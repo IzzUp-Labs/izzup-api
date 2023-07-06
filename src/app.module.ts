@@ -35,6 +35,7 @@ import { MailingModule } from './usecase/mailing/mailing.module';
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import verificationEmailConfig from "./infrastructure/config/verification-email.config";
+import {NotificationModule} from "./usecase/notification/notification.module";
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import verificationEmailConfig from "./infrastructure/config/verification-email.
         },
       },
     }),
+    NotificationModule,
     UserModule,
     AuthModule,
     ExtraModule,
