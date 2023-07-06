@@ -212,6 +212,8 @@ export class EmployerService {
 
       //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
       const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
+      console.log("USER ID : " + request.extra.user.id);
+      console.log("SOCKET : EMIT EVENT \"JOB-REQUEST-CONFIRMED\"" + clientId);
       this.socketService.socket.to(clientId).emit('job-request-confirmed', {
         jobOffer: jobOffer,
         request: request
