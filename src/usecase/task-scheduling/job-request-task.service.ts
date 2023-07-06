@@ -28,22 +28,26 @@ export class JobRequestTaskService {
         await this.jobOfferService.updateAvailable(jobOffer.id, false);
         jobOffer.is_available = false;
       }
-      for (let request of jobOffer.requests) {
+      for (const request of jobOffer.requests) {
         if (request.status == JobRequestStatus.ACCEPTED && moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isBefore(now)) {
-          request = await this.extraJobRequestService.update(request.id, {
+          const updatedRequest = request;
+          const verification_code = Math.floor(1000 + Math.random() * 9000);
+          await this.extraJobRequestService.update(request.id, {
             status: JobRequestStatus.WAITING_FOR_VERIFICATION,
-            verification_code: Math.floor(1000 + Math.random() * 9000)
+            verification_code: verification_code
           });
+          updatedRequest.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
+          updatedRequest.verification_code = verification_code;
           //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED" FOR 2 CLIENTS
           const clientIdForExtra = await this.socketService.findClientByUserId(request.extra.user.id);
           const clientIdForCompany = await this.socketService.findClientByUserId(jobOffer.company.employer.user.id);
           this.socketService.socket.to(clientIdForExtra).emit('job-request-confirmed', {
             jobOffer: jobOffer,
-            request: request
+            request: updatedRequest
           });
           this.socketService.socket.to(clientIdForCompany).emit('job-request-confirmed', {
             jobOffer: jobOffer,
-            request: request
+            request: updatedRequest
           });
         }
       }

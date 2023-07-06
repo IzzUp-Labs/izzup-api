@@ -204,15 +204,18 @@ export class EmployerService {
     if (currentStartingDate.isAfter(moment())) {
       throw new HttpException('Starting date is not passed yet', 400);
     }
-    let newRequest: ExtraJobRequestEntity;
+    const newRequest: ExtraJobRequestEntity = request;
+    const verification_code = Math.floor(1000 + Math.random() * 9000);
     try {
-      newRequest = await this.extraJobRequestService.update(request.id, {
+      await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.WAITING_FOR_VERIFICATION,
-        verification_code: Math.floor(1000 + Math.random() * 9000)
+        verification_code: verification_code
       });
     }catch (e) {
       throw new HttpException('Error while confirming request', 500);
     }
+    newRequest.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
+    newRequest.verification_code = verification_code;
     //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
     const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
     this.socketService.socket.to(clientId).emit('job-request-confirmed', {
@@ -242,15 +245,17 @@ export class EmployerService {
     if(Number(request.verification_code) !== Number(verification_code)) {
       throw new HttpException('Invalid verification code', 400);
     }
-    let newRequest: ExtraJobRequestEntity;
+    const newRequest: ExtraJobRequestEntity = request;
     try {
-      newRequest = await this.extraJobRequestService.update(request.id, {
+      await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.FINISHED,
         verification_code: null
       });
     }catch (e) {
       throw new HttpException('Error while finishing request', 500);
     }
+    newRequest.status = JobRequestStatus.FINISHED;
+    newRequest.verification_code = null;
     //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
     const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
     this.socketService.socket.to(clientId).emit('job-request-finished', {
