@@ -29,7 +29,7 @@ export class JobRequestTaskService {
         jobOffer.is_available = false;
       }
       for (let request of jobOffer.requests) {
-        if (request.status == JobRequestStatus.ACCEPTED && moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isAfter(now)) {
+        if (request.status == JobRequestStatus.ACCEPTED && moment(jobOffer.starting_date).add(jobOffer.working_hours, 'hours').isBefore(now)) {
           request = await this.extraJobRequestService.update(request.id, {
             status: JobRequestStatus.WAITING_FOR_VERIFICATION,
             verification_code: Math.floor(1000 + Math.random() * 9000)
