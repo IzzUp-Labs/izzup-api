@@ -192,7 +192,7 @@ export class EmployerService {
       throw new HttpException('Job offer not found for this request id', 404);
     }
 
-    const request = jobOffer.requests.find(request => request.id === request_id);
+    let request = jobOffer.requests.find(request => request.id === request_id);
     if (!request) {
       throw new HttpException('Request not found', 404);
     }else if(request.status !== JobRequestStatus.ACCEPTED) {
@@ -205,15 +205,13 @@ export class EmployerService {
     }
 
     try {
-      await this.extraJobRequestService.update(request.id, {
+      request = await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.WAITING_FOR_VERIFICATION,
         verification_code: Math.floor(1000 + Math.random() * 9000)
       });
 
       //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
       const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-      console.log("USER ID : " + request.extra.user.id);
-      console.log("SOCKET : EMIT EVENT \"JOB-REQUEST-CONFIRMED\"" + clientId);
       this.socketService.socket.to(clientId).emit('job-request-confirmed', {
         jobOffer: jobOffer,
         request: request
