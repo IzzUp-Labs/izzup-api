@@ -105,7 +105,7 @@ export class MailingService {
 
   public async sendProblemEmail(userId: number, requestId: number) {
     // Find user
-    //const user = await this.userService.findOne({ id: userId });
+    const user = await this.userService.findOne({ id: userId });
 
     console.log("USER ID for MALING : " + userId);
     console.log("REQUEST ID for MALING : " + requestId);
@@ -115,17 +115,21 @@ export class MailingService {
       verification_code: null,
     });
 
+
+
     await this.setTransport();
     this.mailerService
       .sendMail({
         transporterName: 'gmail',
         to: this.configService.get('EMAIL'), // list of receivers
-        subject: 'Problem on JobOffer', // Subject line
+        subject: 'Problème sur une fonctionnalité', // Subject line
         template: 'problem',
         context: {
           // Data to be sent to template engine
           requestId: requestId,
-          userId: userId,
+          user_lastname: user.last_name,
+          user_firstname: user.first_name,
+          user_email: user.email,
         },
       })
       .then((success) => {
