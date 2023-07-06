@@ -143,7 +143,7 @@ export class EmployerService {
         jobOffer: jobOffer,
         request: request
     });
-    await this.notificationService.sendNotificationAll();
+    await this.notificationService.sendNotificationToUser();
 
     if(jobOffer.acceptedSpots + 1 === jobOffer.spots) {
       return await this.setJobOfferExpired(jobOffer);

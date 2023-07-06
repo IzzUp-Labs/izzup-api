@@ -8,14 +8,20 @@ export class NotificationService {
         private readonly firebase: FirebaseAdmin,
     ) {}
 
-    sendNotificationAll()  {
-        const message = {
+    sendNotificationToUser()  {
+        this.firebase.messaging.send({
+            token: 'cf9zoNPYTOmlVGLeS77O8I:APA91bHJi8al3G8nzEb-tVGCNxuYI7-PqBWmbeVKYhGwtpxc5NuIPE9NRk7aa02ya26hTwEnnuKpOKN3rKeiFB1H4EBc6G2SE3zOnCzBQ8c5W1H7Z5vfmBvZKPF0V257r7a8AlhQg4GN',
             notification: {
                 title: 'Hello',
                 body: 'World',
             },
-            topic: 'all',
-        };
-        return this.firebase.messaging.send(message);
+            apns: {
+                payload: {
+                    aps: {
+                        contentAvailable: true,
+                    }
+                }
+            }
+        }).then(r => console.log(r)).catch(e => console.log(e));
     }
 }
