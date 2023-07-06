@@ -240,7 +240,7 @@ export class EmployerService {
 
     console.log("VERIFICATION CODE ON REQUEST : " + request.verification_code);
     console.log("VERIFICATION CODE ON PARAMETER : " + verification_code);
-    if(request.verification_code !== verification_code) {
+    if(Number(request.verification_code) !== Number(verification_code)) {
       throw new HttpException('Invalid verification code', 400);
     }
 

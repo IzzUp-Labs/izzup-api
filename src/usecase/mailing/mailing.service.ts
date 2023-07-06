@@ -4,6 +4,7 @@ import { MailerService } from "@nestjs-modules/mailer";
 import { google } from "googleapis";
 import { Options } from 'nodemailer/lib/smtp-transport';
 import { UserService } from "../user/user.service";
+import { JobOfferService } from "../job-offer/job-offer.service";
 
 @Injectable()
 export class MailingService {
@@ -12,6 +13,7 @@ export class MailingService {
     private readonly configService: ConfigService,
     private readonly mailerService: MailerService,
     private readonly userService: UserService,
+    private readonly jobOfferService: JobOfferService,
   ) {}
 
   private async setTransport() {
@@ -96,5 +98,30 @@ export class MailingService {
       email: email,
     });
     await this.sendVerificationEmail(userId);
+  }
+
+  public async sendProblemEmail(userId: number, jobOfferId: number) {
+    // Find user
+    const user = await this.userService.findOne({ id: userId });
+    const jobOffer = await this.jobOfferService.findOne({ id: jobOfferId });
+    await this.setTransport();
+    this.mailerService
+      .sendMail({
+        transporterName: 'gmail',
+        to: user.email, // list of receivers
+        subject: 'Problem on JobOffer', // Subject line
+        template: 'action',
+        context: {
+          // Data to be sent to template engine
+          jobOfferId: jobOfferId,
+          userId: userId,
+        },
+      })
+      .then((success) => {
+        console.log(success);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }

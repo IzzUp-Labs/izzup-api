@@ -37,4 +37,12 @@ export class MailingController {
     const userId = this.paramCheckService.decodeId(authorization);
     this.mailingService.changeEmailToSendCode(userId, email);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Get('send-problem/:jobOfferId')
+  public sendProblemEmail(@Param('jobOfferId') jobOfferId: number,@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    this.mailingService.sendProblemEmail(userId, jobOfferId);
+  }
 }
