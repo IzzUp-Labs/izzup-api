@@ -10,6 +10,7 @@ import { UserStatusService } from "../user-status/user-status.service";
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
+import {SocketService} from "../app-socket/socket.service";
 
 @Injectable()
 export class UserService {
@@ -17,8 +18,9 @@ export class UserService {
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
     private readonly userStatusService: UserStatusService,
-    @InjectFirebaseAdmin() private readonly firebase: FirebaseAdmin,
-
+    @InjectFirebaseAdmin()
+    private readonly firebase: FirebaseAdmin,
+    private readonly socketService: SocketService,
     private readonly configService: ConfigService,
     private readonly fileExtensionChecker: FileExtensionChecker
   ) {
@@ -98,7 +100,9 @@ export class UserService {
      const verifiedStatus = await this.userStatusService.findOne({
       name: UserStatusEnum.VERIFIED
     })
-
+    //SOCKET : EMIT EVENT "JOB-REQUEST-ACCEPTED"
+    const clientId = await this.socketService.findClientByUserId(id);
+    this.socketService.socket.to(clientId).emit('account_verified');
     await this.usersRepository.createQueryBuilder("user")
       .relation(UserEntity, "statuses")
       .of(id)
