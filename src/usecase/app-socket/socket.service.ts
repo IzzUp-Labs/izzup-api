@@ -36,4 +36,8 @@ export class SocketService {
         })
         return user?.clientId
     }
+
+    async getConnectedClients() {
+        return this.appSocketSessionRepository.find();
+    }
 }
