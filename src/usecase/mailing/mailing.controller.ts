@@ -32,7 +32,7 @@ export class MailingController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Get('change-email/:email')
+  @Post('change-email/:email')
   public changeEmail(@Param("email") email:string, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
     this.mailingService.changeEmailToSendCode(userId, email);
@@ -40,7 +40,7 @@ export class MailingController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Get('send-problem/:requestId')
+  @Post('send-problem/:requestId')
   public sendProblemEmail(@Param('requestId') requestId: number,@Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
     this.mailingService.sendProblemEmail(userId, requestId);

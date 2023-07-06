@@ -13,6 +13,7 @@ import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
 import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
 import {SocketService} from "../app-socket/socket.service";
 import * as moment from 'moment';
+import { ExtraJobRequestEntity } from "../extra/entities/extra-job-request.entity";
 
 @Injectable()
 export class EmployerService {
@@ -192,7 +193,7 @@ export class EmployerService {
       throw new HttpException('Job offer not found for this request id', 404);
     }
 
-    let request = jobOffer.requests.find(request => request.id === request_id);
+    const request = jobOffer.requests.find(request => request.id === request_id);
     if (!request) {
       throw new HttpException('Request not found', 404);
     }else if(request.status !== JobRequestStatus.ACCEPTED) {
@@ -203,9 +204,9 @@ export class EmployerService {
     if (currentStartingDate.isAfter(moment())) {
       throw new HttpException('Starting date is not passed yet', 400);
     }
-
+    let newRequest: ExtraJobRequestEntity;
     try {
-      request = await this.extraJobRequestService.update(request.id, {
+      newRequest = await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.WAITING_FOR_VERIFICATION,
         verification_code: Math.floor(1000 + Math.random() * 9000)
       });
@@ -216,7 +217,7 @@ export class EmployerService {
     const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
     this.socketService.socket.to(clientId).emit('job-request-confirmed', {
       jobOffer: jobOffer,
-      request: request
+      request: newRequest
     });
   }
 
@@ -229,7 +230,7 @@ export class EmployerService {
       throw new HttpException('Job offer not found for this request id', 404);
     }
 
-    let request = jobOffer.requests.find(request => request.id === request_id);
+    const request = jobOffer.requests.find(request => request.id === request_id);
     if (!request) {
       throw new HttpException('Request not found', 404);
     }else if(request.status !== JobRequestStatus.WAITING_FOR_VERIFICATION) {
@@ -241,9 +242,9 @@ export class EmployerService {
     if(Number(request.verification_code) !== Number(verification_code)) {
       throw new HttpException('Invalid verification code', 400);
     }
-
+    let newRequest: ExtraJobRequestEntity;
     try {
-      request = await this.extraJobRequestService.update(request.id, {
+      newRequest = await this.extraJobRequestService.update(request.id, {
         status: JobRequestStatus.FINISHED,
         verification_code: null
       });
@@ -254,7 +255,7 @@ export class EmployerService {
     const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
     this.socketService.socket.to(clientId).emit('job-request-finished', {
       jobOffer: jobOffer,
-      request: request
+      request: newRequest
     });
   }
 
