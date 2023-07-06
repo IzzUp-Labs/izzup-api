@@ -121,7 +121,7 @@ export class MailingService {
         transporterName: 'gmail',
         to: this.configService.get('EMAIL'), // list of receivers
         subject: 'Problem on JobOffer', // Subject line
-        template: 'action',
+        template: 'problem',
         context: {
           // Data to be sent to template engine
           requestId: requestId,
