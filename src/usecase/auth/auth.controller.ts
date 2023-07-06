@@ -48,6 +48,6 @@ export class AuthController {
   @Get("connected/devices")
   @HttpCode(HttpStatus.OK)
   async getConnectedDevices() {
-    return await this.authService.getConnectedDevices();
+    return this.authService.getConnectedDevices();
   }
 }
