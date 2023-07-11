@@ -4,7 +4,7 @@ import { ActivitySectorService } from "../../../src/usecase/activity-sector/acti
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { ActivitySectorEntity } from "../../../src/usecase/activity-sector/entities/activity-sector.entity";
 
-describe('ActivitySectorController', () => {
+describe("ActivitySectorController", () => {
   let controller: ActivitySectorController;
 
   beforeEach(async () => {
@@ -16,13 +16,13 @@ describe('ActivitySectorController', () => {
           provide: getRepositoryToken(ActivitySectorEntity),
           useValue: ActivitySectorEntity
         }
-      ],
+      ]
     }).compile();
 
     controller = module.get<ActivitySectorController>(ActivitySectorController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

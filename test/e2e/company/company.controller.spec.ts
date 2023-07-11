@@ -4,7 +4,7 @@ import { CompanyService } from "../../../src/usecase/company/company.service";
 import { CompanyEntity } from "../../../src/usecase/company/entities/company.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
-describe('CompanyController', () => {
+describe("CompanyController", () => {
   let controller: CompanyController;
 
   beforeEach(async () => {
@@ -16,13 +16,13 @@ describe('CompanyController', () => {
           provide: getRepositoryToken(CompanyEntity),
           useValue: CompanyEntity
         }
-      ],
+      ]
     }).compile();
 
     controller = module.get<CompanyController>(CompanyController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

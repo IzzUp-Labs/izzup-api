@@ -17,8 +17,11 @@ import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-st
 import { HttpException } from "@nestjs/common";
 import { JobOfferDto } from "../../../src/usecase/job-offer/dto/job-offer.dto";
 import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
+import { SocketService } from "../../../src/usecase/app-socket/socket.service";
+import { NotificationService } from "../../../src/usecase/notification/notification.service";
+import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 
-describe('EmployerService', () => {
+describe("EmployerService", () => {
   let service: EmployerService;
   let employerRepository: Repository<EmployerEntity>;
   let jobOfferService: JobOfferService;
@@ -33,6 +36,8 @@ describe('EmployerService', () => {
         CompanyService,
         ExtraJobRequestService,
         ExtraService,
+        SocketService,
+        NotificationService,
         {
           provide: getRepositoryToken(EmployerEntity),
           useValue: {
@@ -44,11 +49,11 @@ describe('EmployerService', () => {
             createQueryBuilder: jest.fn(() => ({
               relation: jest.fn(() => ({
                 of: jest.fn(() => ({
-                  add: jest.fn(),
-                })),
-              })),
-            })),
-          },
+                  add: jest.fn()
+                }))
+              }))
+            }))
+          }
         },
         {
           provide: getRepositoryToken(CompanyEntity),
@@ -65,8 +70,16 @@ describe('EmployerService', () => {
         {
           provide: getRepositoryToken(ExtraEntity),
           useValue: ExtraEntity
+        },
+        {
+          provide: getRepositoryToken(AppSocketSessionEntity),
+          useValue: AppSocketSessionEntity
+        },
+        {
+          provide: "FIREBASE_TOKEN",
+          useValue: "FIREBASE_TOKEN"
         }
-      ],
+      ]
     }).compile();
 
     service = module.get<EmployerService>(EmployerService);
@@ -78,24 +91,35 @@ describe('EmployerService', () => {
     );
   });
 
-  describe('create', () => {
-    it('should create an employer', async () => {
-      const employer : EmployerEntity = {
-        id: 1,
+  describe("create", () => {
+    it("should create an employer", async () => {
+      const employer: EmployerEntity = {
+        id: "1",
         user: {
-          id: 1,
-          last_name: 'test',
-          first_name: 'test',
+          id: "1",
+          last_name: "test",
+          first_name: "test",
           date_of_birth: new Date(),
           extra: null,
           employer: null,
-          email: 'test@email.com',
-          password: 'test',
+          email: "test@email.com",
+          password: "test",
           photo: null,
-          role: 'EMPLOYER',
+          role: "EMPLOYER",
           id_photo: null,
           rooms: null,
-          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+          email_confirmation_code: null,
+          fcm_tokens: [],
+          is_email_confirmed: false,
+          statuses: [
+            {
+              id: "1",
+              name: UserStatusEnum.UNVERIFIED,
+              created_at: new Date(),
+              updated_at: new Date(),
+              deleted_at: new Date()
+            }
+          ],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -105,13 +129,13 @@ describe('EmployerService', () => {
         updated_at: new Date(),
         deleted_at: new Date()
       };
-      const mockEmployer : EmployerDto = {
-        user_id: 1,
-        date_of_birth: new Date(),
-      }
+      const mockEmployer: EmployerDto = {
+        user_id: "1",
+        date_of_birth: new Date()
+      };
 
       const employerRepositorySaveSpy = jest
-        .spyOn(employerRepository, 'save')
+        .spyOn(employerRepository, "save")
         .mockResolvedValueOnce(employer);
 
       const result = await service.create(mockEmployer);
@@ -121,24 +145,35 @@ describe('EmployerService', () => {
     });
   });
 
-  describe('findAll', () => {
-    it('should return an array of employers', async () => {
-      const employer : EmployerEntity = {
-        id: 1,
+  describe("findAll", () => {
+    it("should return an array of employers", async () => {
+      const employer: EmployerEntity = {
+        id: "1",
         user: {
-          id: 1,
-          last_name: 'test',
-          first_name: 'test',
+          id: "1",
+          last_name: "test",
+          first_name: "test",
           date_of_birth: new Date(),
           extra: null,
           employer: null,
-          email: 'test@email.com',
-          password: 'test',
+          email: "test@email.com",
+          password: "test",
           photo: null,
-          role: 'EMPLOYER',
+          role: "EMPLOYER",
           id_photo: null,
           rooms: null,
-          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+          is_email_confirmed: false,
+          fcm_tokens: [],
+          email_confirmation_code: null,
+          statuses: [
+            {
+              id: "1",
+              name: UserStatusEnum.UNVERIFIED,
+              created_at: new Date(),
+              updated_at: new Date(),
+              deleted_at: new Date()
+            }
+          ],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -150,7 +185,7 @@ describe('EmployerService', () => {
       };
 
       const employerRepositoryFindSpy = jest
-        .spyOn(employerRepository, 'find')
+        .spyOn(employerRepository, "find")
         .mockResolvedValueOnce([employer]);
 
       const result = await service.findAll();
@@ -160,25 +195,36 @@ describe('EmployerService', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should return an employer', async () => {
-      const field: EntityCondition<EmployerEntity> = { id: 1 };
-      const employer : EmployerEntity = {
-        id: 1,
+  describe("findOne", () => {
+    it("should return an employer", async () => {
+      const field: EntityCondition<EmployerEntity> = { id: "1" };
+      const employer: EmployerEntity = {
+        id: "1",
         user: {
-          id: 1,
-          last_name: 'test',
-          first_name: 'test',
+          id: "1",
+          last_name: "test",
+          first_name: "test",
           date_of_birth: new Date(),
           extra: null,
           employer: null,
-          email: 'test@email.com',
-          password: 'test',
+          email: "test@email.com",
+          password: "test",
           photo: null,
-          role: 'EMPLOYER',
+          role: "EMPLOYER",
           id_photo: null,
           rooms: null,
-          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+          is_email_confirmed: false,
+          fcm_tokens: [],
+          email_confirmation_code: null,
+          statuses: [
+            {
+              id: "1",
+              name: UserStatusEnum.UNVERIFIED,
+              created_at: new Date(),
+              updated_at: new Date(),
+              deleted_at: new Date()
+            }
+          ],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -190,7 +236,7 @@ describe('EmployerService', () => {
       };
 
       const employerRepositoryFindOneSpy = jest
-        .spyOn(employerRepository, 'findOne')
+        .spyOn(employerRepository, "findOne")
         .mockResolvedValueOnce(employer);
 
       const result = await service.findOne(field);
@@ -200,24 +246,35 @@ describe('EmployerService', () => {
     });
   });
 
-  describe('update', () => {
-    it('should update an employer', async () => {
-      const employer : EmployerEntity = {
-        id: 1,
+  describe("update", () => {
+    it("should update an employer", async () => {
+      const employer: EmployerEntity = {
+        id: "1",
         user: {
-          id: 1,
-          last_name: 'test',
-          first_name: 'test',
+          id: "1",
+          last_name: "test",
+          first_name: "test",
           date_of_birth: new Date(),
           extra: null,
           employer: null,
-          email: 'test@email.com',
-          password: 'test',
+          email: "test@email.com",
+          password: "test",
           photo: null,
-          role: 'EMPLOYER',
+          role: "EMPLOYER",
           id_photo: null,
           rooms: null,
-          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+          is_email_confirmed: false,
+          fcm_tokens: [],
+          email_confirmation_code: null,
+          statuses: [
+            {
+              id: "1",
+              name: UserStatusEnum.UNVERIFIED,
+              created_at: new Date(),
+              updated_at: new Date(),
+              deleted_at: new Date()
+            }
+          ],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
@@ -227,61 +284,72 @@ describe('EmployerService', () => {
         updated_at: new Date(),
         deleted_at: new Date()
       };
-      const mockEmployer : EmployerDto = {
-        user_id: 1,
-        date_of_birth: new Date(),
-      }
+      const mockEmployer: EmployerDto = {
+        user_id: "1",
+        date_of_birth: new Date()
+      };
 
       const employerRepositorySaveSpy = jest
-        .spyOn(employerRepository, 'save')
+        .spyOn(employerRepository, "save")
         .mockResolvedValueOnce(employer);
 
-      const result = await service.update(1, mockEmployer);
+      const result = await service.update("1", mockEmployer);
 
       expect(employerRepositorySaveSpy).toHaveBeenCalledTimes(1);
       expect(result).toEqual(employer);
     });
   });
 
-  describe('remove', () => {
-    it('should delete an employer', async () => {
+  describe("remove", () => {
+    it("should delete an employer", async () => {
 
       const employerRepositoryDeleteSpy = jest
-        .spyOn(employerRepository, 'delete')
+        .spyOn(employerRepository, "delete")
         .mockResolvedValueOnce(undefined);
 
-      const result = await service.remove(1);
+      const result = await service.remove("1");
 
       expect(employerRepositoryDeleteSpy).toHaveBeenCalledTimes(1);
       expect(result).toBeUndefined();
     });
   });
 
-  describe('createJobOffer', () => {
-    it('should create a job offer', async () => {
+  describe("createJobOffer", () => {
+    it("should create a job offer", async () => {
       // Mock data
-      const employer : EmployerEntity = {
-        id: 1,
+      const employer: EmployerEntity = {
+        id: "1",
         user: {
-          id: 1,
-          last_name: 'test',
-          first_name: 'test',
+          id: "1",
+          last_name: "test",
+          first_name: "test",
           date_of_birth: new Date(),
           extra: null,
           employer: null,
-          email: 'test@email.com',
-          password: 'test',
+          email: "test@email.com",
+          password: "test",
           photo: null,
-          role: 'EMPLOYER',
+          role: "EMPLOYER",
           id_photo: null,
           rooms: null,
-          statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+          is_email_confirmed: false,
+          fcm_tokens: [],
+          email_confirmation_code: null,
+          statuses: [
+            {
+              id: "1",
+              name: UserStatusEnum.UNVERIFIED,
+              created_at: new Date(),
+              updated_at: new Date(),
+              deleted_at: new Date()
+            }
+          ],
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: new Date()
         },
         companies: [{
-          id: 1,
+          id: "1",
           name: "Test",
           address: "Test",
           sectors: null,
@@ -298,7 +366,7 @@ describe('EmployerService', () => {
         deleted_at: new Date()
       };
       const jobOfferEntity: JobOfferEntity = {
-        id: 1,
+        id: "1",
         job_title: "Test",
         price: 100,
         spots: 1,
@@ -309,39 +377,45 @@ describe('EmployerService', () => {
         acceptedSpots: 1,
         company: null,
         requests: [],
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date()
       };
 
       // Mock service methods
-      jest.spyOn(service, 'getMyCompanies').mockResolvedValue(employer.companies);
-      jest.spyOn(jobOfferService, 'create').mockResolvedValue(jobOfferEntity);
-      jest.spyOn(companyService, 'addJobOffer').mockResolvedValue(undefined);
-      jest.spyOn(jobOfferService, 'updateAvailableSpots').mockResolvedValue(undefined);
+      jest.spyOn(service, "getMyCompanies").mockResolvedValue(employer.companies);
+      jest.spyOn(jobOfferService, "create").mockResolvedValue(jobOfferEntity);
+      jest.spyOn(companyService, "addJobOffer").mockResolvedValue(undefined);
+      jest.spyOn(jobOfferService, "updateAvailableSpots").mockResolvedValue(undefined);
 
       // Execute the method
-      const result = await service.createJobOffer(1, jobOfferEntity as JobOfferDto, 1);
+      const result = await service.createJobOffer("1", jobOfferEntity as JobOfferDto, "1");
 
       // Assertions
       expect(jobOfferService.create).toHaveBeenCalledWith(jobOfferEntity);
-      expect(companyService.addJobOffer).toHaveBeenCalledWith(1,1);
+      expect(companyService.addJobOffer).toHaveBeenCalledWith("1", "1");
       expect(result).toBe(undefined);
     });
   });
 
-  describe('Accepting job request', () => {
-    it('should return not found', async () => {
-      const userId = 1;
-      const jobOfferId = 2;
+  describe("Accepting job request", () => {
+    it("should return not found", async () => {
+      const userId = "1";
+      const jobOfferId = "2";
       const extraJobRequest: ExtraJobRequestEntity = {
-        id: 1,
+        id: "1",
         status: JobRequestStatus.PENDING,
         verification_code: null,
         extra: null,
         jobOffer: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date()
       };
 
       const jobOffer: JobOfferEntity = {
         id: jobOfferId,
-        job_title: 'Mock job title',
+        job_title: "Mock job title",
         price: 100,
         is_available: true,
         requests: [],
@@ -351,7 +425,7 @@ describe('EmployerService', () => {
         working_hours: 1,
         acceptedSpots: 0,
         company: {
-          id: 1,
+          id: "1",
           name: "Test",
           address: "Test",
           sectors: null,
@@ -359,21 +433,32 @@ describe('EmployerService', () => {
           jobOffers: [],
           location: null,
           employer: {
-            id: 1,
+            id: "1",
             user: {
-              id: 1,
-              last_name: 'test',
-              first_name: 'test',
+              id: "1",
+              last_name: "test",
+              first_name: "test",
               date_of_birth: new Date(),
               extra: null,
               employer: null,
-              email: 'test',
-              password: 'test',
+              email: "test",
+              password: "test",
               photo: null,
-              role: 'EMPLOYER',
+              role: "EMPLOYER",
               id_photo: null,
               rooms: null,
-              statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+              is_email_confirmed: false,
+              fcm_tokens: [],
+              email_confirmation_code: null,
+              statuses: [
+                {
+                  id: "1",
+                  name: UserStatusEnum.UNVERIFIED,
+                  created_at: new Date(),
+                  updated_at: new Date(),
+                  deleted_at: new Date()
+                }
+              ],
               created_at: new Date(),
               updated_at: new Date(),
               deleted_at: new Date()
@@ -387,8 +472,10 @@ describe('EmployerService', () => {
           updated_at: new Date(),
           deleted_at: new Date()
         },
-
-      }
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date()
+      };
       const jobOffers: JobOfferEntity[] = [
         jobOffer
       ];
@@ -397,43 +484,48 @@ describe('EmployerService', () => {
         update: () => createQueryBuilder,
         set: () => createQueryBuilder,
         where: () => createQueryBuilder,
-        execute: () => Promise.resolve(),
-      }
+        execute: () => Promise.resolve()
+      };
 
-      jest.spyOn(jobOfferService, 'findJobOfferWithRequests').mockResolvedValue(jobOffer);
-      jest.spyOn(service, 'getMyJobOffers').mockResolvedValue(jobOffers);
-      jest.spyOn(extraJobRequestService, 'update').mockResolvedValue(extraJobRequest);
-      jest.spyOn(jobOfferService, 'update').mockResolvedValue(jobOffer);
-      jest.spyOn(extraJobRequestService, 'rejectRemainingRequests').mockResolvedValue(null);
-      jest.spyOn(jobOfferService, 'updateAvailableSpots')
+      jest.spyOn(jobOfferService, "findJobOfferWithRequests").mockResolvedValue(jobOffer);
+      jest.spyOn(service, "getMyJobOffers").mockResolvedValue(jobOffers);
+      jest.spyOn(jobOfferService, "update").mockResolvedValue(jobOffer);
+      jest.spyOn(extraJobRequestService, "rejectRemainingRequests").mockResolvedValue(null);
+      jest.spyOn(jobOfferService, "updateAvailableSpots");
 
       await expect(service.acceptExtraJobRequest(userId, extraJobRequest.id)).rejects.toThrow(
-        new HttpException('Request not found', 404),
+        new HttpException("Request not found", 404)
       );
 
     });
 
-    it('should throw an exception when no more spots available', async () => {
-      const userId = 1;
-      const jobOfferId = 2;
+    it("should throw an exception when no more spots available", async () => {
+      const userId = "1";
+      const jobOfferId = "2";
       const extraJobRequest: ExtraJobRequestEntity = {
-        id: 1,
+        id: "1",
         status: JobRequestStatus.PENDING,
         extra: null,
         verification_code: null,
         jobOffer: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date()
       };
       const acceptedextraJobRequest: ExtraJobRequestEntity = {
-        id: 2,
+        id: "2",
         status: JobRequestStatus.PENDING,
         extra: null,
         verification_code: null,
         jobOffer: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date()
       };
 
       const jobOffer: JobOfferEntity = {
         id: jobOfferId,
-        job_title: 'Mock job title',
+        job_title: "Mock job title",
         price: 100,
         is_available: true,
         requests: [acceptedextraJobRequest],
@@ -443,7 +535,7 @@ describe('EmployerService', () => {
         working_hours: 1,
         acceptedSpots: 1,
         company: {
-          id: 1,
+          id: "1",
           name: "Test",
           address: "Test",
           sectors: null,
@@ -451,21 +543,32 @@ describe('EmployerService', () => {
           jobOffers: [],
           location: null,
           employer: {
-            id: 1,
+            id: "1",
             user: {
-              id: 1,
-              last_name: 'test',
-              first_name: 'test',
+              id: "1",
+              last_name: "test",
+              first_name: "test",
               date_of_birth: new Date(),
               extra: null,
               employer: null,
-              email: 'test',
-              password: 'test',
+              email: "test",
+              password: "test",
               photo: null,
-              role: 'EMPLOYER',
+              role: "EMPLOYER",
               id_photo: null,
               rooms: null,
-              statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+              is_email_confirmed: false,
+              fcm_tokens: [],
+              email_confirmation_code: null,
+              statuses: [
+                {
+                  id: "1",
+                  name: UserStatusEnum.UNVERIFIED,
+                  created_at: new Date(),
+                  updated_at: new Date(),
+                  deleted_at: new Date()
+                }
+              ],
               created_at: new Date(),
               updated_at: new Date(),
               deleted_at: new Date()
@@ -479,23 +582,24 @@ describe('EmployerService', () => {
           updated_at: new Date(),
           deleted_at: new Date()
         },
-      }
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date()
+      };
       const jobOffers: JobOfferEntity[] = [
         jobOffer
       ];
 
-      jest.spyOn(service, 'getMyJobOffers').mockResolvedValue(jobOffers);
-      jest.spyOn(extraJobRequestService, 'update').mockResolvedValue(extraJobRequest);
-      jest.spyOn(jobOfferService, 'update').mockResolvedValue(jobOffer);
-      jest.spyOn(extraJobRequestService, 'rejectRemainingRequests').mockResolvedValue(null);
-      jest.spyOn(jobOfferService, 'findJobOfferWithRequests').mockResolvedValue(jobOffer);
-
+      jest.spyOn(service, "getMyJobOffers").mockResolvedValue(jobOffers);
+      jest.spyOn(jobOfferService, "update").mockResolvedValue(jobOffer);
+      jest.spyOn(extraJobRequestService, "rejectRemainingRequests").mockResolvedValue(null);
+      jest.spyOn(jobOfferService, "findJobOfferWithRequests").mockResolvedValue(jobOffer);
 
 
       // Execute and assert
       await expect(service.acceptExtraJobRequest(userId, extraJobRequest.id)).rejects.toThrow(
-        new HttpException('No more spots available', 400),
+        new HttpException("No more spots available", 400)
       );
     });
   });
-})
+});

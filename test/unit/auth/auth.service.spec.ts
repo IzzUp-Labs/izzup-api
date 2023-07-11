@@ -27,9 +27,12 @@ import { Repository } from "typeorm";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
-import {LocationService} from "../../../src/usecase/location/location.service";
-import {CreateLocationDto} from "../../../src/usecase/location/dto/create-location.dto";
-import {LocationEntity} from "../../../src/usecase/location/entities/location.entity";
+import { LocationService } from "../../../src/usecase/location/location.service";
+import { CreateLocationDto } from "../../../src/usecase/location/dto/create-location.dto";
+import { LocationEntity } from "../../../src/usecase/location/entities/location.entity";
+import { SocketService } from "../../../src/usecase/app-socket/socket.service";
+import { NotificationService } from "../../../src/usecase/notification/notification.service";
+import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -56,24 +59,26 @@ describe("AuthService", () => {
         ConfigService,
         FileExtensionChecker,
         LocationService,
+        SocketService,
+        NotificationService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
             findOne: jest.fn(),
             save: jest.fn(),
             create: jest.fn().mockReturnValue({
-              id: 1,
+              id: "1",
               email: "test@example.com",
               password: "password",
               last_name: "lastName",
               first_name: "firstName",
               date_of_birth: new Date(),
-              role: 'USER',
+              role: "USER",
               extra: null,
               employer: null,
-              statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}]
-            }),
-          },
+              statuses: [{ id: "1", name: UserStatusEnum.UNVERIFIED }]
+            })
+          }
         },
         {
           provide: getRepositoryToken(ExtraEntity),
@@ -100,8 +105,12 @@ describe("AuthService", () => {
           useValue: Repository
         },
         {
-          provide: 'FIREBASE_TOKEN',
-          useValue: 'FIREBASE_TOKEN',
+          provide: getRepositoryToken(AppSocketSessionEntity),
+          useValue: AppSocketSessionEntity
+        },
+        {
+          provide: "FIREBASE_TOKEN",
+          useValue: "FIREBASE_TOKEN"
         },
         {
           provide: getRepositoryToken(LocationEntity),
@@ -132,19 +141,29 @@ describe("AuthService", () => {
 
     it("should return a token if the login is valid", async () => {
       const user: UserEntity = {
-        id: 1,
+        id: "1",
         email: authLoginDto.email,
         password: await bcrypt.hash(authLoginDto.password, 10),
         last_name: "lastName",
         first_name: "firstName",
         date_of_birth: new Date(),
         photo: null,
-        role: 'USER',
+        role: "USER",
         id_photo: null,
         extra: null,
         employer: null,
         rooms: null,
-        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+        is_email_confirmed: false,
+        email_confirmation_code: null,
+        fcm_tokens: [],
+        statuses: [
+          {
+            id: "1",
+            name: UserStatusEnum.UNVERIFIED,
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: null
+          }],
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null
@@ -161,9 +180,9 @@ describe("AuthService", () => {
       });
     });
 
-    it('should throw an HttpException if the password is incorrect', async () => {
-      const user : UserEntity = {
-        id: 1,
+    it("should throw an HttpException if the password is incorrect", async () => {
+      const user: UserEntity = {
+        id: "1",
         email: authLoginDto.email,
         password: await bcrypt.hash("wrong-password", 10),
         last_name: "lastName",
@@ -175,7 +194,17 @@ describe("AuthService", () => {
         extra: null,
         employer: null,
         rooms: null,
-        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+        email_confirmation_code: null,
+        is_email_confirmed: false,
+        fcm_tokens: [],
+        statuses: [
+          {
+            id: "1",
+            name: UserStatusEnum.UNVERIFIED,
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: null
+          }],
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null
@@ -213,8 +242,8 @@ describe("AuthService", () => {
     });
   });
 
-  describe('registerExtra', () => {
-    it('should create a new user and extra', async () => {
+  describe("registerExtra", () => {
+    it("should create a new user and extra", async () => {
       // Arrange
       const authRegisterExtraDto: AuthRegisterExtraDto = {
         email: "test@example.com",
@@ -222,37 +251,40 @@ describe("AuthService", () => {
         first_name: "John",
         last_name: "Doe",
         date_of_birth: new Date(),
-        address: '123 Test Street',
+        address: "123 Test Street"
       };
 
       const hashedPassword = await bcrypt.hash(authRegisterExtraDto.password, 10);
 
       jest.spyOn<any, any>(bcrypt, "hash").mockResolvedValue(hashedPassword);
 
-      const createdUser = { id: 1 } as UserEntity;
-      const createdExtra = { id: 1 } as ExtraEntity;
+      const createdUser = { id: "1" } as UserEntity;
+      const createdExtra = { id: "1" } as ExtraEntity;
       jest.spyOn(userService, "create").mockResolvedValue(createdUser);
       jest.spyOn(extraService, "create").mockResolvedValue(createdExtra);
-      jest.spyOn(userStatusService, "findOne").mockResolvedValue({id: 1, name: UserStatusEnum.UNVERIFIED} as UserStatusEntity);
+      jest.spyOn(userStatusService, "findOne").mockResolvedValue({
+        id: "1",
+        name: UserStatusEnum.UNVERIFIED
+      } as UserStatusEntity);
 
       await service.registerExtra(authRegisterExtraDto);
 
       expect(userService.create).toHaveBeenCalledWith({
         ...authRegisterExtraDto,
         extra: {
-          id: 1,
+          id: "1"
         },
         password: hashedPassword,
-        role: 'EXTRA'
+        role: "EXTRA"
       });
       expect(extraService.create).toHaveBeenCalledWith({
-        address: authRegisterExtraDto.address,
+        address: authRegisterExtraDto.address
       });
     });
   });
 
-  describe('registerEmployer', () => {
-    it('should create a new user and employer', async () => {
+  describe("registerEmployer", () => {
+    it("should create a new user and employer", async () => {
       // Arrange
       const authRegisterEmployerDto: AuthRegisterEmployerDto = {
         email: "test@example.com",
@@ -262,21 +294,24 @@ describe("AuthService", () => {
         date_of_birth: new Date(),
         location: new CreateLocationDto(),
         company: new CompanyDto()
-      }
+      };
 
       const hashedPassword = await bcrypt.hash(authRegisterEmployerDto.password, 10);
 
       jest.spyOn<any, any>(bcrypt, "hash").mockResolvedValue(hashedPassword);
 
-      const createdUser = { id: 1 } as UserEntity;
-      const createdEmployer = { id: 1 } as EmployerEntity;
-      const createdLocation = { id: 1 } as LocationEntity;
-      const createdCompany = { id: 1 } as CompanyEntity;
+      const createdUser = { id: "1" } as UserEntity;
+      const createdEmployer = { id: "1" } as EmployerEntity;
+      const createdLocation = { id: "1" } as LocationEntity;
+      const createdCompany = { id: "1" } as CompanyEntity;
       jest.spyOn(userService, "create").mockResolvedValue(createdUser);
       jest.spyOn(employerService, "create").mockResolvedValue(createdEmployer);
       jest.spyOn(locationService, "create").mockResolvedValue(createdLocation);
       jest.spyOn(companyService, "create").mockResolvedValue(createdCompany);
-      jest.spyOn(userStatusService, "findOne").mockResolvedValue({id: 1, name: UserStatusEnum.UNVERIFIED} as UserStatusEntity);
+      jest.spyOn(userStatusService, "findOne").mockResolvedValue({
+        id: "1",
+        name: UserStatusEnum.UNVERIFIED
+      } as UserStatusEntity);
 
       await service.registerEmployer(authRegisterEmployerDto);
 
@@ -284,9 +319,9 @@ describe("AuthService", () => {
         ...authRegisterEmployerDto,
         email: authRegisterEmployerDto.email,
         employer: {
-          id: 1,
+          id: "1"
         },
-        role: 'EMPLOYER',
+        role: "EMPLOYER",
         password: hashedPassword
       });
 
@@ -296,22 +331,22 @@ describe("AuthService", () => {
 
       expect(companyService.create).toHaveBeenCalledWith({
         employer: {
-          id: 1,
+          id: "1"
         },
         location: {
-            id: 1,
+          id: "1"
         }
       });
     });
   });
 
-  describe('Membership check', () => {
-    it('should return true if the user is a member', async () => {
+  describe("Membership check", () => {
+    it("should return true if the user is a member", async () => {
       const authMembershipCheckDto: AuthMembershipCheckDto = {
-        email: "test@exemple.com",
+        email: "test@exemple.com"
       };
-      const user : UserEntity = {
-        id: 1,
+      const user: UserEntity = {
+        id: "1",
         email: authMembershipCheckDto.email,
         password: await bcrypt.hash("password", 10),
         last_name: "lastName",
@@ -323,7 +358,17 @@ describe("AuthService", () => {
         extra: null,
         employer: null,
         rooms: null,
-        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}],
+        is_email_confirmed: false,
+        email_confirmation_code: null,
+        fcm_tokens: [],
+        statuses: [
+          {
+            id: "1",
+            name: UserStatusEnum.UNVERIFIED,
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: null
+          }],
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null
@@ -333,7 +378,7 @@ describe("AuthService", () => {
     });
     it("should return false if the user is not a member", async () => {
       const authMembershipCheckDto: AuthMembershipCheckDto = {
-        email: "test@exemple.com",
+        email: "test@exemple.com"
       };
       jest.spyOn(userService, "findOne").mockResolvedValueOnce(null);
       expect(await service.isMember(authMembershipCheckDto)).toBe(false);

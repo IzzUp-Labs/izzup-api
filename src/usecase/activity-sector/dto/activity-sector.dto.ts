@@ -1,8 +1,8 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class ActivitySectorDto {
-  @ApiProperty({required: false})
-  id?: number;
+  @ApiProperty({ required: false })
+  id?: string;
   @ApiProperty()
   name: string;
 }

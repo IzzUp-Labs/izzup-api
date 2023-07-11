@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 
-describe('ActivitySectorService', () => {
+describe("ActivitySectorService", () => {
   let service: ActivitySectorService;
   let repository: Repository<ActivitySectorEntity>;
 
@@ -20,34 +20,34 @@ describe('ActivitySectorService', () => {
             save: jest.fn(),
             find: jest.fn(),
             findOne: jest.fn(),
-            delete: jest.fn(),
-          },
-        },
-      ],
+            delete: jest.fn()
+          }
+        }
+      ]
     }).compile();
 
     service = module.get<ActivitySectorService>(ActivitySectorService);
     repository = module.get<Repository<ActivitySectorEntity>>(
-      getRepositoryToken(ActivitySectorEntity),
+      getRepositoryToken(ActivitySectorEntity)
     );
   });
 
-  describe('create', () => {
-    it('should create an activity sector', async () => {
-      const activitySectorDto: ActivitySectorDto = { name: 'test' };
+  describe("create", () => {
+    it("should create an activity sector", async () => {
+      const activitySectorDto: ActivitySectorDto = { name: "test" };
       const createdActivitySector: ActivitySectorEntity = {
-        id: 1,
-        name: 'test',
+        id: "1",
+        name: "test",
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
+        deleted_at: null
       };
 
       jest
-        .spyOn(repository, 'create')
+        .spyOn(repository, "create")
         .mockReturnValue(createdActivitySector);
       jest
-        .spyOn(repository, 'save')
+        .spyOn(repository, "save")
         .mockResolvedValue(createdActivitySector);
 
       const result = await service.create(activitySectorDto);
@@ -56,19 +56,19 @@ describe('ActivitySectorService', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find an activity sector by fields', async () => {
-      const fields: { id: number } = { id: 1 };
+  describe("findOne", () => {
+    it("should find an activity sector by fields", async () => {
+      const fields: { id: string } = { id: "1" };
       const foundActivitySector: ActivitySectorEntity = {
-        id: 1,
-        name: 'test',
+        id: "1",
+        name: "test",
         created_at: new Date(),
         updated_at: new Date(),
-        deleted_at: null,
+        deleted_at: null
       };
 
       jest
-        .spyOn(repository, 'findOne')
+        .spyOn(repository, "findOne")
         .mockResolvedValue(foundActivitySector);
 
       const result = await service.findOne(fields);
@@ -77,14 +77,14 @@ describe('ActivitySectorService', () => {
     });
   });
 
-  describe('findAll', () => {
-    it('should find all activity sectors', async () => {
+  describe("findAll", () => {
+    it("should find all activity sectors", async () => {
       const foundActivitySectors: ActivitySectorEntity[] = [
-        { id: 1, name: 'test1', created_at: new Date(), updated_at: new Date(), deleted_at: null},
-        { id: 2, name: 'test2', created_at: new Date(), updated_at: new Date(), deleted_at: null },
+        { id: "1", name: "test1", created_at: new Date(), updated_at: new Date(), deleted_at: null },
+        { id: "2", name: "test2", created_at: new Date(), updated_at: new Date(), deleted_at: null }
       ];
 
-      jest.spyOn(repository, 'find').mockResolvedValue(foundActivitySectors);
+      jest.spyOn(repository, "find").mockResolvedValue(foundActivitySectors);
 
       const result = await service.findAll();
 
@@ -92,11 +92,11 @@ describe('ActivitySectorService', () => {
     });
   });
 
-  describe('delete', () => {
-    it('should delete an activity sector by id', async () => {
-      const id = 1;
+  describe("delete", () => {
+    it("should delete an activity sector by id", async () => {
+      const id = "1";
 
-      jest.spyOn(repository, 'delete').mockResolvedValue(undefined);
+      jest.spyOn(repository, "delete").mockResolvedValue(undefined);
 
       const result = await service.remove(id);
 
@@ -104,20 +104,20 @@ describe('ActivitySectorService', () => {
     });
   });
 
-  describe('update', () => {
-    it('should update an activity sector by id', async () => {
-      const id = 1;
-      const activitySectorDto: ActivitySectorDto = { id: 1, name: 'test' };
+  describe("update", () => {
+    it("should update an activity sector by id", async () => {
+      const id = "1";
+      const activitySectorDto: ActivitySectorDto = { id: "1", name: "test" };
       const updatedActivitySector = {
-        id: 1,
-        name: 'test'
+        id: "1",
+        name: "test"
       };
 
       jest
-        .spyOn(repository, 'create')
+        .spyOn(repository, "create")
         .mockImplementation(() => updatedActivitySector as ActivitySectorEntity);
       jest
-        .spyOn(repository, 'save')
+        .spyOn(repository, "save")
         .mockImplementation(() => Promise.resolve(updatedActivitySector as ActivitySectorEntity));
 
       const result = await service.update(id, activitySectorDto);
@@ -125,4 +125,4 @@ describe('ActivitySectorService', () => {
       expect(result).toEqual(activitySectorDto);
     });
   });
-})
+});

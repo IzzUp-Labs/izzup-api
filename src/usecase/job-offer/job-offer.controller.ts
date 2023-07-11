@@ -1,12 +1,12 @@
-import {Body, Controller, Delete, Get, Param, Patch, UseGuards} from "@nestjs/common";
-import {JobOfferService} from "./job-offer.service";
-import {JobOfferDto} from "./dto/job-offer.dto";
-import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
-import {AuthGuard} from "@nestjs/passport";
-import {RoleGuard} from "../../domain/guards/role.decorator";
-import {RoleEnum} from "../../domain/utils/enums/role.enum";
+import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from "@nestjs/common";
+import { JobOfferService } from "./job-offer.service";
+import { JobOfferDto } from "./dto/job-offer.dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
+import { RoleGuard } from "../../domain/guards/role.decorator";
+import { RoleEnum } from "../../domain/utils/enums/role.enum";
 
-@ApiTags('Job Offers')
+@ApiTags("Job Offers")
 @Controller({
   path: "job-offer",
   version: "1"
@@ -14,8 +14,9 @@ import {RoleEnum} from "../../domain/utils/enums/role.enum";
 export class JobOfferController {
   constructor(private readonly jobOfferService: JobOfferService) {
   }
+
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
@@ -23,7 +24,7 @@ export class JobOfferController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Get("available")
   findAllAvailable() {
@@ -31,26 +32,26 @@ export class JobOfferController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.jobOfferService.findOne({ id: +id });
+  @UseGuards(AuthGuard("jwt"))
+  @Get(":jobOfferId")
+  findOne(@Param("jobOfferId") jobOfferId: string) {
+    return this.jobOfferService.findOne({ id: jobOfferId });
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER, RoleEnum.ADMIN])
-  @Patch(":id")
-  update(id: string, @Body() jobOfferDto: JobOfferDto) {
-    return this.jobOfferService.update(+id, jobOfferDto);
+  @Patch(":jobOfferId")
+  update(@Param("jobOfferId") jobOfferId: string, @Body() jobOfferDto: JobOfferDto) {
+    return this.jobOfferService.update(jobOfferId, jobOfferDto);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER, RoleEnum.ADMIN])
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.jobOfferService.remove(+id);
+  @Delete(":jobOfferId")
+  remove(@Param("jobOfferId") jobOfferId: string) {
+    return this.jobOfferService.remove(jobOfferId);
   }
 
 }

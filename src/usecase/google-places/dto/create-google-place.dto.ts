@@ -1,1 +1,2 @@
-export class CreateGooglePlaceDto {}
+export class CreateGooglePlaceDto {
+}

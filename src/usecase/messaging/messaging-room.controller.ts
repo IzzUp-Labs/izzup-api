@@ -1,18 +1,19 @@
-import {Controller, Get, Post, Param, Delete, UseGuards, Headers} from '@nestjs/common';
-import { MessagingRoomService } from './messaging-room.service';
-import {ApiBearerAuth} from "@nestjs/swagger";
-import {AuthGuard} from "@nestjs/passport";
-import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
+import { Controller, Delete, Get, Headers, Param, Post, UseGuards } from "@nestjs/common";
+import { MessagingRoomService } from "./messaging-room.service";
+import { ApiBearerAuth } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
+import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
 
-@Controller('messaging-room')
+@Controller("messaging-room")
 export class MessagingRoomController {
   constructor(private readonly messagingRoomService: MessagingRoomService,
-              private readonly paramCheckService: ParamCheckService) {}
+              private readonly paramCheckService: ParamCheckService) {
+  }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @Post('create/:id')
-  create(@Headers("Authorization") authorization: string, @Param('id') participantId: number) {
+  @UseGuards(AuthGuard("jwt"))
+  @Post("create/:participantId")
+  create(@Headers("Authorization") authorization: string, @Param("participantId") participantId: string) {
     const userId = this.paramCheckService.decodeId(authorization);
     return this.messagingRoomService.create(userId, participantId);
   }
@@ -22,13 +23,13 @@ export class MessagingRoomController {
     return this.messagingRoomService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.messagingRoomService.findOne({ id: id });
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.messagingRoomService.remove(id);
   }
 }

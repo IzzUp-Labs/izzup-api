@@ -5,9 +5,9 @@ import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { AuthGuard } from "@nestjs/passport";
 import { JobStatusDto } from "./dto/job-status.dto";
 import { UpdateJobStatusDto } from "./dto/update-job-status.dto";
-import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
-@ApiTags('Job Status')
+@ApiTags("Job Status")
 @Controller({
   path: "job-status",
   version: "1"
@@ -17,7 +17,7 @@ export class JobStatusController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Post()
   create(@Body() jobStatusDto: JobStatusDto) {
@@ -25,7 +25,7 @@ export class JobStatusController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
@@ -33,26 +33,26 @@ export class JobStatusController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.jobStatusService.findOne({ id: +id });
+  @Get(":jobStatusId")
+  findOne(@Param("jobStatusId") jobStatusId: string) {
+    return this.jobStatusService.findOne({ id: jobStatusId });
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updatedJobStatus: UpdateJobStatusDto) {
-    return this.jobStatusService.update(+id, updatedJobStatus);
+  @Patch(":jobStatusId")
+  update(@Param("jobStatusId") jobStatusId: string, @Body() updatedJobStatus: UpdateJobStatusDto) {
+    return this.jobStatusService.update(jobStatusId, updatedJobStatus);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.jobStatusService.remove(+id);
+  @Delete(":jobStatusId")
+  remove(@Param("jobStatusId") jobStatusId: string) {
+    return this.jobStatusService.remove(jobStatusId);
   }
 }

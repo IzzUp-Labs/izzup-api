@@ -4,7 +4,7 @@ import { TagController } from "../../../src/usecase/tag/tag.controller";
 import { TagEntity } from "../../../src/usecase/tag/entities/tag.entity";
 import { TagService } from "../../../src/usecase/tag/tag.service";
 
-describe('TagController', () => {
+describe("TagController", () => {
   let controller: TagController;
 
   beforeEach(async () => {
@@ -16,13 +16,13 @@ describe('TagController', () => {
           provide: getRepositoryToken(TagEntity),
           useValue: TagEntity
         }
-      ],
+      ]
     }).compile();
 
     controller = module.get<TagController>(TagController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

@@ -11,7 +11,8 @@ export class JobStatusService {
   constructor(
     @InjectRepository(JobStatusEntity)
     private readonly jobStatusRepository: Repository<JobStatusEntity>
-  ) {}
+  ) {
+  }
 
   create(JobStatusDto: JobStatusDto) {
     return this.jobStatusRepository.save(
@@ -27,7 +28,7 @@ export class JobStatusService {
     return this.jobStatusRepository.findOne({ where: fields });
   }
 
-  update(id: number, updatedJobStatus: UpdateJobStatusDto) {
+  update(id: string, updatedJobStatus: UpdateJobStatusDto) {
     return this.jobStatusRepository.save(
       this.jobStatusRepository.create({
         id,
@@ -36,7 +37,7 @@ export class JobStatusService {
     );
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.jobStatusRepository.delete(id);
   }
 }

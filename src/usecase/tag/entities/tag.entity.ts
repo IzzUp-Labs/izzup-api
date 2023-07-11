@@ -1,13 +1,22 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('tag')
+@Entity("tag")
 export class TagEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-  @Column({type: 'varchar', nullable: false, unique: true})
+  @Column({ type: "varchar", nullable: false, unique: true })
   name: string;
 
-  @Column({type: 'varchar', nullable: false})
+  @Column({ type: "varchar", nullable: false })
   color: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
 }

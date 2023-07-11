@@ -6,6 +6,7 @@ import { RoleSeedService } from "./role-seed.service";
 @Module({
   imports: [TypeOrmModule.forFeature([RoleEntity])],
   providers: [RoleSeedService],
-  exports: [RoleSeedService],
+  exports: [RoleSeedService]
 })
-export class RoleSeedModule {}
+export class RoleSeedModule {
+}

@@ -9,12 +9,11 @@ import { HomepageCardDto } from "./dto/homepage-card.dto";
 import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
 
 @Injectable()
-export class HomepageCardService{
+export class HomepageCardService {
   constructor(
     @InjectRepository(HomepageCardEntity)
     private readonly homepageCardRepository: Repository<HomepageCardEntity>,
     @InjectFirebaseAdmin() private readonly firebase: FirebaseAdmin,
-
     private readonly configService: ConfigService,
     private readonly fileExtensionChecker: FileExtensionChecker
   ) {
@@ -24,7 +23,7 @@ export class HomepageCardService{
     return this.homepageCardRepository.save(
       this.homepageCardRepository.create(homepageCardDto)
     ).then(async (homepageCard) => {
-      if(file) {
+      if (file) {
         await this.updatePhoto(homepageCard.id, file);
       }
     });
@@ -38,7 +37,7 @@ export class HomepageCardService{
     return this.homepageCardRepository.findOne({ where: fields });
   }
 
-  update(id: number, homepageCardDto) {
+  update(id: string, homepageCardDto) {
     return this.homepageCardRepository.save(
       this.homepageCardRepository.create({
         id,
@@ -47,12 +46,12 @@ export class HomepageCardService{
     );
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.homepageCardRepository.delete(id);
   }
 
-  async updatePhoto(id: number, file: Express.Multer.File) {
-    const fileExtension = file.originalname.split('.').pop();
+  async updatePhoto(id: string, file: Express.Multer.File) {
+    const fileExtension = file.originalname.split(".").pop();
     if (!this.fileExtensionChecker.check(fileExtension)) {
       throw new HttpException("Invalid file extension", 400);
     }
@@ -60,15 +59,15 @@ export class HomepageCardService{
       .file(this.configService.get("firebase.homepage_bucket_name") + id + "." + fileExtension);
 
     const blobStream = bucket.createWriteStream({
-      resumable: false,
+      resumable: false
     });
-    blobStream.on('error', () => {
-      return new HttpException("Something went wrong with the upload", 500)
+    blobStream.on("error", () => {
+      return new HttpException("Something went wrong with the upload", 500);
     });
-    blobStream.on('finish', () => {
+    blobStream.on("finish", () => {
       bucket.getSignedUrl({
-        action: 'read',
-        expires: '03-09-2491'
+        action: "read",
+        expires: "03-09-2491"
       }).then(signedUrls => {
         this.homepageCardRepository.createQueryBuilder()
           .where("id = :id", { id: id })

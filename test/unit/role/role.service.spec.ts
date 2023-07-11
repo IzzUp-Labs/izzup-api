@@ -5,7 +5,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { RoleDto } from "../../../src/usecase/role/dto/role.dto";
 import { RoleEntity } from "../../../src/usecase/role/entities/role.entity";
 
-describe('RoleService', () => {
+describe("RoleService", () => {
   let service: RoleService;
   let repository: Repository<RoleEntity>;
 
@@ -15,24 +15,24 @@ describe('RoleService', () => {
         RoleService,
         {
           provide: getRepositoryToken(RoleEntity),
-          useClass: Repository,
-        },
-      ],
+          useClass: Repository
+        }
+      ]
     }).compile();
 
     service = module.get<RoleService>(RoleService);
     repository = module.get<Repository<RoleEntity>>(
-      getRepositoryToken(RoleEntity),
+      getRepositoryToken(RoleEntity)
     );
   });
 
-  describe('create', () => {
-    it('should create a role', async () => {
-      const roleDto: RoleDto = { name: 'test' };
-      const createdRole: RoleEntity = { id: 1, name: 'test' };
+  describe("create", () => {
+    it("should create a role", async () => {
+      const roleDto: RoleDto = { name: "test" };
+      const createdRole: RoleEntity = { id: "1", name: "test", created_at: new Date(), updated_at: new Date(), deleted_at: null };
 
-      jest.spyOn(repository, 'create').mockReturnValue(createdRole);
-      jest.spyOn(repository, 'save').mockResolvedValue(createdRole);
+      jest.spyOn(repository, "create").mockReturnValue(createdRole);
+      jest.spyOn(repository, "save").mockResolvedValue(createdRole);
 
       const result = await service.create(roleDto);
 
@@ -40,12 +40,12 @@ describe('RoleService', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find a role by fields', async () => {
-      const fields: { id: number } = { id: 1 };
-      const foundRole: RoleEntity = { id: 1, name: 'test' };
+  describe("findOne", () => {
+    it("should find a role by fields", async () => {
+      const fields: { id: string } = { id: "1" };
+      const foundRole: RoleEntity = { id: "1", name: "test", created_at: new Date(), updated_at: new Date(), deleted_at: null };
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(foundRole);
+      jest.spyOn(repository, "findOne").mockResolvedValue(foundRole);
 
       const result = await service.findOne(fields);
 
@@ -53,14 +53,14 @@ describe('RoleService', () => {
     });
   });
 
-  describe('findAll', () => {
-    it('should find all roles', async () => {
+  describe("findAll", () => {
+    it("should find all roles", async () => {
       const foundRoles: RoleEntity[] = [
-        { id: 1, name: 'test1' },
-        { id: 2, name: 'test2' },
+        { id: "1", name: "test1", created_at: new Date(), updated_at: new Date(), deleted_at: null },
+        { id: "2", name: "test2", created_at: new Date(), updated_at: new Date(), deleted_at: null }
       ];
 
-      jest.spyOn(repository, 'find').mockResolvedValue(foundRoles);
+      jest.spyOn(repository, "find").mockResolvedValue(foundRoles);
 
       const result = await service.findAll();
 
@@ -68,10 +68,10 @@ describe('RoleService', () => {
     });
   });
 
-  describe('delete', () => {
-    it('should delete a role by id', async () => {
-      const id = 1;
-      jest.spyOn(repository, 'delete').mockResolvedValue(undefined);
+  describe("delete", () => {
+    it("should delete a role by id", async () => {
+      const id = "1";
+      jest.spyOn(repository, "delete").mockResolvedValue(undefined);
       const result = await service.delete(id);
       expect(result).toBeUndefined();
     });

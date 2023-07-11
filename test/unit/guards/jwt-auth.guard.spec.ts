@@ -3,7 +3,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { Reflector } from "@nestjs/core";
 import { ExecutionContext } from "@nestjs/common";
 
-describe('JwtAuthGuard', () => {
+describe("JwtAuthGuard", () => {
   let guard: JwtAuthGuard;
 
   beforeEach(async () => {
@@ -13,22 +13,22 @@ describe('JwtAuthGuard', () => {
         {
           provide: Reflector,
           useValue: {
-            getAllAndOverride: jest.fn(),
-          },
-        },
-      ],
+            getAllAndOverride: jest.fn()
+          }
+        }
+      ]
     }).compile();
 
     guard = module.get<JwtAuthGuard>(JwtAuthGuard);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(guard).toBeDefined();
   });
 
-  it('should return true if canActivate returns true', async () => {
+  it("should return true if canActivate returns true", async () => {
     const canActivateSpy = jest
-      .spyOn(guard, 'canActivate')
+      .spyOn(guard, "canActivate")
       .mockResolvedValue(true);
 
     const context: ExecutionContext = {} as ExecutionContext;
@@ -38,9 +38,9 @@ describe('JwtAuthGuard', () => {
     expect(canActivateSpy).toHaveBeenCalled();
   });
 
-  it('should throw an error if canActivate returns false', async () => {
+  it("should throw an error if canActivate returns false", async () => {
     const canActivateSpy = jest
-      .spyOn(guard, 'canActivate')
+      .spyOn(guard, "canActivate")
       .mockResolvedValue(false);
 
     const context: ExecutionContext = {} as ExecutionContext;
@@ -48,7 +48,7 @@ describe('JwtAuthGuard', () => {
     try {
       await guard.canActivate(context);
     } catch (err) {
-      expect(err).toEqual(new Error('Unauthorized'));
+      expect(err).toEqual(new Error("Unauthorized"));
       expect(canActivateSpy).toHaveBeenCalled();
     }
   });

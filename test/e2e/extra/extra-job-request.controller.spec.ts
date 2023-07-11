@@ -22,10 +22,10 @@ describe("ExtraJobRequestController", () => {
         ExtraService,
         ParamCheckService,
         JwtService,
-          {
-            provide: getRepositoryToken(ExtraJobRequestEntity),
-            useValue: ExtraJobRequestEntity
-          },
+        {
+          provide: getRepositoryToken(ExtraJobRequestEntity),
+          useValue: ExtraJobRequestEntity
+        },
         {
           provide: getRepositoryToken(JobOfferEntity),
           useValue: JobOfferEntity
@@ -34,13 +34,13 @@ describe("ExtraJobRequestController", () => {
           provide: getRepositoryToken(ExtraEntity),
           useValue: ExtraEntity
         }
-        ],
+      ]
     }).compile();
 
     controller = module.get<ExtraJobRequestController>(ExtraJobRequestController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

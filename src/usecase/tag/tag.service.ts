@@ -10,12 +10,13 @@ import { UpdateTagDto } from "./dto/update-tag.dto";
 export class TagService {
   constructor(
     @InjectRepository(TagEntity)
-    private tagRepository: Repository<TagEntity>,
-  ) {}
+    private tagRepository: Repository<TagEntity>
+  ) {
+  }
 
   create(tagDto: TagDto) {
     return this.tagRepository.save(
-      this.tagRepository.create(tagDto),
+      this.tagRepository.create(tagDto)
     );
   }
 
@@ -25,20 +26,20 @@ export class TagService {
 
   findOne(fields: EntityCondition<TagEntity>) {
     return this.tagRepository.findOne({
-      where: fields,
+      where: fields
     });
   }
 
-  update(id: number, updateTagDto: UpdateTagDto) {
+  update(id: string, updateTagDto: UpdateTagDto) {
     return this.tagRepository.save(
       this.tagRepository.create({
         id,
-        ...updateTagDto,
-      }),
+        ...updateTagDto
+      })
     );
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.tagRepository.delete(id);
   }
 }

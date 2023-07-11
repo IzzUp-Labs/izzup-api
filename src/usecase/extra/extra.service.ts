@@ -1,18 +1,19 @@
-import {Injectable} from "@nestjs/common";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-import {EntityCondition} from "../../domain/utils/types/entity-condition.type";
-import {ExtraEntity} from "./entities/extra.entity";
-import {UpdateExtraDto} from "./dto/update-extra.dto";
-import {ExtraDto} from "./dto/extra.dto";
-import {JobRequestStatus} from "../../domain/utils/enums/job-request-status";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { EntityCondition } from "../../domain/utils/types/entity-condition.type";
+import { ExtraEntity } from "./entities/extra.entity";
+import { UpdateExtraDto } from "./dto/update-extra.dto";
+import { ExtraDto } from "./dto/extra.dto";
+import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
 
 @Injectable()
 export class ExtraService {
   constructor(
     @InjectRepository(ExtraEntity)
-    private extrasRepository: Repository<ExtraEntity>,
-  ) {}
+    private extrasRepository: Repository<ExtraEntity>
+  ) {
+  }
 
   create(extraDto: ExtraDto) {
     return this.extrasRepository.save(
@@ -30,15 +31,19 @@ export class ExtraService {
 
   findOne(fields: EntityCondition<ExtraEntity>) {
     return this.extrasRepository.findOne({
-      relations: {
-        tags: true,
-        requests: true,
-      },
+      relations: ["tags", "requests", "requests.jobOffer.company", "user"],
       where: fields
     });
   }
 
-  update(id: number, updateExtraDto: UpdateExtraDto) {
+  findExtraWithRequestsAndJobOffers(fields: EntityCondition<ExtraEntity>) {
+    return this.extrasRepository.findOne({
+      relations: ["requests", "requests.jobOffer"],
+      where: fields
+    });
+  }
+
+  update(id: string, updateExtraDto: UpdateExtraDto) {
     return this.extrasRepository.save(
       this.extrasRepository.create({
         id,
@@ -47,24 +52,23 @@ export class ExtraService {
     );
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.extrasRepository.delete(id);
   }
 
-  addTag(extraId: number, tagId: number) {
+  addTag(extraId: string, tagId: string) {
     try {
       return this.extrasRepository
         .createQueryBuilder()
         .relation(ExtraEntity, "tags")
         .of(extraId)
-        .add(tagId)
-    }
-    catch (error) {
+        .add(tagId);
+    } catch (error) {
       throw new Error("Tag not found");
     }
   }
 
-  async addTags(extraId: number, tagIds: number[]) {
+  async addTags(extraId: string, tagIds: string[]) {
     const extra = await this.extrasRepository.findOne({
       relations: {
         tags: true
@@ -74,50 +78,49 @@ export class ExtraService {
           id: extraId
         }
       }
-    })
+    });
     try {
       return this.extrasRepository
-          .createQueryBuilder()
-          .relation(ExtraEntity, "tags")
-          .of(extra.id)
-          .addAndRemove(tagIds, extra.tags.map(tag => tag.id))
-    }
-    catch (error) {
+        .createQueryBuilder()
+        .relation(ExtraEntity, "tags")
+        .of(extra.id)
+        .addAndRemove(tagIds, extra.tags.map(tag => tag.id));
+    } catch (error) {
       throw new Error("Tag not found");
     }
   }
 
-  removeTag(extraId: number, tagId: number) {
+  removeTag(extraId: string, tagId: string) {
     try {
       return this.extrasRepository
         .createQueryBuilder()
         .relation(ExtraEntity, "tags")
         .of(extraId)
         .remove(tagId);
-    }
-    catch (error) {
+    } catch (error) {
       throw new Error("Tag not found");
     }
   }
 
-  async getVerificationCode(userId: number, requestId: number) {
-    const extra = await this.findOne({user: {id: userId}});
+  async getVerificationCode(userId: string, requestId: string) {
+    const extra = await this.findOne({ user: { id: userId } });
     const request = extra.requests.find(request => request.id === requestId);
-    if(!request) {
+    if (!request) {
       throw new Error("Request not found");
     }
-    if(request.status !== JobRequestStatus.WAITING_FOR_VERIFICATION) {
-        throw new Error("Request is not waiting for verification");
+    if (request.status !== JobRequestStatus.WAITING_FOR_VERIFICATION) {
+      throw new Error("Request is not waiting for verification");
     }
     return request.verification_code;
   }
 
-  async getStatistics(userId: number) {
-    const extra = await this.findOne({user: {id: userId}});
+  async getStatistics(userId: string) {
+    const extra = await this.findOne({ user: { id: userId } });
     const requests = extra.requests;
+
     const total_earned = requests.filter(request => request.status === JobRequestStatus.FINISHED)
-        .map(request => request.jobOffer.price)
-        .reduce((a, b) => a + b, 0);
+      .map(request => request.jobOffer.price * request.jobOffer.working_hours)
+      .reduce((a, b) => a + b, 0);
 
     return {
       total_request: requests.length,
@@ -125,7 +128,7 @@ export class ExtraService {
       accepted_request: requests.filter(request => request.status === JobRequestStatus.ACCEPTED).length,
       rejected_request: requests.filter(request => request.status === JobRequestStatus.REJECTED).length,
       waiting_request: requests.filter(request => request.status === JobRequestStatus.WAITING_FOR_VERIFICATION).length,
-      finished_request: requests.filter(request => request.status === JobRequestStatus.FINISHED).length,
+      finished_request: requests.filter(request => request.status === JobRequestStatus.FINISHED).length
     };
   }
 }

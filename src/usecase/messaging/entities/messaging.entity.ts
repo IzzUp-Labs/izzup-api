@@ -1,21 +1,21 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {UserEntity} from "../../user/entities/user.entity";
-import {MessagingRoomEntity} from "./messaging-room.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserEntity } from "../../user/entities/user.entity";
+import { MessagingRoomEntity } from "./messaging-room.entity";
 
 @Entity("messaging")
 export class MessagingEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-    @ManyToOne(() => UserEntity)
-    author!: UserEntity;
+  @ManyToOne(() => UserEntity)
+  author!: UserEntity;
 
-    @Column("varchar")
-    content!: string;
+  @Column("varchar")
+  content!: string;
 
-    @ManyToOne(()=> MessagingRoomEntity, (messageRoom) => messageRoom.messages)
-    room!: MessagingRoomEntity;
+  @ManyToOne(() => MessagingRoomEntity, (messageRoom) => messageRoom.messages)
+  room!: MessagingRoomEntity;
 
-    @CreateDateColumn()
-    creationDate!: Date;
+  @CreateDateColumn()
+  creationDate!: Date;
 }

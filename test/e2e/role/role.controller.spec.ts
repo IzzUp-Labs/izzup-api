@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { RoleController } from "../../../src/usecase/role/role.controller";
 import { RoleService } from "../../../src/usecase/role/role.service";
 import { RoleEntity } from "../../../src/usecase/role/entities/role.entity";
 
-describe('RoleController', () => {
+describe("RoleController", () => {
   let controller: RoleController;
 
   beforeEach(async () => {
@@ -16,13 +16,13 @@ describe('RoleController', () => {
           provide: getRepositoryToken(RoleEntity),
           useValue: RoleEntity
         }
-      ],
+      ]
     }).compile();
 
     controller = module.get<RoleController>(RoleController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });
