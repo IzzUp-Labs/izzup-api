@@ -18,7 +18,7 @@ export class StatusGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const token = this.authService.decodeToken(request.headers.authorization.split(" ")[1]) as { id: number };
+    const token = this.authService.decodeToken(request.headers.authorization.split(" ")[1]) as { id: string };
     if (!token) {
       return false;
     }
