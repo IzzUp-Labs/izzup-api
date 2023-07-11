@@ -36,7 +36,7 @@ export class MessagingRoomService {
     return this.messagingRoomRepository.delete({ id: id });
   }
 
-  findAllUserRooms(userId: number) {
+  findAllUserRooms(userId: string) {
     return this.messagingRoomRepository.createQueryBuilder("messaging_room")
       .leftJoinAndSelect("messaging_room.createdBy", "createdBy")
       .leftJoinAndSelect("messaging_room.participant", "participant")

@@ -66,7 +66,7 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
   }
 
   @SubscribeMessage("create_room")
-  async createRoom(@ConnectedSocket() client: Socket, @MessageBody("createdBy") createdBy: number, @MessageBody("participant") participant: number) {
+  async createRoom(@ConnectedSocket() client: Socket, @MessageBody("createdBy") createdBy: string, @MessageBody("participant") participant: string) {
     const room = await this.messagingRoomService.create(createdBy, participant);
     this.logger.log(`Client created room: ${room.id}`);
     this.server.emit("room_created", room);
@@ -100,7 +100,7 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
   }
 
   @SubscribeMessage("request_all_rooms")
-  async findAllRooms(@ConnectedSocket() client: Socket, @MessageBody("userId") userId: number) {
+  async findAllRooms(@ConnectedSocket() client: Socket, @MessageBody("userId") userId: string) {
     const rooms = await this.messagingRoomService.findAllUserRooms(userId);
     client.emit("receive_all_rooms", rooms);
   }
