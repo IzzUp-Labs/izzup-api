@@ -22,20 +22,20 @@ import { UserStatusModule } from "./usecase/user-status/user-status.module";
 import { FirebaseModule } from "nestjs-firebase";
 import firebaseConfig from "./infrastructure/config/firebase.config";
 import { FirebaseStorageService } from "./infrastructure/config/firebase-storage.service";
-import { GooglePlacesModule } from './usecase/google-places/google-places.module';
+import { GooglePlacesModule } from "./usecase/google-places/google-places.module";
 import googleApiConfig from "./infrastructure/config/google-api.config";
-import {LocationModule} from "./usecase/location/location.module";
-import {MessagingRoomModule} from "./usecase/messaging/messaging-room.module";
-import {MessagingModule} from "./usecase/messaging/messaging.module";
-import {StatusGuard} from "./domain/guards/status.guard";
-import {SocketModule} from "./usecase/app-socket/socket.module";
+import { LocationModule } from "./usecase/location/location.module";
+import { MessagingRoomModule } from "./usecase/messaging/messaging-room.module";
+import { MessagingModule } from "./usecase/messaging/messaging.module";
+import { StatusGuard } from "./domain/guards/status.guard";
+import { SocketModule } from "./usecase/app-socket/socket.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task.module";
-import { MailingModule } from './usecase/mailing/mailing.module';
+import { MailingModule } from "./usecase/mailing/mailing.module";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import verificationEmailConfig from "./infrastructure/config/verification-email.config";
-import {NotificationModule} from "./usecase/notification/notification.module";
+import { NotificationModule } from "./usecase/notification/notification.module";
 
 @Module({
   imports: [
@@ -66,14 +66,14 @@ import {NotificationModule} from "./usecase/notification/notification.module";
     ScheduleModule.forRoot(),
     MailingModule,
     MailerModule.forRoot({
-      transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+      transport: "smtps://user@domain.com:pass@smtp.domain.com",
       template: {
-        dir: process.cwd() + '/templates/',
+        dir: process.cwd() + "/src/usecase/mailing/templates/",
         adapter: new HandlebarsAdapter(),
         options: {
-          strict: true,
-        },
-      },
+          strict: true
+        }
+      }
     }),
     NotificationModule,
     UserModule,
@@ -100,14 +100,14 @@ import {NotificationModule} from "./usecase/notification/notification.module";
   controllers: [],
   providers: [
     {
-      provide: 'APP_GUARD',
-      useClass: RolesGuard,
+      provide: "APP_GUARD",
+      useClass: RolesGuard
     },
     {
-      provide: 'APP_GUARD',
-      useClass: StatusGuard,
+      provide: "APP_GUARD",
+      useClass: StatusGuard
     }
-  ],
+  ]
 })
 export class AppModule {
 }

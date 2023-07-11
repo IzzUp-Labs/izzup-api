@@ -23,9 +23,9 @@ describe("HomepageCardService", () => {
           useClass: Repository
         },
         {
-          provide: 'FIREBASE_TOKEN',
-          useValue: 'FIREBASE_TOKEN',
-        },
+          provide: "FIREBASE_TOKEN",
+          useValue: "FIREBASE_TOKEN"
+        }
       ]
     }).compile();
     homepageCardService = module.get<HomepageCardService>(HomepageCardService);
@@ -36,7 +36,7 @@ describe("HomepageCardService", () => {
 
   describe("create", () => {
     it("should create a homepageCard", async () => {
-      const homepageCardDto : HomepageCardDto = {
+      const homepageCardDto: HomepageCardDto = {
         title: "test",
         description: "test",
         photo: "test",
@@ -44,14 +44,17 @@ describe("HomepageCardService", () => {
         link: "test",
         company_id: null
       };
-      const createdHomepageCard : HomepageCardEntity = {
-        id: 1,
+      const createdHomepageCard: HomepageCardEntity = {
+        id: "1",
         title: "test",
         description: "test",
         photo: "test",
         type: HomepageCardTypeEnum.NEWS,
         link: "test",
-        company_id: null
+        company_id: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
       };
       jest.spyOn(homepageCardRepository, "create").mockReturnValue(createdHomepageCard);
       jest.spyOn(homepageCardRepository, "save").mockResolvedValue(createdHomepageCard);
@@ -62,15 +65,18 @@ describe("HomepageCardService", () => {
 
   describe("find", () => {
     it("should find a homepageCard by fields", async () => {
-      const fields = { id: 1 };
-      const foundHomepageCard : HomepageCardEntity = {
-        id: 1,
+      const fields = { id: "1" };
+      const foundHomepageCard: HomepageCardEntity = {
+        id: "1",
         title: "test",
         description: "test",
         photo: "test",
         type: HomepageCardTypeEnum.NEWS,
         link: "test",
-        company_id: null
+        company_id: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
       };
       jest.spyOn(homepageCardRepository, "findOne").mockResolvedValue(foundHomepageCard);
       const result = await homepageCardService.findOne(fields);
@@ -78,22 +84,30 @@ describe("HomepageCardService", () => {
     });
 
     it("should find all homepageCards", async () => {
-      const foundHomepageCards : HomepageCardEntity[] = [
+      const foundHomepageCards: HomepageCardEntity[] = [
         {
-          id: 1,title: "test",
+          id: "1",
+          title: "test",
           description: "test",
           photo: "test",
           type: HomepageCardTypeEnum.NEWS,
           link: "test",
-          company_id: null
+          company_id: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: null
         },
         {
-          id: 2,title: "test",
+          id: "2",
+          title: "test",
           description: "test",
           photo: "test",
           type: HomepageCardTypeEnum.NEWS,
           link: "test",
-          company_id: null
+          company_id: null,
+          created_at: new Date(),
+          updated_at: new Date(),
+          deleted_at: null
         }
       ];
       jest.spyOn(homepageCardRepository, "find").mockResolvedValue(foundHomepageCards);
@@ -104,7 +118,7 @@ describe("HomepageCardService", () => {
 
   describe("update", () => {
     it("should update a homepageCard", async () => {
-      const homepageCardDto : HomepageCardDto = {
+      const homepageCardDto: HomepageCardDto = {
         title: "test",
         description: "test",
         photo: "test",
@@ -112,18 +126,21 @@ describe("HomepageCardService", () => {
         link: "test",
         company_id: null
       };
-      const updatedHomepageCard : HomepageCardEntity = {
-        id: 1,
+      const updatedHomepageCard: HomepageCardEntity = {
+        id: "1",
         title: "test",
         description: "test",
         photo: "test",
         type: HomepageCardTypeEnum.NEWS,
         link: "test",
-        company_id: null
+        company_id: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null
       };
       jest.spyOn(homepageCardRepository, "create").mockReturnValue(updatedHomepageCard);
       jest.spyOn(homepageCardRepository, "save").mockResolvedValue(updatedHomepageCard);
-      const result = await homepageCardService.update(1, homepageCardDto);
+      const result = await homepageCardService.update("1", homepageCardDto);
       expect(result).toEqual(updatedHomepageCard);
     });
   });
@@ -131,7 +148,7 @@ describe("HomepageCardService", () => {
   describe("remove", () => {
     it("should remove a homepageCard", async () => {
       jest.spyOn(homepageCardRepository, "delete").mockResolvedValue(undefined);
-      const result = await homepageCardService.remove(1);
+      const result = await homepageCardService.remove("1");
       expect(result).toBeUndefined();
     });
   });

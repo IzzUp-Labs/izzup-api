@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserEntity } from "../../../../usecase/user/entities/user.entity";
@@ -12,14 +12,15 @@ export class UserSeedService {
     @InjectRepository(UserEntity)
     private repository: Repository<UserEntity>,
     private configService: ConfigService
-  ) {}
+  ) {
+  }
 
   async run() {
     const countAdmin = await this.repository.count({
-      where : {
-        role : RoleEnum.ADMIN
+      where: {
+        role: RoleEnum.ADMIN
       }
-    })
+    });
 
     if (countAdmin === 0) {
       const hashedPassword = await bcrypt.hash(this.configService.get("seed-user.seed_admin_password"), 10);
@@ -29,13 +30,13 @@ export class UserSeedService {
           last_name: this.configService.get("seed-user.seed_admin_lastname"),
           email: this.configService.get("seed-user.seed_admin_email"),
           password: hashedPassword,
-            employer: null,
-            extra: null,
-            photo: null,
-            id_photo: null,
+          employer: null,
+          extra: null,
+          photo: null,
+          id_photo: null,
           role: RoleEnum.ADMIN,
-          date_of_birth: new Date(),
-        }),
+          date_of_birth: new Date()
+        })
       );
     }
   }

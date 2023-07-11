@@ -1,5 +1,5 @@
-import {Controller, Get, Param} from "@nestjs/common";
-import {GooglePlacesService} from "./google-places.service";
+import { Controller, Get, Param } from "@nestjs/common";
+import { GooglePlacesService } from "./google-places.service";
 
 @Controller({
   path: "google-places",
@@ -10,12 +10,12 @@ export class GooglePlacesController {
   }
 
   @Get("search/:nameOrAddress")
-  findPlaceFromText(@Param("nameOrAddress") nameOrAddress: string){
+  findPlaceFromText(@Param("nameOrAddress") nameOrAddress: string) {
     return this.googlePlacesService.findPlaceFromText(nameOrAddress);
   }
 
   @Get("details/:placeId")
-  getPlaceDetails(@Param("placeId") placeId: string){
+  getPlaceDetails(@Param("placeId") placeId: string) {
     return this.googlePlacesService.getPlaceDetails(placeId);
   }
 }

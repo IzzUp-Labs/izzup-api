@@ -7,18 +7,19 @@ export class ParamCheckService {
   constructor(
     private readonly reflector: Reflector,
     private readonly jwtService: JwtService
-  ) {}
+  ) {
+  }
 
-    check(token: string, paramId: number): boolean {
-        const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: number };
-        if(!tokenDecoded) {
-          return false;
-        }
-        return tokenDecoded.id == paramId;
+  check(token: string, paramId: string): boolean {
+    const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: string };
+    if (!tokenDecoded) {
+      return false;
     }
+    return tokenDecoded.id == paramId;
+  }
 
-    decodeId(token: string): number {
-      const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: number };
-      return tokenDecoded.id;
-    }
+  decodeId(token: string): string {
+    const tokenDecoded = this.jwtService.decode(token.split(" ")[1]) as { id: string };
+    return tokenDecoded.id;
+  }
 }

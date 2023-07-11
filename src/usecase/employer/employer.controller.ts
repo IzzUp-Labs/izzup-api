@@ -11,17 +11,17 @@ import {
   Post,
   UseGuards
 } from "@nestjs/common";
-import {EmployerService} from "./employer.service";
-import {UpdateEmployerDto} from "./dto/update-employer.dto";
-import {AuthGuard} from "@nestjs/passport";
-import {RoleGuard} from "../../domain/guards/role.decorator";
-import {RoleEnum} from "../../domain/utils/enums/role.enum";
-import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
-import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
-import {StatusGuard} from "../../domain/guards/status.decorator";
-import {UserStatusEnum} from "../../domain/utils/enums/user-status.enum";
+import { EmployerService } from "./employer.service";
+import { UpdateEmployerDto } from "./dto/update-employer.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { RoleGuard } from "../../domain/guards/role.decorator";
+import { RoleEnum } from "../../domain/utils/enums/role.enum";
+import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { StatusGuard } from "../../domain/guards/status.decorator";
+import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 
-@ApiTags('Employers')
+@ApiTags("Employers")
 @Controller({
   path: "employer",
   version: "1"
@@ -32,7 +32,7 @@ export class EmployerController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
@@ -40,7 +40,7 @@ export class EmployerController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Get("statistics")
@@ -50,51 +50,50 @@ export class EmployerController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.employerService.findOne({ id: +id });
+    return this.employerService.findOne({ id: id });
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateEmployerDto: UpdateEmployerDto) {
-    return this.employerService.update(+id, updateEmployerDto);
+    return this.employerService.update(id, updateEmployerDto);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EMPLOYER])
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.employerService.remove(+id);
+    return this.employerService.remove(id);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Post(":id/job-offer/:companyId")
   createJobOffer(@Param("id") id: string, @Param("companyId") companyId: string, @Body() jobOfferDto, @Headers("Authorization") authorization: string) {
-    const result = this.paramCheckService.check(authorization, +id)
-      if(result) {
-        return this.employerService.createJobOffer(+id, jobOfferDto, +companyId);
-      }
-      else {
-        throw new HttpException(
-          {
-            status: HttpStatus.UNAUTHORIZED,
-            reason: "Invalid user"
-          },
-          HttpStatus.UNAUTHORIZED
-        );
-      }
+    const result = this.paramCheckService.check(authorization, id);
+    if (result) {
+      return this.employerService.createJobOffer(id, jobOfferDto, companyId);
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          reason: "Invalid user"
+        },
+        HttpStatus.UNAUTHORIZED
+      );
+    }
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Get("my/joboffers")
@@ -104,27 +103,26 @@ export class EmployerController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @Get("my/company")
   getMyCompany(@Headers("Authorization") authorization: string) {
     const result = this.paramCheckService.decodeId(authorization);
-    if(result) {
+    if (result) {
       return this.employerService.getEmployerWithCompanies(result);
-    }
-    else {
+    } else {
       throw new HttpException(
-          {
-            status: HttpStatus.UNAUTHORIZED,
-            reason: "Invalid user"
-          },
-          HttpStatus.UNAUTHORIZED
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          reason: "Invalid user"
+        },
+        HttpStatus.UNAUTHORIZED
       );
     }
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Get("my/jobOffers/requests")
@@ -134,52 +132,52 @@ export class EmployerController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Patch("accept/request/:requestId")
-  acceptExtraJobRequest(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
+  acceptExtraJobRequest(@Param("requestId") requestId: string, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.acceptExtraJobRequest(userId, +requestId);
+    return this.employerService.acceptExtraJobRequest(userId, requestId);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Patch("reject/request/:requestId")
-  rejectExtraJobRequest(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
+  rejectExtraJobRequest(@Param("requestId") requestId: string, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.rejectExtraJobRequest(userId, +requestId);
+    return this.employerService.rejectExtraJobRequest(userId, requestId);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Patch("comfirm-work/:requestId")
-  confirmWork(@Param("requestId") requestId, @Headers("Authorization") authorization: string) {
+  confirmWork(@Param("requestId") requestId: string, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.confirmWork(userId, +requestId);
+    return this.employerService.confirmWork(userId, requestId);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Patch("finish-work/:requestId/:code")
-  finishWork(@Param("requestId") requestId, @Param("code") code,@Headers("Authorization") authorization: string) {
+  finishWork(@Param("requestId") requestId: string, @Param("code") code: number, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.finishWork(userId, +requestId, +code);
+    return this.employerService.finishWork(userId, requestId, +code);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.EMPLOYER, RoleEnum.ADMIN])
   @StatusGuard(UserStatusEnum.VERIFIED)
   @Delete("job-offer/:id")
   deleteJobOffer(@Param("id") id: string, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.employerService.deleteJobOffer(+id, userId);
+    return this.employerService.deleteJobOffer(id, userId);
   }
 }

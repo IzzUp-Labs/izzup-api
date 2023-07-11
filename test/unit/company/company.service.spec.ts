@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 
-describe('CompanyService', () => {
+describe("CompanyService", () => {
   let companyService: CompanyService;
   let companyRepository: Repository<CompanyEntity>;
 
@@ -24,13 +24,13 @@ describe('CompanyService', () => {
             createQueryBuilder: jest.fn(() => ({
               relation: jest.fn(() => ({
                 of: jest.fn(() => ({
-                  add: jest.fn(),
-                })),
-              })),
-            })),
-          },
-        },
-      ],
+                  add: jest.fn()
+                }))
+              }))
+            }))
+          }
+        }
+      ]
     }).compile();
 
     companyService = module.get<CompanyService>(CompanyService);
@@ -39,103 +39,103 @@ describe('CompanyService', () => {
     );
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(companyService).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should create a company', async () => {
+  describe("create", () => {
+    it("should create a company", async () => {
       const company = new CompanyEntity();
-      company.name = 'Test';
-      company.address = 'Test';
+      company.name = "Test";
+      company.address = "Test";
       company.sectors = [];
 
       const companyDto = new CompanyDto();
-      companyDto.name = 'Test';
-      companyDto.address = 'Test';
+      companyDto.name = "Test";
+      companyDto.address = "Test";
 
       jest
-        .spyOn(companyRepository, 'create')
+        .spyOn(companyRepository, "create")
         .mockImplementation(() => company);
       jest
-        .spyOn(companyRepository, 'save')
+        .spyOn(companyRepository, "save")
         .mockImplementation(() => Promise.resolve(company));
 
       expect(await companyService.create(companyDto)).toBe(company);
     });
   });
 
-  describe('findAll', () => {
-    it('should return an array of companies', async () => {
+  describe("findAll", () => {
+    it("should return an array of companies", async () => {
       const company = new CompanyEntity();
-      company.name = 'Test';
-      company.address = 'Test';
+      company.name = "Test";
+      company.address = "Test";
       company.sectors = [];
 
       jest
-        .spyOn(companyRepository, 'find')
+        .spyOn(companyRepository, "find")
         .mockImplementation(() => Promise.resolve([company]));
 
       expect(await companyService.findAll()).toEqual([company]);
     });
   });
 
-  describe('findOne', () => {
-    it('should return a company', async () => {
+  describe("findOne", () => {
+    it("should return a company", async () => {
       const company = new CompanyEntity();
-      company.name = 'Test';
-      company.address = 'Test';
+      company.name = "Test";
+      company.address = "Test";
       company.sectors = [];
 
       jest
-        .spyOn(companyRepository, 'findOne')
+        .spyOn(companyRepository, "findOne")
         .mockImplementation(() => Promise.resolve(company));
 
-      expect(await companyService.findOne({ id: 1 })).toEqual(company);
+      expect(await companyService.findOne({ id: "1" })).toEqual(company);
     });
   });
 
-  describe('update', () => {
-    it('should update a company', async () => {
+  describe("update", () => {
+    it("should update a company", async () => {
       const company = new CompanyEntity();
-      company.name = 'Test';
-      company.address = 'Test';
+      company.name = "Test";
+      company.address = "Test";
       company.sectors = [];
 
       const companyDto = new CompanyDto();
-      companyDto.name = 'Test';
-      companyDto.address = 'Test';
+      companyDto.name = "Test";
+      companyDto.address = "Test";
 
       jest
-        .spyOn(companyRepository, 'create')
+        .spyOn(companyRepository, "create")
         .mockImplementation(() => company);
       jest
-        .spyOn(companyRepository, 'save')
+        .spyOn(companyRepository, "save")
         .mockImplementation(() => Promise.resolve(company));
 
-      expect(await companyService.update(1, companyDto)).toBe(company);
+      expect(await companyService.update("1", companyDto)).toBe(company);
     });
   });
 
-  describe('remove', () => {
-    it('should remove a company', async () => {
-      const id = 1;
-      jest.spyOn(companyRepository, 'delete').mockResolvedValue(undefined);
+  describe("remove", () => {
+    it("should remove a company", async () => {
+      const id = "1";
+      jest.spyOn(companyRepository, "delete").mockResolvedValue(undefined);
       const result = await companyService.remove(id);
       expect(result).toBeUndefined();
     });
   });
 
-  describe('addActivitySector', () => {
-    it('should add a sector to a company', async () => {
-      const companyId = 1;
-      const activitySectorId = 1;
-      jest.spyOn(companyRepository, 'createQueryBuilder').mockReturnValue({
+  describe("addActivitySector", () => {
+    it("should add a sector to a company", async () => {
+      const companyId = "1";
+      const activitySectorId = "1";
+      jest.spyOn(companyRepository, "createQueryBuilder").mockReturnValue({
         relation: jest.fn(() => ({
           of: jest.fn(() => ({
-            add: jest.fn(),
-          })),
-        })),
+            add: jest.fn()
+          }))
+        }))
       } as any);
       const result = await companyService.addActivitySector(
         companyId,
@@ -145,16 +145,16 @@ describe('CompanyService', () => {
     });
   });
 
-  describe('removeActivitySector', () => {
-    it('should remove a sector from a company', async () => {
-      const companyId = 1;
-      const activitySectorId = 1;
-      jest.spyOn(companyRepository, 'createQueryBuilder').mockReturnValue({
+  describe("removeActivitySector", () => {
+    it("should remove a sector from a company", async () => {
+      const companyId = "1";
+      const activitySectorId = "1";
+      jest.spyOn(companyRepository, "createQueryBuilder").mockReturnValue({
         relation: jest.fn(() => ({
           of: jest.fn(() => ({
-            remove: jest.fn(),
-          })),
-        })),
+            remove: jest.fn()
+          }))
+        }))
       } as any);
       const result = await companyService.removeActivitySector(
         companyId,
@@ -163,4 +163,4 @@ describe('CompanyService', () => {
       expect(result).toBeUndefined();
     });
   });
-})
+});

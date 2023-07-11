@@ -1,19 +1,19 @@
-import {CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn} from "typeorm";
+import { CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('messaging_session')
+@Entity("messaging_session")
 export class MessagingSessionEntity {
-    @PrimaryColumn("varchar")
-    clientId!: string;
+  @PrimaryColumn("varchar")
+  clientId!: string;
 
-    @PrimaryColumn("varchar")
-    userId!: number;
+  @PrimaryColumn("varchar")
+  userId!: string;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 
-    @DeleteDateColumn()
-    deleted_at: Date;
+  @DeleteDateColumn()
+  deleted_at: Date;
 }

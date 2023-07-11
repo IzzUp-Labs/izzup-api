@@ -12,8 +12,8 @@ import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { UserEntity } from "../user/entities/user.entity";
 import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
-import {LocationService} from "../location/location.service";
-import {SocketService} from "../app-socket/socket.service";
+import { LocationService } from "../location/location.service";
+import { SocketService } from "../app-socket/socket.service";
 
 @Injectable()
 export class AuthService {
@@ -69,7 +69,7 @@ export class AuthService {
 
   async isMember(authMembershipCheckDto: AuthMembershipCheckDto): Promise<boolean> {
     const user = await this.userService.findOne({
-      email: authMembershipCheckDto.email.toLowerCase(),
+      email: authMembershipCheckDto.email.toLowerCase()
     });
     return !!user;
   }
@@ -77,14 +77,14 @@ export class AuthService {
   async registerExtra(authRegisterExtraDto: AuthRegisterExtraDto): Promise<UserEntity> {
     const hashedPassword = await bcrypt.hash(authRegisterExtraDto.password, 10);
     const extra = await this.extraService.create({
-        address: authRegisterExtraDto.address,
+      address: authRegisterExtraDto.address
     });
     return await this.userService.create({
       ...authRegisterExtraDto,
       email: authRegisterExtraDto.email.toLowerCase(),
       password: hashedPassword,
       role: RoleEnum.EXTRA,
-      extra: extra,
+      extra: extra
     }).then((user) => {
       this.userService.addStatus(user.id, UserStatusEnum.UNVERIFIED);
       return user;
@@ -95,17 +95,17 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(authRegisterEmployer.password, 10);
     const employer = await this.employerService.create({});
     const user = await this.userService.create({
-        ...authRegisterEmployer,
-        email: authRegisterEmployer.email.toLowerCase(),
-        password: hashedPassword,
-        role: RoleEnum.EMPLOYER,
-        employer: employer
+      ...authRegisterEmployer,
+      email: authRegisterEmployer.email.toLowerCase(),
+      password: hashedPassword,
+      role: RoleEnum.EMPLOYER,
+      employer: employer
     }).then((user) => {
       this.userService.addStatus(user.id, UserStatusEnum.UNVERIFIED);
       return user;
     });
     const company_location = await this.locationService.create({
-        ...authRegisterEmployer.location
+      ...authRegisterEmployer.location
     });
     await this.companyService.create({
       ...authRegisterEmployer.company,
@@ -115,7 +115,7 @@ export class AuthService {
     return user;
   }
 
-  async getConnectedDevices(){
+  async getConnectedDevices() {
     await this.socketService.getConnectedClients();
   }
 }

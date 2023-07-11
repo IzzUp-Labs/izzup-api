@@ -5,12 +5,14 @@ import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
 import { CreateUserDto } from "../../../src/usecase/user/dto/create-user.dto";
-import {UpdateUserDto} from "../../../src/usecase/user/dto/update-user.dto";
+import { UpdateUserDto } from "../../../src/usecase/user/dto/update-user.dto";
 import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
 import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
+import { SocketService } from "../../../src/usecase/app-socket/socket.service";
+import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 
 describe("UserService", () => {
   let service: UserService;
@@ -23,6 +25,7 @@ describe("UserService", () => {
         UserStatusService,
         ConfigService,
         FileExtensionChecker,
+        SocketService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -30,15 +33,15 @@ describe("UserService", () => {
             find: jest.fn(),
             save: jest.fn(),
             create: jest.fn().mockReturnValue({
-              id: 1,
-              email: 'test@example.com',
-              password: 'password',
-              last_name: "lasttest",
-              first_name: "firsttest",
-              role: 'EXTRA',
-              created_at: new Date("2023-04-02T13:15:43.636Z"),
-              updated_at: new Date("2023-04-02T13:15:43.636Z"),
-            }
+                id: "1",
+                email: "test@example.com",
+                password: "password",
+                last_name: "lasttest",
+                first_name: "firsttest",
+                role: "EXTRA",
+                created_at: new Date("2023-04-02T13:15:43.636Z"),
+                updated_at: new Date("2023-04-02T13:15:43.636Z")
+              }
             ),
             delete: jest.fn()
           }
@@ -48,9 +51,13 @@ describe("UserService", () => {
           useValue: Repository
         },
         {
-          provide: 'FIREBASE_TOKEN',
-          useValue: 'FIREBASE_TOKEN',
+          provide: getRepositoryToken(AppSocketSessionEntity),
+          useValue: AppSocketSessionEntity
         },
+        {
+          provide: "FIREBASE_TOKEN",
+          useValue: "FIREBASE_TOKEN"
+        }
       ]
     }).compile();
 
@@ -63,13 +70,13 @@ describe("UserService", () => {
   describe("create", () => {
     it("should create a new user", async () => {
       const mockUser: UserEntity = {
-        id: 1,
+        id: "1",
         email: "test@example.com",
         password: "password",
         last_name: "lasttest",
         first_name: "firsttest",
         photo: null,
-        role: 'EXTRA',
+        role: "EXTRA",
         id_photo: null,
         rooms: [],
         date_of_birth: new Date("2015-08-02T13:15:43.636Z"),
@@ -78,7 +85,18 @@ describe("UserService", () => {
         deleted_at: null,
         employer: null,
         extra: null,
-        statuses: [{id: 1, name: UserStatusEnum.UNVERIFIED}]
+        fcm_tokens: [],
+        is_email_confirmed: false,
+        email_confirmation_code: null,
+        statuses: [
+          {
+            id: "1",
+            name: UserStatusEnum.UNVERIFIED ,
+            created_at: new Date(),
+            updated_at: new Date(),
+            deleted_at: null
+          }
+        ]
       };
       const createUserDto: CreateUserDto = {
         email: "test@example.com",
@@ -86,9 +104,9 @@ describe("UserService", () => {
         last_name: "lasttest",
         first_name: "firsttest",
         date_of_birth: new Date(),
-        role: 'EXTRA',
+        role: "EXTRA",
         employer: null,
-        extra: null,
+        extra: null
       };
 
       const userRepositorySaveSpy = jest
@@ -114,8 +132,8 @@ describe("UserService", () => {
 
   describe("update", () => {
     it("should update and return a user by id and update dto", async () => {
-      const id = 1;
-      const updateUserDto : UpdateUserDto = { email: "newtest@example.com" };
+      const id = "1";
+      const updateUserDto: UpdateUserDto = { email: "newtest@example.com" };
       const user = { id, email: "newtest@example.com", password: "password" };
       jest.spyOn(repository, "save").mockResolvedValueOnce(user as any);
       const result = await service.update(id, updateUserDto);
@@ -125,7 +143,7 @@ describe("UserService", () => {
 
   describe("remove", () => {
     it("should delete a user by id", async () => {
-      const id = 1;
+      const id = "1";
       jest.spyOn(repository, "delete").mockResolvedValueOnce(undefined as any);
       const result = await service.remove(id);
       expect(result).toBeUndefined();

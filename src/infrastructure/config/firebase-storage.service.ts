@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { FirebaseModuleOptions, FirebaseModuleOptionsFactory } from "nestjs-firebase";
 
 @Injectable()
-export class FirebaseStorageService implements FirebaseModuleOptionsFactory{
+export class FirebaseStorageService implements FirebaseModuleOptionsFactory {
   constructor(private configService: ConfigService) {
   }
 
@@ -20,12 +20,12 @@ export class FirebaseStorageService implements FirebaseModuleOptionsFactory{
       "auth_provider_x509_cert_url": this.configService.get("firebase.auth_provider_x509_cert_url"),
       "client_x509_cert_url": this.configService.get("firebase.client_x509_cert_url"),
       "universe_domain": this.configService.get("firebase.universe_domain")
-    }
+    };
   }
 
   createFirebaseModuleOptions(): Promise<FirebaseModuleOptions> | FirebaseModuleOptions {
     return {
       googleApplicationCredential: this.createFirebaseStorageAuth()
-    }
+    };
   }
 }

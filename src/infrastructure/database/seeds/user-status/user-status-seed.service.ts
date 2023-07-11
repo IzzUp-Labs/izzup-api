@@ -7,27 +7,27 @@ import { Repository } from "typeorm";
 export class UserStatusSeedService {
   constructor(
     @InjectRepository(UserStatusEntity)
-    private repository: Repository<UserStatusEntity>,
-  ) {}
-
-  async run() {
-    await this.createStatus(1, 'UNVERIFIED');
-    await this.createStatus(2, 'VERIFIED');
+    private repository: Repository<UserStatusEntity>
+  ) {
   }
 
-  private async createStatus(id: number, name: string) {
+  async run() {
+    await this.createStatus("UNVERIFIED");
+    await this.createStatus("VERIFIED");
+  }
+
+  private async createStatus(name: string) {
     const count = await this.repository.count({
       where: {
-        id : id,
-      },
-    })
+        name: name
+      }
+    });
 
     if (count === 0) {
       await this.repository.save(
         this.repository.create({
-          id: id,
-          name,
-        }),
+          name
+        })
       );
     }
   }

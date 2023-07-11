@@ -1,15 +1,15 @@
-import {Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards} from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterExtraDto } from "./dto/auth-register-extra.dto";
 import { AuthRegisterEmployerDto } from "./dto/auth-register-employer.dto";
 import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
-import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
-import {AuthGuard} from "@nestjs/passport";
-import {RoleGuard} from "../../domain/guards/role.decorator";
-import {RoleEnum} from "../../domain/utils/enums/role.enum";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
+import { RoleGuard } from "../../domain/guards/role.decorator";
+import { RoleEnum } from "../../domain/utils/enums/role.enum";
 
-@ApiTags('Authentications')
+@ApiTags("Authentications")
 @Controller({
   path: "auth",
   version: "1"
@@ -43,7 +43,7 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Get("connected/devices")
   @HttpCode(HttpStatus.OK)

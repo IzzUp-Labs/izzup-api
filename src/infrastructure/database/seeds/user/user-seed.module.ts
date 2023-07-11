@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { UserSeedService } from './user-seed.service';
+import { Module } from "@nestjs/common";
+import { UserSeedService } from "./user-seed.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserEntity } from "../../../../usecase/user/entities/user.entity";
 import { ConfigModule } from "@nestjs/config";
@@ -10,10 +10,10 @@ import { ExtraJobRequestEntity } from "../../../../usecase/extra/entities/extra-
 import { JobOfferEntity } from "../../../../usecase/job-offer/entities/job-offer.entity";
 import { CompanyEntity } from "../../../../usecase/company/entities/company.entity";
 import { UserStatusEntity } from "../../../../usecase/user-status/entities/user-status.entity";
-import {LocationEntity} from "../../../../usecase/location/entities/location.entity";
-import {MessagingRoomEntity} from "../../../../usecase/messaging/entities/messaging-room.entity";
-import {MessagingEntity} from "../../../../usecase/messaging/entities/messaging.entity";
-import {MessagingSessionEntity} from "../../../../usecase/messaging/entities/messaging-session.entity";
+import { LocationEntity } from "../../../../usecase/location/entities/location.entity";
+import { MessagingRoomEntity } from "../../../../usecase/messaging/entities/messaging-room.entity";
+import { MessagingEntity } from "../../../../usecase/messaging/entities/messaging.entity";
+import { MessagingSessionEntity } from "../../../../usecase/messaging/entities/messaging-session.entity";
 
 @Module({
   imports: [
@@ -23,9 +23,10 @@ import {MessagingSessionEntity} from "../../../../usecase/messaging/entities/mes
     ConfigModule.forRoot({
       isGlobal: true,
       load: [seedUserConfig],
-      envFilePath: [".env"],
-    }),],
+      envFilePath: [".env"]
+    })],
   providers: [UserSeedService],
-  exports: [UserSeedService],
+  exports: [UserSeedService]
 })
-export class UserSeedModule {}
+export class UserSeedModule {
+}

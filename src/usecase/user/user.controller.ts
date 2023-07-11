@@ -1,19 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Headers,
+  HttpException,
+  Param,
+  Patch,
+  Post,
+  UploadedFile,
   UseGuards,
-  UseInterceptors,
-  UploadedFile, Headers, HttpException
+  UseInterceptors
 } from "@nestjs/common";
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
+import { UserService } from "./user.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 import { AuthGuard } from "@nestjs/passport";
 import { RoleGuard } from "../../domain/guards/role.decorator";
@@ -21,7 +23,7 @@ import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
 
-@ApiTags('User')
+@ApiTags("User")
 @Controller({
   path: "user",
   version: "1"
@@ -32,7 +34,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -40,7 +42,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
@@ -48,28 +50,28 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.userService.findOne({ id: +id });
+    return this.userService.findOne({ id: id });
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.userService.remove(+id);
+    return this.userService.remove(id);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Get("users/unverified")
   getUnverifiedUsers() {
@@ -77,19 +79,19 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Patch(":id/verify")
   verifyUser(@Param("id") id: string) {
-    return this.userService.verifyUser(+id);
+    return this.userService.verifyUser(id);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FileInterceptor('file'))
-  @Post('upload/photo')
+  @UseGuards(AuthGuard("jwt"))
+  @UseInterceptors(FileInterceptor("file"))
+  @Post("upload/photo")
   uploadFile(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
-    if(file === undefined) {
+    if (file === undefined) {
       throw new HttpException("Photo not provided", 400);
     }
     const userId = this.paramCheckService.decodeId(authorization);
@@ -97,11 +99,11 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FileInterceptor('file'))
-  @Post('upload/id_photo')
+  @UseGuards(AuthGuard("jwt"))
+  @UseInterceptors(FileInterceptor("file"))
+  @Post("upload/id_photo")
   uploadId(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
-    if(file === undefined) {
+    if (file === undefined) {
       throw new HttpException("Id photo not provided", 400);
     }
     const userId = this.paramCheckService.decodeId(authorization);

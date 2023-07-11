@@ -10,7 +10,7 @@ import { UserStatusService } from "../user-status/user-status.service";
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
-import {SocketService} from "../app-socket/socket.service";
+import { SocketService } from "../app-socket/socket.service";
 
 @Injectable()
 export class UserService {
@@ -45,7 +45,7 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateUserDto) {
     return this.usersRepository.save(
       this.usersRepository.create({
         id,
@@ -54,14 +54,14 @@ export class UserService {
     );
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.usersRepository.delete(id);
   }
 
-  async addStatus(id: number, status: UserStatusEnum) {
+  async addStatus(id: string, status: UserStatusEnum) {
     const selectedStatus = await this.userStatusService.findOne({
       name: status
-    })
+    });
     try {
       return this.usersRepository.createQueryBuilder()
         .relation(UserEntity, "statuses")
@@ -72,10 +72,10 @@ export class UserService {
     }
   }
 
-  async removeStatus(id: number, status: UserStatusEnum) {
+  async removeStatus(id: string, status: UserStatusEnum) {
     const selectedStatus = await this.userStatusService.findOne({
       name: status
-    })
+    });
     try {
       return this.usersRepository.createQueryBuilder()
         .relation(UserEntity, "statuses")
@@ -93,28 +93,28 @@ export class UserService {
       .getMany();
   }
 
-  async verifyUser(id: number) {
-     const unverifiedStatus = await this.userStatusService.findOne({
+  async verifyUser(id: string) {
+    const unverifiedStatus = await this.userStatusService.findOne({
       name: UserStatusEnum.UNVERIFIED
-    })
-     const verifiedStatus = await this.userStatusService.findOne({
+    });
+    const verifiedStatus = await this.userStatusService.findOne({
       name: UserStatusEnum.VERIFIED
-    })
+    });
     //SOCKET : EMIT EVENT "JOB-REQUEST-ACCEPTED"
     const clientId = await this.socketService.findClientByUserId(id);
-    this.socketService.socket.to(clientId).emit('account_verified',{
-        message: "Your account has been verified"
+    this.socketService.socket.to(clientId).emit("account_verified", {
+      message: "Your account has been verified"
     });
     await this.usersRepository.createQueryBuilder("user")
       .relation(UserEntity, "statuses")
       .of(id)
       .addAndRemove([verifiedStatus.id], [unverifiedStatus.id]);
 
-     return await this.deleteIdPhoto(id);
+    return await this.deleteIdPhoto(id);
   }
 
-  async uploadFile(userId: number, file: Express.Multer.File) {
-    const fileExtension = file.originalname.split('.').pop();
+  async uploadFile(userId: string, file: Express.Multer.File) {
+    const fileExtension = file.originalname.split(".").pop();
     if (!this.fileExtensionChecker.check(fileExtension)) {
       throw new HttpException("Invalid file extension", 400);
     }
@@ -122,15 +122,15 @@ export class UserService {
       .file(this.configService.get("firebase.image_bucket_name") + userId + "." + fileExtension);
 
     const blobStream = bucket.createWriteStream({
-      resumable: false,
+      resumable: false
     });
-    blobStream.on('error', () => {
-      return new HttpException("Something went wrong with the upload", 500)
+    blobStream.on("error", () => {
+      return new HttpException("Something went wrong with the upload", 500);
     });
-    blobStream.on('finish', () => {
+    blobStream.on("finish", () => {
       bucket.getSignedUrl({
-        action: 'read',
-        expires: '03-09-2491'
+        action: "read",
+        expires: "03-09-2491"
       }).then(signedUrls => {
         this.usersRepository.createQueryBuilder()
           .where("id = :id", { id: userId })
@@ -142,36 +142,36 @@ export class UserService {
     blobStream.end(file.buffer);
   }
 
-  async uploadId(userId: number, file: Express.Multer.File) {
-      const fileExtension = file.originalname.split('.').pop();
-      if (!this.fileExtensionChecker.check(fileExtension)) {
-        throw new HttpException("Invalid file extension", 400);
-      }
-      const bucket = this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
-        .file(this.configService.get("firebase.id_bucket_name") + userId + "." + fileExtension);
+  async uploadId(userId: string, file: Express.Multer.File) {
+    const fileExtension = file.originalname.split(".").pop();
+    if (!this.fileExtensionChecker.check(fileExtension)) {
+      throw new HttpException("Invalid file extension", 400);
+    }
+    const bucket = this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
+      .file(this.configService.get("firebase.id_bucket_name") + userId + "." + fileExtension);
 
-      const blobStream = bucket.createWriteStream({
-        resumable: false,
+    const blobStream = bucket.createWriteStream({
+      resumable: false
+    });
+    blobStream.on("error", () => {
+      return new HttpException("Something went wrong with the upload", 500);
+    });
+    blobStream.on("finish", () => {
+      bucket.getSignedUrl({
+        action: "read",
+        expires: "03-09-2491"
+      }).then(signedUrls => {
+        this.usersRepository.createQueryBuilder()
+          .where("id = :id", { id: userId })
+          .update(UserEntity)
+          .set({ id_photo: signedUrls[0] })
+          .execute();
       });
-      blobStream.on('error', () => {
-        return new HttpException("Something went wrong with the upload", 500)
-      });
-      blobStream.on('finish', () => {
-        bucket.getSignedUrl({
-          action: 'read',
-          expires: '03-09-2491'
-        }).then(signedUrls => {
-          this.usersRepository.createQueryBuilder()
-            .where("id = :id", { id: userId })
-            .update(UserEntity)
-            .set({ id_photo: signedUrls[0] })
-            .execute();
-        });
-      });
-      blobStream.end(file.buffer);
+    });
+    blobStream.end(file.buffer);
   }
 
-  async deleteIdPhoto(userId: number) {
+  async deleteIdPhoto(userId: string) {
     await this.firebase.storage.bucket(this.configService.get("firebase.storage_name"))
       .deleteFiles({
         prefix: this.configService.get("firebase.id_bucket_name") + userId

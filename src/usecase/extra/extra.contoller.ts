@@ -1,25 +1,26 @@
-import {Body, Controller, Delete, Get, Param, Patch, UseGuards, Headers} from "@nestjs/common";
-import {ExtraService} from "./extra.service";
-import {UpdateExtraDto} from "./dto/update-extra.dto";
-import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
-import {RoleGuard} from "../../domain/guards/role.decorator";
-import {RoleEnum} from "../../domain/utils/enums/role.enum";
-import {AuthGuard} from "@nestjs/passport";
-import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
+import { Body, Controller, Delete, Get, Headers, Param, Patch, UseGuards } from "@nestjs/common";
+import { ExtraService } from "./extra.service";
+import { UpdateExtraDto } from "./dto/update-extra.dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { RoleGuard } from "../../domain/guards/role.decorator";
+import { RoleEnum } from "../../domain/utils/enums/role.enum";
+import { AuthGuard } from "@nestjs/passport";
+import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
 
-@ApiTags('Extras')
+@ApiTags("Extras")
 @Controller({
   path: "extra",
   version: "1"
 })
 export class ExtraController {
   constructor(
-      private readonly extraService: ExtraService,
-      private readonly paramCheckService: ParamCheckService
-  ) {}
+    private readonly extraService: ExtraService,
+    private readonly paramCheckService: ParamCheckService
+  ) {
+  }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN])
   @Get()
   findAll() {
@@ -27,76 +28,76 @@ export class ExtraController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Get("statistics")
-  getStatistics(@Headers("Authorization") authorization: string){
-    const userId = this.paramCheckService.decodeId(authorization)
+  getStatistics(@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
     return this.extraService.getStatistics(userId);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.extraService.findOne({ id: +id });
+    return this.extraService.findOne({ id: id });
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @Get("with/request")
   findExtraWithRequest(@Headers("Authorization") authorization: string) {
-    const userId = this.paramCheckService.decodeId(authorization)
-    return this.extraService.findOne({user : {id: userId}});
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.extraService.findOne({ user: { id: userId } });
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateExtraDto: UpdateExtraDto) {
-    return this.extraService.update(+id, updateExtraDto);
+    return this.extraService.update(id, updateExtraDto);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.extraService.remove(+id);
+    return this.extraService.remove(id);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Patch(":id/tag/:tagId")
   addTag(@Param("id") id: string, @Param("tagId") tagId: string) {
-    return this.extraService.addTag(+id, +tagId);
+    return this.extraService.addTag(id, tagId);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Patch("add/tags")
-  addTags(@Body() tagsIds: number[], @Headers("Authorization") authorization: string) {
-    const userId = this.paramCheckService.decodeId(authorization)
-    return this.extraService.addTags(+userId, tagsIds);
+  addTags(@Body() tagsIds: string[], @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.extraService.addTags(userId, tagsIds);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Delete(":id/tag/:tagId")
   removeTag(@Param("id") id: string, @Param("tagId") tagId: string) {
-    return this.extraService.removeTag(+id, +tagId);
+    return this.extraService.removeTag(id, tagId);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard("jwt"))
   @RoleGuard([RoleEnum.ADMIN, RoleEnum.EXTRA])
   @Get(":requestId/verification-code")
-  getVerificationCode(@Param("requestId") requestId: string, @Headers("Authorization") authorization: string){
-    const userId = this.paramCheckService.decodeId(authorization)
-    return this.extraService.getVerificationCode(userId, +requestId);
+  getVerificationCode(@Param("requestId") requestId: string, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.extraService.getVerificationCode(userId, requestId);
   }
 }

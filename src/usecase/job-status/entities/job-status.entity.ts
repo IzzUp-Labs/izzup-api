@@ -1,11 +1,11 @@
-import {Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('job_status')
+@Entity("job_status")
 export class JobStatusEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-  @Column({type: 'varchar', nullable: false, unique: true})
+  @Column({ type: "varchar", nullable: false, unique: true })
   status: string;
 
   @CreateDateColumn()

@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { UserStatusService } from './user-status.service';
-import { UserStatusController } from './user-status.controller';
+import { Module } from "@nestjs/common";
+import { UserStatusService } from "./user-status.service";
+import { UserStatusController } from "./user-status.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserStatusEntity } from "./entities/user-status.entity";
 
@@ -10,4 +10,5 @@ import { UserStatusEntity } from "./entities/user-status.entity";
   providers: [UserStatusService],
   exports: [UserStatusService]
 })
-export class UserStatusModule {}
+export class UserStatusModule {
+}

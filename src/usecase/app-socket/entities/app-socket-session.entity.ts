@@ -1,19 +1,19 @@
-import {CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn} from "typeorm";
+import { CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('app_socket_session')
-export class AppSocketSessionEntity{
-    @PrimaryColumn("varchar")
-    clientId!: string;
+@Entity("app_socket_session")
+export class AppSocketSessionEntity {
+  @PrimaryColumn("varchar")
+  clientId!: string;
 
-    @PrimaryColumn()
-    userId!: number;
+  @PrimaryColumn()
+  userId!: string;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 
-    @DeleteDateColumn()
-    deleted_at: Date;
+  @DeleteDateColumn()
+  deleted_at: Date;
 }

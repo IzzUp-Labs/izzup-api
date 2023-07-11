@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import appConfig from "../../config/app.config";
 import databaseConfig from "../../config/database.config";
@@ -7,9 +7,9 @@ import { TypeOrmConfigService } from "../../config/typeorm-config.service";
 import { UserSeedModule } from "./user/user-seed.module";
 import { RoleSeedModule } from "./role/role-seed.module";
 import { UserStatusSeedModule } from "./user-status/user-status-seed.module";
-import {TagsSeedModule} from "./tags/tags-seed.module";
-import {ActivitySectorSeedModule} from "./activity-sector/activity-sector-seed.module";
-import {HomepageCardSeedModule} from "./homepage-card/homepage-card-seed.module";
+import { TagsSeedModule } from "./tags/tags-seed.module";
+import { ActivitySectorSeedModule } from "./activity-sector/activity-sector-seed.module";
+import { HomepageCardSeedModule } from "./homepage-card/homepage-card-seed.module";
 
 @Module({
   imports: [
@@ -22,13 +22,14 @@ import {HomepageCardSeedModule} from "./homepage-card/homepage-card-seed.module"
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
-      envFilePath: [".env"],
+      envFilePath: [".env"]
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: TypeOrmConfigService,
       inject: [ConfigService]
-    }),
-  ],
+    })
+  ]
 })
-export class SeedModule {}
+export class SeedModule {
+}

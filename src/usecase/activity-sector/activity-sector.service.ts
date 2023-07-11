@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { EntityCondition } from "../../domain/utils/types/entity-condition.type";
-import { UserEntity } from "../user/entities/user.entity";
 import { ActivitySectorEntity } from "./entities/activity-sector.entity";
 import { ActivitySectorDto } from "./dto/activity-sector.dto";
 import { UpdateActivitySectorDto } from "./dto/update-activity-sector.dto";
@@ -25,13 +24,13 @@ export class ActivitySectorService {
     return this.activitySectorRepository.find();
   }
 
-  findOne(fields: EntityCondition<UserEntity>) {
+  findOne(fields: EntityCondition<ActivitySectorEntity>) {
     return this.activitySectorRepository.findOne({
       where: fields
     });
   }
 
-  update(id: number, updateActivitySectorDto: UpdateActivitySectorDto) {
+  update(id: string, updateActivitySectorDto: UpdateActivitySectorDto) {
     return this.activitySectorRepository.save(
       this.activitySectorRepository.create({
         id,
@@ -40,7 +39,7 @@ export class ActivitySectorService {
     );
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.activitySectorRepository.delete(id);
   }
 }
