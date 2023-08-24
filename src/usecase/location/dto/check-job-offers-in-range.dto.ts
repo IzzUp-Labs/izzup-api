@@ -1,4 +1,4 @@
 export class CheckJobOffersInRangeDto {
-    latitude: number;
-    longitude: number;
+  latitude: number;
+  longitude: number;
 }

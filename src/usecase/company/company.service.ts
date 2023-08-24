@@ -24,7 +24,8 @@ export class CompanyService {
     return this.companyRepository.find(
       {
         relations: {
-          sectors: true
+          sectors: true,
+          jobOffers: true
         }
       }
     );
@@ -40,7 +41,7 @@ export class CompanyService {
     });
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
+  update(id: string, updateCompanyDto: UpdateCompanyDto) {
     return this.companyRepository.save(
       this.companyRepository.create({
         id,
@@ -49,45 +50,42 @@ export class CompanyService {
     );
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.companyRepository.delete(id);
   }
 
-  addJobOffer(companyId: number, jobOfferId: number) {
-    try{
-    return this.companyRepository
-      .createQueryBuilder()
-      .relation(CompanyEntity, "jobOffers")
-      .of(companyId)
-      .add(jobOfferId);
-    }
-    catch(error){
+  addJobOffer(companyId: string, jobOfferId: string) {
+    try {
+      return this.companyRepository
+        .createQueryBuilder()
+        .relation(CompanyEntity, "jobOffers")
+        .of(companyId)
+        .add(jobOfferId);
+    } catch (error) {
       console.log("Job offer not found");
     }
   }
 
-  addActivitySector(companyId: number, activitySectorId: number) {
-    try{
-    return this.companyRepository
-      .createQueryBuilder()
-      .relation(CompanyEntity, "sectors")
-      .of(companyId)
-      .add(activitySectorId);
-    }
-    catch(error){
+  addActivitySector(companyId: string, activitySectorId: string) {
+    try {
+      return this.companyRepository
+        .createQueryBuilder()
+        .relation(CompanyEntity, "sectors")
+        .of(companyId)
+        .add(activitySectorId);
+    } catch (error) {
       console.log("Activity sector not found");
     }
   }
 
-  removeActivitySector(companyId: number, activitySectorId: number) {
-    try{
-    return this.companyRepository
-      .createQueryBuilder()
-      .relation(CompanyEntity, "sectors")
-      .of(companyId)
-      .remove(activitySectorId);
-    }
-    catch(error){
+  removeActivitySector(companyId: string, activitySectorId: string) {
+    try {
+      return this.companyRepository
+        .createQueryBuilder()
+        .relation(CompanyEntity, "sectors")
+        .of(companyId)
+        .remove(activitySectorId);
+    } catch (error) {
       console.log("Activity sector not found");
     }
   }

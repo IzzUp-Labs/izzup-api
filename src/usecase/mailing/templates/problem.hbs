@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body {
+      font-family: sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+  </style>
+  <title>Problème de fonctionnalité - {{user_lastname}}</title>
+</head>
+<body>
+<h1>Cher équipe de support,</h1>
+
+<p>Nous avons reçu une demande d'assistance concernant un problème avec une fonctionnalité de notre application mobile.
+  Voici les détails :</p>
+
+<h2>Informations utilisateur :</h2>
+<ul>
+  <li><strong>Nom :</strong> {{user_lastname}}</li>
+  <li><strong>Email :</strong> {{user_email}}</li>
+</ul>
+
+<h2>Détails du problème :</h2>
+<p>Problème sur la request : {{requestId}}</p>
+
+<p>Merci de prendre en compte cette demande et de prendre les mesures nécessaires pour résoudre le problème.</p>
+
+<p>Cordialement,</p>
+<p>Votre équipe de support</p>
+</body>
+</html>

@@ -9,18 +9,19 @@ import { EntityCondition } from "../../domain/utils/types/entity-condition.type"
 export class RoleService {
   constructor(
     @InjectRepository(RoleEntity)
-    private roleRepository: Repository<RoleEntity>,
-  ) {}
+    private roleRepository: Repository<RoleEntity>
+  ) {
+  }
 
   create(roleDto: RoleDto) {
     return this.roleRepository.save(
-      this.roleRepository.create(roleDto),
+      this.roleRepository.create(roleDto)
     );
   }
 
   findOne(fields: EntityCondition<RoleEntity>) {
     return this.roleRepository.findOne({
-      where: fields,
+      where: fields
     });
   }
 
@@ -28,7 +29,7 @@ export class RoleService {
     return this.roleRepository.find();
   }
 
-  delete(id: number) {
+  delete(id: string) {
     return this.roleRepository.delete(id);
   }
 

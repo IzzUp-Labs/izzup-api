@@ -1,4 +1,4 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class AuthRegisterExtraDto {
   @ApiProperty()
@@ -9,7 +9,7 @@ export class AuthRegisterExtraDto {
   last_name: string;
   @ApiProperty()
   first_name: string;
-  @ApiProperty({type: Date})
+  @ApiProperty({ type: Date })
   date_of_birth: Date;
   @ApiProperty()
   address: string;

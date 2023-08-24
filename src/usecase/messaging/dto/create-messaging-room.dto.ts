@@ -1,4 +1,4 @@
 export class CreateMessagingRoomDto {
-    createdBy: number;
-    participant: number;
+  createdBy: number;
+  participant: number;
 }

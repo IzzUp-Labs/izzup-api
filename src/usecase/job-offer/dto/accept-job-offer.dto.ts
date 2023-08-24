@@ -1,9 +1,9 @@
 import { ExtraJobRequestEntity } from "../../extra/entities/extra-job-request.entity";
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class AcceptJobOfferDto {
   @ApiProperty()
-  company_id: number;
+  company_id: string;
   @ApiProperty()
   job_title: string;
   @ApiProperty()
@@ -12,6 +12,6 @@ export class AcceptJobOfferDto {
   is_available: boolean;
   @ApiProperty()
   spots: number;
-  @ApiProperty({type: ExtraJobRequestEntity, isArray: true})
+  @ApiProperty({ type: ExtraJobRequestEntity, isArray: true })
   requests: ExtraJobRequestEntity[];
 }

@@ -10,7 +10,8 @@ export class JobOfferService {
   constructor(
     @InjectRepository(JobOfferEntity)
     private jobOfferRepository: Repository<JobOfferEntity>
-  ) {}
+  ) {
+  }
 
   create(jobOfferDto: JobOfferDto) {
     return this.jobOfferRepository.save(
@@ -22,7 +23,9 @@ export class JobOfferService {
   }
 
   findAll() {
-    return this.jobOfferRepository.find();
+    return this.jobOfferRepository.find({
+      relations: ["requests", "company", "company.employer.user", "requests.extra.user"]
+    });
   }
 
   findAllAvailable() {
@@ -30,19 +33,19 @@ export class JobOfferService {
   }
 
   findOne(fields: EntityCondition<JobOfferEntity>) {
-    return this.jobOfferRepository.findOne( { where: fields } );
+    return this.jobOfferRepository.findOne({ where: fields });
   }
 
   findJobOfferWithRequests(fields: EntityCondition<JobOfferEntity>) {
     return this.jobOfferRepository.findOne({
-      relations: ['requests', 'company', 'company.employer.user', 'requests.extra'],
+      relations: ["requests", "company", "company.employer.user", "requests.extra.user"],
       where: fields
     });
   }
 
-  async findJobOffersWithRequestsAndExtraUsers(companyId: number) {
+  async findJobOffersWithRequestsAndExtraUsers(companyId: string) {
     return await this.jobOfferRepository.find({
-      relations: ['requests', 'requests.extra', 'requests.extra.user'],
+      relations: ["requests", "requests.extra", "requests.extra.user"],
       where: {
         company: {
           id: companyId
@@ -51,7 +54,7 @@ export class JobOfferService {
     });
   }
 
-  update(id: number, jobOfferDto: JobOfferDto) {
+  update(id: string, jobOfferDto: JobOfferDto) {
     return this.jobOfferRepository.save(
       this.jobOfferRepository.create({
         id,
@@ -60,15 +63,15 @@ export class JobOfferService {
     );
   }
 
-  updateAvailableSpots(id: number, spots: number) {
+  updateAvailableSpots(id: string, spots: number) {
     return this.jobOfferRepository.createQueryBuilder()
       .update(JobOfferEntity)
-      .set({ acceptedSpots: spots})
+      .set({ acceptedSpots: spots })
       .where("id = :id", { id })
       .execute();
   }
 
-  updateAvailable(id: number, is_available: boolean) {
+  updateAvailable(id: string, is_available: boolean) {
     return this.jobOfferRepository.createQueryBuilder()
       .update(JobOfferEntity)
       .set({ is_available })
@@ -76,8 +79,8 @@ export class JobOfferService {
       .execute();
   }
 
-  remove(id: number) {
-    return this.jobOfferRepository.delete(id);
+  remove(id: string) {
+    return this.jobOfferRepository.softDelete(id);
   }
 
 }

@@ -13,8 +13,11 @@ import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra
 import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
 import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
+import { SocketService } from "../../../src/usecase/app-socket/socket.service";
+import { NotificationService } from "../../../src/usecase/notification/notification.service";
+import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 
-describe('EmployerController', () => {
+describe("EmployerController", () => {
   let controller: EmployerController;
 
   beforeEach(async () => {
@@ -28,6 +31,8 @@ describe('EmployerController', () => {
         JwtService,
         ExtraJobRequestService,
         ExtraService,
+        SocketService,
+        NotificationService,
         {
           provide: getRepositoryToken(EmployerEntity),
           useValue: EmployerEntity
@@ -47,14 +52,22 @@ describe('EmployerController', () => {
         {
           provide: getRepositoryToken(ExtraEntity),
           useValue: ExtraEntity
+        },
+        {
+          provide: getRepositoryToken(AppSocketSessionEntity),
+          useValue: AppSocketSessionEntity
+        },
+        {
+          provide: "FIREBASE_TOKEN",
+          useValue: "FIREBASE_TOKEN"
         }
-      ],
+      ]
     }).compile();
 
     controller = module.get<EmployerController>(EmployerController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });
