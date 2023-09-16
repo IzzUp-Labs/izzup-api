@@ -118,4 +118,9 @@ export class AuthService {
   async getConnectedDevices() {
     await this.socketService.getConnectedClients();
   }
+
+  // TODO : Add logout function
+  async logout() {
+    return true;
+  }
 }

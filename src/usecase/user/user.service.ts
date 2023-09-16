@@ -184,4 +184,23 @@ export class UserService {
           .execute();
       });
   }
+
+  async getFCMTokens(userId: string) {
+    const user = await this.usersRepository.findOne({where: {id: userId}});
+    return user.fcm_tokens;
+  }
+
+  async checkFCMToken(userId: string, oldToken: string, newToken: string) {
+    const user = await this.usersRepository.findOne({where: {id: userId}});
+    if (user.fcm_tokens) {
+      if(!oldToken){
+        user.fcm_tokens = [...user.fcm_tokens, newToken];
+      }else {
+        user.fcm_tokens = user.fcm_tokens.map(t => t === oldToken ? newToken : t);
+      }
+    }else {
+      user.fcm_tokens = [newToken];
+    }
+    await this.usersRepository.save(user);
+  }
 }
