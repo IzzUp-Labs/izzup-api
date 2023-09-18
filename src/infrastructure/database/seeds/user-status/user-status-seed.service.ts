@@ -12,8 +12,10 @@ export class UserStatusSeedService {
   }
 
   async run() {
-    await this.createStatus("UNVERIFIED");
     await this.createStatus("VERIFIED");
+    await this.createStatus("UNVERIFIED");
+    await this.createStatus("NOT_VALID");
+    await this.createStatus("NEED_ID");
   }
 
   private async createStatus(name: string) {

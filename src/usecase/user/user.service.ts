@@ -166,6 +166,7 @@ export class UserService {
           .update(UserEntity)
           .set({ id_photo: signedUrls[0] })
           .execute();
+        this.addStatus(userId, UserStatusEnum.UNVERIFIED)
       });
     });
     blobStream.end(file.buffer);

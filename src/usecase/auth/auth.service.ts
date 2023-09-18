@@ -86,7 +86,7 @@ export class AuthService {
       role: RoleEnum.EXTRA,
       extra: extra
     }).then((user) => {
-      this.userService.addStatus(user.id, UserStatusEnum.UNVERIFIED);
+      this.userService.addStatus(user.id, UserStatusEnum.NEED_ID);
       return user;
     });
   }
@@ -101,7 +101,7 @@ export class AuthService {
       role: RoleEnum.EMPLOYER,
       employer: employer
     }).then((user) => {
-      this.userService.addStatus(user.id, UserStatusEnum.UNVERIFIED);
+      this.userService.addStatus(user.id, UserStatusEnum.NEED_ID);
       return user;
     });
     const company_location = await this.locationService.create({
