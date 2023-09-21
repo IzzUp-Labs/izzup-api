@@ -1,10 +1,14 @@
 import {Controller, Get, Headers, UseGuards} from "@nestjs/common";
 import { NotificationService } from "./notification.service";
-import {ApiBearerAuth} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "@nestjs/passport";
 import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
 
-@Controller("notification")
+@ApiTags("Notification")
+@Controller({
+    path: "notification",
+    version: "1"
+})
 export class NotificationController {
   constructor(
       private readonly notificationService: NotificationService,

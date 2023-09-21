@@ -1,7 +1,7 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {UserEntity} from "../../user/entities/user.entity";
 
-@Entity("device")
+@Entity("user_device")
 export class DeviceEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
