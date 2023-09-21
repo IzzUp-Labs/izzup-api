@@ -1,18 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
-import {UserService} from "../user/user.service";
+import {DeviceService} from "../device/device.service";
 
 @Injectable()
 export class NotificationService {
   constructor(
     @InjectFirebaseAdmin()
     private readonly firebase: FirebaseAdmin,
-    private userService: UserService,
+    private deviceService: DeviceService,
   ) {
   }
 
   sendNotificationToUser(userId: string) {
-    this.userService.getFCMTokens(userId).then(tokens => {
+    this.deviceService.getFCMTokens(userId).then(tokens => {
         tokens.forEach(token => {
             this.firebase.messaging.send({
             token: token,

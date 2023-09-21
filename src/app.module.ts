@@ -36,6 +36,7 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import verificationEmailConfig from "./infrastructure/config/verification-email.config";
 import { NotificationModule } from "./usecase/notification/notification.module";
+import {DeviceModule} from "./usecase/device/device.module";
 
 @Module({
   imports: [
@@ -95,7 +96,8 @@ import { NotificationModule } from "./usecase/notification/notification.module";
     MessagingRoomModule,
     MessagingModule,
     SocketModule,
-    MailingModule
+    MailingModule,
+    DeviceModule
   ],
   controllers: [],
   providers: [

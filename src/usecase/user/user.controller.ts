@@ -22,7 +22,6 @@ import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
-import {CheckUserFcmTokenDto} from "./dto/check-user-fcm-token.dto";
 
 @ApiTags("User")
 @Controller({
@@ -109,13 +108,5 @@ export class UserController {
     }
     const userId = this.paramCheckService.decodeId(authorization);
     return this.userService.uploadId(userId, file);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
-  @Post("check/fcm_token")
-  checkFcmToken(@Body() checkUserFcmTokenDto: CheckUserFcmTokenDto, @Headers("Authorization") authorization: string) {
-    const userId = this.paramCheckService.decodeId(authorization);
-    return this.userService.checkFCMToken(userId, checkUserFcmTokenDto.old_fcm_token, checkUserFcmTokenDto.new_fcm_token);
   }
 }
