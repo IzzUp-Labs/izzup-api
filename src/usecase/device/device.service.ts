@@ -22,10 +22,11 @@ export class DeviceService {
 
   async getFCMTokens(userId: string) {
     const user = await this.userService.findOne({id: userId});
-    if(user && user.devices){
-        return user.devices.map(device => device.fcm_token);
-    }
-    return [];
+    const devices = await this.deviceRepository.createQueryBuilder("device")
+        .leftJoinAndSelect("device.user", "user")
+        .where("user.id = :user", {user: user.id})
+        .getMany();
+    return devices.map(device => device.fcm_token);
   }
 
   async checkFCMToken(userId: string, deviceId: string, fcmToken: string) {
