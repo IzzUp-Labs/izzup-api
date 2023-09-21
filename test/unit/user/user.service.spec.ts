@@ -85,7 +85,7 @@ describe("UserService", () => {
         deleted_at: null,
         employer: null,
         extra: null,
-        fcm_tokens: [],
+        devices: [],
         is_email_confirmed: false,
         email_confirmation_code: null,
         statuses: [

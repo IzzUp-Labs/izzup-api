@@ -20,6 +20,8 @@ import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum
 import { SocketService } from "../../../src/usecase/app-socket/socket.service";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
 import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
 
 describe("EmployerService", () => {
   let service: EmployerService;
@@ -27,6 +29,7 @@ describe("EmployerService", () => {
   let jobOfferService: JobOfferService;
   let extraJobRequestService: ExtraJobRequestService;
   let companyService: CompanyService;
+  let deviceService: DeviceService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -38,6 +41,7 @@ describe("EmployerService", () => {
         ExtraService,
         SocketService,
         NotificationService,
+        DeviceService,
         {
           provide: getRepositoryToken(EmployerEntity),
           useValue: {
@@ -76,6 +80,10 @@ describe("EmployerService", () => {
           useValue: AppSocketSessionEntity
         },
         {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
+        },
+        {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
         }
@@ -89,6 +97,7 @@ describe("EmployerService", () => {
     employerRepository = module.get<Repository<EmployerEntity>>(
       getRepositoryToken(EmployerEntity)
     );
+    deviceService = module.get<DeviceService>(DeviceService);
   });
 
   describe("create", () => {
@@ -109,7 +118,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           email_confirmation_code: null,
-          fcm_tokens: [],
+          devices: [],
           is_email_confirmed: false,
           statuses: [
             {
@@ -163,7 +172,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -214,7 +223,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -264,7 +273,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -333,7 +342,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -448,7 +457,7 @@ describe("EmployerService", () => {
               id_photo: null,
               rooms: null,
               is_email_confirmed: false,
-              fcm_tokens: [],
+              devices: [],
               email_confirmation_code: null,
               statuses: [
                 {
@@ -558,7 +567,7 @@ describe("EmployerService", () => {
               id_photo: null,
               rooms: null,
               is_email_confirmed: false,
-              fcm_tokens: [],
+              devices: [],
               email_confirmation_code: null,
               statuses: [
                 {

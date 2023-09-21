@@ -33,6 +33,8 @@ import { LocationEntity } from "../../../src/usecase/location/entities/location.
 import { SocketService } from "../../../src/usecase/app-socket/socket.service";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
 import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {DeviceService} from "../../../src/usecase/device/device.service";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -43,6 +45,7 @@ describe("AuthService", () => {
   let companyService: CompanyService;
   let userStatusService: UserStatusService;
   let locationService: LocationService;
+  let deviceService: DeviceService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -61,6 +64,7 @@ describe("AuthService", () => {
         LocationService,
         SocketService,
         NotificationService,
+        DeviceService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -115,6 +119,10 @@ describe("AuthService", () => {
         {
           provide: getRepositoryToken(LocationEntity),
           useValue: LocationEntity
+        },
+        {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
         }
       ]
     }).compile();
@@ -127,6 +135,7 @@ describe("AuthService", () => {
     companyService = module.get<CompanyService>(CompanyService);
     userStatusService = module.get<UserStatusService>(UserStatusService);
     locationService = module.get<LocationService>(LocationService);
+    deviceService = module.get<DeviceService>(DeviceService);
   });
 
   it("should be defined", () => {
@@ -155,7 +164,7 @@ describe("AuthService", () => {
         rooms: null,
         is_email_confirmed: false,
         email_confirmation_code: null,
-        fcm_tokens: [],
+        devices: [],
         statuses: [
           {
             id: "1",
@@ -196,7 +205,7 @@ describe("AuthService", () => {
         rooms: null,
         email_confirmation_code: null,
         is_email_confirmed: false,
-        fcm_tokens: [],
+        devices: [],
         statuses: [
           {
             id: "1",
@@ -360,7 +369,7 @@ describe("AuthService", () => {
         rooms: null,
         is_email_confirmed: false,
         email_confirmation_code: null,
-        fcm_tokens: [],
+        devices: [],
         statuses: [
           {
             id: "1",
