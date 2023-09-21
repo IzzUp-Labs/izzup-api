@@ -10,7 +10,8 @@ import { UserStatusService } from "../user-status/user-status.service";
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
-import { SocketService } from "../app-socket/socket.service";
+// import { SocketService } from "../app-socket/socket.service";
+// import {NotificationService} from "../notification/notification.service";
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,6 @@ export class UserService {
     private readonly userStatusService: UserStatusService,
     @InjectFirebaseAdmin()
     private readonly firebase: FirebaseAdmin,
-    private readonly socketService: SocketService,
     private readonly configService: ConfigService,
     private readonly fileExtensionChecker: FileExtensionChecker
   ) {
@@ -100,11 +100,12 @@ export class UserService {
     const verifiedStatus = await this.userStatusService.findOne({
       name: UserStatusEnum.VERIFIED
     });
-    //SOCKET : EMIT EVENT "ACCOUNT VERFIED"
-    const clientId = await this.socketService.findClientByUserId(id);
-    this.socketService.socket.to(clientId).emit("account_verified", {
-      message: "Your account has been verified"
-    });
+
+    // // NOTIFICATION : SEND NOTIFICATION TO USER (ACCOUNT-VERIFIED)
+    // await this.notificationService.sendBasicNotificationToUser(id, "account_verified", {
+    //   type: "account_verified",
+    // });
+
     await this.usersRepository.createQueryBuilder("user")
       .relation(UserEntity, "statuses")
       .of(id)

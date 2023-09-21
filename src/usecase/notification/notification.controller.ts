@@ -21,6 +21,6 @@ export class NotificationController {
   @Get("send")
   sendNotificationToUser(@Headers("Authorization") authorization: string, @Body() createNotificationDto: CreateNotificationDto) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.notificationService.sendNotificationToUser(userId, createNotificationDto.title, createNotificationDto.body, createNotificationDto.data);
+    return this.notificationService.sendJobNotificationToUser(userId, createNotificationDto.body, createNotificationDto.data);
   }
 }

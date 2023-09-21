@@ -1,3 +1,6 @@
 {
-  "HELLO": "Hello IN ENGLISH MOTHER FUCKER"
+  "job-request-accepted-body": "Your application for {job_title} has been accepted !",
+  "job-request-confirmed-body": "Your application for {job_title} has been confirmed !",
+  "job-request-finished-body": "Your application for {job_title} has been finished !",
+  "account_verified-body": "Your account has been verified !"
 }

@@ -1,5 +1,6 @@
+import {NotificationDataDto} from "./notification-data.dto";
+
 export class CreateNotificationDto {
-    title: string;
     body: string;
-    data: any;
+    data: NotificationDataDto;
 }

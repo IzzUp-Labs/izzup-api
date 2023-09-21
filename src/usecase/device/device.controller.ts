@@ -11,10 +11,10 @@ import {ParamCheckService} from "../../domain/middleware/param-check/param-check
   version: "1"
 })
 export class DeviceController {
-  constructor(private readonly deviceService: DeviceService,
-              private readonly paramCheckService: ParamCheckService) {
-
-  }
+  constructor(
+      private readonly deviceService: DeviceService,
+      private readonly paramCheckService: ParamCheckService
+  ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
