@@ -38,6 +38,7 @@ import verificationEmailConfig from "./infrastructure/config/verification-email.
 import { NotificationModule } from "./usecase/notification/notification.module";
 import {DeviceModule} from "./usecase/device/device.module";
 import {AcceptLanguageResolver, I18nModule, QueryResolver} from "nestjs-i18n";
+import * as path from "path";
 
 @Module({
   imports: [
@@ -80,7 +81,7 @@ import {AcceptLanguageResolver, I18nModule, QueryResolver} from "nestjs-i18n";
     I18nModule.forRoot({
       fallbackLanguage: "en",
       loaderOptions: {
-        path: process.cwd() + "/src/domain/utils/i18n/",
+        path: path.join(__dirname, 'domain/utils/i18n/'),
         watch: true
       },
       resolvers: [
