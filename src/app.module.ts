@@ -37,6 +37,7 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
 import verificationEmailConfig from "./infrastructure/config/verification-email.config";
 import { NotificationModule } from "./usecase/notification/notification.module";
 import {DeviceModule} from "./usecase/device/device.module";
+import {AcceptLanguageResolver, I18nModule, QueryResolver} from "nestjs-i18n";
 
 @Module({
   imports: [
@@ -75,6 +76,17 @@ import {DeviceModule} from "./usecase/device/device.module";
           strict: true
         }
       }
+    }),
+    I18nModule.forRoot({
+      fallbackLanguage: "en",
+      loaderOptions: {
+        path: process.cwd() + "/src/domain/utils/i18n/",
+        watch: true
+      },
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+      ],
     }),
     NotificationModule,
     UserModule,

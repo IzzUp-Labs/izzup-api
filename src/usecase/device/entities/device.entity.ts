@@ -14,4 +14,7 @@ export class DeviceEntity {
 
     @Column({ type: "varchar", nullable: false })
     fcm_token: string;
+
+    @Column({ type: "varchar", nullable: false })
+    device_language: string;
 }

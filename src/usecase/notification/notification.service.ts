@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
 import {DeviceService} from "../device/device.service";
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class NotificationService {
@@ -8,17 +9,18 @@ export class NotificationService {
     @InjectFirebaseAdmin()
     private readonly firebase: FirebaseAdmin,
     private deviceService: DeviceService,
+    private readonly i18n: I18nService
   ) {
   }
 
-  sendNotificationToUser(userId: string) {
-    this.deviceService.getFCMTokens(userId).then(tokens => {
-        tokens.forEach(token => {
+  async sendNotificationToUser(userId: string, title: string, body: string, data: any) {
+    this.deviceService.getDevicesInformation(userId).then(devices => {
+        devices.forEach(device => {
             this.firebase.messaging.send({
-            token: token,
+            token: device.token,
             notification: {
-                title: "Hello",
-                body: "World"
+                title: title,
+                body: this.i18n.translate('notification.HELLO', { lang: device.language })
             },
             apns: {
                 payload: {
@@ -26,7 +28,8 @@ export class NotificationService {
                       contentAvailable: true
                   }
                 }
-            }
+            },
+                data: data
             }).then(r => console.log(r)).catch(e => console.log(e));
         });
     });

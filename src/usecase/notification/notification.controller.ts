@@ -1,8 +1,9 @@
-import {Controller, Get, Headers, UseGuards} from "@nestjs/common";
+import {Body, Controller, Get, Headers, UseGuards} from "@nestjs/common";
 import { NotificationService } from "./notification.service";
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "@nestjs/passport";
 import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
+import {CreateNotificationDto} from "./dto/create-notification.dto";
 
 @ApiTags("Notification")
 @Controller({
@@ -18,8 +19,8 @@ export class NotificationController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
   @Get("send")
-  sendNotificationToUser(@Headers("Authorization") authorization: string) {
+  sendNotificationToUser(@Headers("Authorization") authorization: string, @Body() createNotificationDto: CreateNotificationDto) {
     const userId = this.paramCheckService.decodeId(authorization);
-    this.notificationService.sendNotificationToUser(userId);
+    return this.notificationService.sendNotificationToUser(userId, createNotificationDto.title, createNotificationDto.body, createNotificationDto.data);
   }
 }

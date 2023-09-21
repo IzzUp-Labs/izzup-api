@@ -21,6 +21,6 @@ export class DeviceController {
   @Post("check")
   checkFcmToken(@Body() checkUserFcmTokenDto: CheckDeviceFcmTokenDto, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.deviceService.checkFCMToken(userId, checkUserFcmTokenDto.device_id, checkUserFcmTokenDto.fcm_token);
+    return this.deviceService.checkFCMToken(userId, checkUserFcmTokenDto.device_id, checkUserFcmTokenDto.fcm_token, checkUserFcmTokenDto.device_language);
   }
 }

@@ -100,7 +100,7 @@ export class UserService {
     const verifiedStatus = await this.userStatusService.findOne({
       name: UserStatusEnum.VERIFIED
     });
-    //SOCKET : EMIT EVENT "JOB-REQUEST-ACCEPTED"
+    //SOCKET : EMIT EVENT "ACCOUNT VERFIED"
     const clientId = await this.socketService.findClientByUserId(id);
     this.socketService.socket.to(clientId).emit("account_verified", {
       message: "Your account has been verified"
