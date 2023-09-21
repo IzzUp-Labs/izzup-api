@@ -1,11 +1,11 @@
 import {Controller, Post, Body, UseGuards, Headers} from '@nestjs/common';
 import { DeviceService } from './device.service';
-import {ApiBearerAuth} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "@nestjs/passport";
 import {CheckDeviceFcmTokenDto} from "./dto/check-device-fcm-token.dto";
 import {ParamCheckService} from "../../domain/middleware/param-check/param-check.service";
 
-@Controller('device')
+@ApiTags("Device")
 @Controller({
   path: "device",
   version: "1"

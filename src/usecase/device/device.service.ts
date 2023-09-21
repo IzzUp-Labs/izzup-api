@@ -22,7 +22,10 @@ export class DeviceService {
 
   async getFCMTokens(userId: string) {
     const user = await this.userService.findOne({id: userId});
-    return user.devices.map(device => device.fcm_token);
+    if(user && user.devices){
+        return user.devices.map(device => device.fcm_token);
+    }
+    return [];
   }
 
   async checkFCMToken(userId: string, deviceId: string, fcmToken: string) {
