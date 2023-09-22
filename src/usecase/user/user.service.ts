@@ -10,8 +10,9 @@ import { UserStatusService } from "../user-status/user-status.service";
 import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/file-extension-checker";
-// import { SocketService } from "../app-socket/socket.service";
-// import {NotificationService} from "../notification/notification.service";
+import {DeviceService} from "../device/device.service";
+import {CreateDeviceDto} from "../device/dto/create-device.dto";
+import {NotificationService} from "../notification/notification.service";
 
 @Injectable()
 export class UserService {
@@ -22,7 +23,9 @@ export class UserService {
     @InjectFirebaseAdmin()
     private readonly firebase: FirebaseAdmin,
     private readonly configService: ConfigService,
-    private readonly fileExtensionChecker: FileExtensionChecker
+    private readonly fileExtensionChecker: FileExtensionChecker,
+    private readonly deviceService: DeviceService,
+    private readonly notificationService: NotificationService,
   ) {
   }
 
@@ -101,10 +104,10 @@ export class UserService {
       name: UserStatusEnum.VERIFIED
     });
 
-    // // NOTIFICATION : SEND NOTIFICATION TO USER (ACCOUNT-VERIFIED)
-    // await this.notificationService.sendBasicNotificationToUser(id, "account_verified", {
-    //   type: "account_verified",
-    // });
+    // NOTIFICATION : SEND NOTIFICATION TO USER (ACCOUNT-VERIFIED)
+    await this.notificationService.sendBasicNotificationToUser(id, "account_verified", {
+      type: "account_verified",
+    });
 
     await this.usersRepository.createQueryBuilder("user")
       .relation(UserEntity, "statuses")
@@ -185,5 +188,25 @@ export class UserService {
           .set({ id_photo: null })
           .execute();
       });
+  }
+
+  async checkFCMToken(userId: string, deviceId: string, fcmToken: string, deviceLanguage: string) {
+    const user = await this.findOne({id: userId});
+    const device = await this.deviceService.findOne({device_id: deviceId});
+    if (device) {
+      if (device.fcm_token !== fcmToken) {
+        device.fcm_token = fcmToken;
+        device.device_language = deviceLanguage;
+        await this.deviceService.update(device.id, device);
+      }
+    }else{
+      const device: CreateDeviceDto = {
+        device_id: deviceId,
+        fcm_token: fcmToken,
+        device_language: deviceLanguage,
+        user: user
+      }
+      await this.deviceService.create(device);
+    }
   }
 }

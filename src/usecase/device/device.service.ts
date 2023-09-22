@@ -1,9 +1,10 @@
 import {Injectable} from '@nestjs/common';
-import {UserService} from "../user/user.service";
 import {DeviceEntity} from "./entities/device.entity";
 import {EntityCondition} from "../../domain/utils/types/entity-condition.type";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
+import {UpdateDeviceDto} from "./dto/update-device.dto";
+import {CreateDeviceDto} from "./dto/create-device.dto";
 
 @Injectable()
 export class DeviceService {
@@ -11,7 +12,6 @@ export class DeviceService {
   constructor(
       @InjectRepository(DeviceEntity)
       private deviceRepository: Repository<DeviceEntity>,
-      private readonly userService: UserService,
   ) {}
 
   async findOne(fields: EntityCondition<DeviceEntity>) {
@@ -20,11 +20,18 @@ export class DeviceService {
     });
   }
 
+  async update(deviceId: string, updateDeviceDto: UpdateDeviceDto){
+    return this.deviceRepository.update(deviceId, updateDeviceDto);
+  }
+
+  async create(createDeviceDto: CreateDeviceDto){
+    return this.deviceRepository.save(createDeviceDto);
+  }
+
   async getDevicesInformation(userId: string) {
-    const user = await this.userService.findOne({id: userId});
     const devices = await this.deviceRepository.createQueryBuilder("device")
         .leftJoinAndSelect("device.user", "user")
-        .where("user.id = :user", {user: user.id})
+        .where("user.id = :user", {user: userId})
         .getMany();
     return devices.map(device => {
         return {
@@ -32,24 +39,5 @@ export class DeviceService {
             language: device.device_language
         }
     });
-  }
-
-  async checkFCMToken(userId: string, deviceId: string, fcmToken: string, deviceLanguage: string) {
-    const user = await this.userService.findOne({id: userId});
-    const device = await this.findOne({device_id: deviceId});
-    if (device) {
-        if (device.fcm_token !== fcmToken) {
-            device.fcm_token = fcmToken;
-            device.device_language = deviceLanguage;
-            await this.deviceRepository.save(device);
-        }
-    }else{
-        await this.deviceRepository.save({
-            device_id: deviceId,
-            fcm_token: fcmToken,
-            device_language: deviceLanguage,
-            user: user
-        });
-    }
   }
 }
