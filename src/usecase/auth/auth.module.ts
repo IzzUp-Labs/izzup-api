@@ -9,7 +9,6 @@ import { ExtraModule } from "../extra/extra.module";
 import { CompanyModule } from "../company/company.module";
 import { EmployerModule } from "../employer/employer.module";
 import { LocationModule } from "../location/location.module";
-import { SocketModule } from "../app-socket/socket.module";
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { SocketModule } from "../app-socket/socket.module";
     EmployerModule,
     CompanyModule,
     LocationModule,
-    SocketModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
