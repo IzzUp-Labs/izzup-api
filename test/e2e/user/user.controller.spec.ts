@@ -10,8 +10,6 @@ import { ParamCheckService } from "../../../src/domain/middleware/param-check/pa
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 
 describe("UserController", () => {
   let controller: UserController;
@@ -26,7 +24,6 @@ describe("UserController", () => {
         JwtService,
         ConfigService,
         FileExtensionChecker,
-        SocketService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -34,10 +31,6 @@ describe("UserController", () => {
         {
           provide: getRepositoryToken(UserStatusEntity),
           useValue: Repository
-        },
-        {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
         },
         {
           provide: "FIREBASE_TOKEN",

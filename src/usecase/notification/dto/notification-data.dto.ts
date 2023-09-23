@@ -6,4 +6,5 @@ export class NotificationDataDto{
     type?: string | null;
     job_request?: ExtraJobRequestEntity | null;
     job_offer?: JobOfferEntity | null;
+    room_id?: string | null;
 }

@@ -14,6 +14,7 @@ import { Server, Socket } from "socket.io";
 import { UserService } from "../user/user.service";
 import { MessagingRoomService } from "./messaging-room.service";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
+import {NotificationService} from "../notification/notification.service";
 
 @WebSocketGateway({ namespace: "messaging", cors: { origin: "*" } })
 export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -27,7 +28,8 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
     private readonly messagingService: MessagingService,
     private readonly userService: UserService,
     private readonly messagingRoomService: MessagingRoomService,
-    private readonly paramCheckService: ParamCheckService
+    private readonly paramCheckService: ParamCheckService,
+    private readonly notificationService: NotificationService
   ) {
   }
 
@@ -62,7 +64,15 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
       roomId: roomId,
       author: author
     });
+    const receiver = await this.messagingRoomService.findRoom(roomId).then(res => {
+        if (res.createdBy.id === authorId) {
+          return res.participant;
+        }else{
+          return res.createdBy;
+        }
+    });
     this.server.to(roomId).emit("receive_message", message);
+    await this.notificationService.sendMessageNotificationToUser(receiver.id, author.first_name + " " + author.last_name, content, {room_id : roomId});
   }
 
   @SubscribeMessage("create_room")
@@ -70,6 +80,7 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
     const room = await this.messagingRoomService.create(createdBy, participant);
     this.logger.log(`Client created room: ${room.id}`);
     this.server.emit("room_created", room);
+    await this.notificationService.sendBasicNotificationToUser(participant, "creation-room-body", {room_id : room.id});
   }
 
   @SubscribeMessage("request_all_messages")

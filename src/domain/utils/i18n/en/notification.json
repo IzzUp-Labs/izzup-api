@@ -2,5 +2,6 @@
   "job-request-accepted-body": "Your application for {job_title} has been accepted !",
   "job-request-confirmed-body": "Your application for {job_title} has been confirmed !",
   "job-request-finished-body": "Your application for {job_title} has been finished !",
-  "account_verified-body": "Your account has been verified !"
+  "account_verified-body": "Your account has been verified !",
+  "creation-room-body": "A employer wants to chat with you !"
 }

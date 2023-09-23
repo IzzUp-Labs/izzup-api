@@ -2,5 +2,6 @@
   "job-request-accepted-body": "Votre demande d'emploi pour {job_title} a été acceptée !",
   "job-request-confirmed-body": "Votre demande d'emploi pour {job_title} a été confirmée !",
   "job-request-finished-body": "Votre demande d'emploi pour {job_title} a été terminée !",
-  "account_verified-body": "Votre compte a été vérifié avec succès !"
+  "account_verified-body": "Votre compte a été vérifié avec succès !",
+  "creation-room-body": "Un employeur souhaite discuter avec vous !"
 }

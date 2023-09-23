@@ -17,9 +17,7 @@ import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-st
 import { HttpException } from "@nestjs/common";
 import { JobOfferDto } from "../../../src/usecase/job-offer/dto/job-offer.dto";
 import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 import {DeviceService} from "../../../src/usecase/device/device.service";
 import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
 
@@ -39,7 +37,6 @@ describe("EmployerService", () => {
         CompanyService,
         ExtraJobRequestService,
         ExtraService,
-        SocketService,
         NotificationService,
         DeviceService,
         {
@@ -74,10 +71,6 @@ describe("EmployerService", () => {
         {
           provide: getRepositoryToken(ExtraEntity),
           useValue: ExtraEntity
-        },
-        {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
         },
         {
           provide: getRepositoryToken(DeviceEntity),

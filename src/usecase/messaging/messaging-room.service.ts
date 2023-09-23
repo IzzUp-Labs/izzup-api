@@ -36,6 +36,14 @@ export class MessagingRoomService {
     return this.messagingRoomRepository.delete({ id: id });
   }
 
+  async findRoom(roomId: string){
+    return this.messagingRoomRepository.createQueryBuilder("messaging_room")
+        .leftJoinAndSelect("messaging_room.participant", "participant")
+        .leftJoinAndSelect("messaging_room.createdBy", "createdBy")
+        .where("messaging_room.id = :roomId", { roomId: roomId })
+        .getOne();
+  }
+
   findAllUserRooms(userId: string) {
     return this.messagingRoomRepository.createQueryBuilder("messaging_room")
       .leftJoinAndSelect("messaging_room.createdBy", "createdBy")

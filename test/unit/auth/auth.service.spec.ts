@@ -30,9 +30,7 @@ import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-c
 import { LocationService } from "../../../src/usecase/location/location.service";
 import { CreateLocationDto } from "../../../src/usecase/location/dto/create-location.dto";
 import { LocationEntity } from "../../../src/usecase/location/entities/location.entity";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
 import {DeviceService} from "../../../src/usecase/device/device.service";
 
@@ -62,7 +60,6 @@ describe("AuthService", () => {
         ConfigService,
         FileExtensionChecker,
         LocationService,
-        SocketService,
         NotificationService,
         DeviceService,
         {
@@ -107,10 +104,6 @@ describe("AuthService", () => {
         {
           provide: getRepositoryToken(UserStatusEntity),
           useValue: Repository
-        },
-        {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
         },
         {
           provide: "FIREBASE_TOKEN",

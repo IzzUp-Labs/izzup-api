@@ -28,7 +28,6 @@ import { LocationModule } from "./usecase/location/location.module";
 import { MessagingRoomModule } from "./usecase/messaging/messaging-room.module";
 import { MessagingModule } from "./usecase/messaging/messaging.module";
 import { StatusGuard } from "./domain/guards/status.guard";
-import { SocketModule } from "./usecase/app-socket/socket.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task.module";
 import { MailingModule } from "./usecase/mailing/mailing.module";
@@ -108,7 +107,6 @@ import * as path from "path";
     LocationModule,
     MessagingRoomModule,
     MessagingModule,
-    SocketModule,
     MailingModule,
     DeviceModule
   ],

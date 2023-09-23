@@ -11,8 +11,6 @@ import { UserStatusService } from "../../../src/usecase/user-status/user-status.
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 
 describe("UserService", () => {
   let service: UserService;
@@ -25,7 +23,6 @@ describe("UserService", () => {
         UserStatusService,
         ConfigService,
         FileExtensionChecker,
-        SocketService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -49,10 +46,6 @@ describe("UserService", () => {
         {
           provide: getRepositoryToken(UserStatusEntity),
           useValue: Repository
-        },
-        {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
         },
         {
           provide: "FIREBASE_TOKEN",

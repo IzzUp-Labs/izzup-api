@@ -22,8 +22,6 @@ import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 import { LocationEntity } from "../../../src/usecase/location/entities/location.entity";
 import { LocationService } from "../../../src/usecase/location/location.service";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
 
 describe("AuthController", () => {
@@ -45,7 +43,6 @@ describe("AuthController", () => {
         ConfigService,
         FileExtensionChecker,
         LocationService,
-        SocketService,
         NotificationService,
         {
           provide: getRepositoryToken(UserEntity),
@@ -74,10 +71,6 @@ describe("AuthController", () => {
         {
           provide: getRepositoryToken(UserStatusEntity),
           useValue: Repository
-        },
-        {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
         },
         {
           provide: "FIREBASE_TOKEN",

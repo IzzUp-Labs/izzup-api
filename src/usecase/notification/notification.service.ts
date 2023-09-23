@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { FirebaseAdmin, InjectFirebaseAdmin } from "nestjs-firebase";
+import {Injectable} from "@nestjs/common";
+import {FirebaseAdmin, InjectFirebaseAdmin} from "nestjs-firebase";
 import {DeviceService} from "../device/device.service";
-import { I18nService } from 'nestjs-i18n';
+import {I18nService} from 'nestjs-i18n';
 import {NotificationDataDto} from "./dto/notification-data.dto";
 
 @Injectable()
@@ -15,15 +15,15 @@ export class NotificationService {
   }
 
   async sendJobNotificationToUser(userId: string, body: string, data: NotificationDataDto) {
-    this.deviceService.getDevicesInformation(userId).then(devices => {
-        devices.forEach(device => {
-            this.firebase.messaging.send({
-                token: device.token,
-                notification: {
-                    title: 'IzzUp',
-                    body: this.i18n.translate(`notification.${body}`, { lang: device.language , args: { job_title: data.job_offer.job_title }})
-                },
-                apns: {
+      this.deviceService.getDevicesInformation(userId).then(devices => {
+          devices.forEach(device => {
+              this.firebase.messaging.send({
+                  token: device.token,
+                  notification: {
+                      title: 'IzzUp',
+                      body: this.i18n.translate(`notification.${body}`, { lang: device.language , args: { job_title: data.job_offer.job_title }})
+                  },
+                  apns: {
                     payload: {
                       aps: {
                           contentAvailable: true
@@ -57,7 +57,32 @@ export class NotificationService {
                         }
                     },
                     data: {
-                        type: data.type,
+                        type: data.type || '',
+                        room_id: data.room_id || '',
+                    },
+                }).then(r => console.log(r)).catch(e => console.log(e));
+            });
+        });
+    }
+
+    async sendMessageNotificationToUser(userId: string, title: string, body: string, data: NotificationDataDto) {
+        this.deviceService.getDevicesInformation(userId).then(devices => {
+            devices.forEach(device => {
+                this.firebase.messaging.send({
+                    token: device.token,
+                    notification: {
+                        title: title,
+                        body: body
+                    },
+                    apns: {
+                        payload: {
+                            aps: {
+                                contentAvailable: true
+                            }
+                        }
+                    },
+                    data: {
+                        room_id: data.room_id,
                     },
                 }).then(r => console.log(r)).catch(e => console.log(e));
             });
