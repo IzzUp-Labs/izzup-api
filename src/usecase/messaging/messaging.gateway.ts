@@ -72,7 +72,10 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
         }
     });
     this.server.to(roomId).emit("receive_message", message);
-    await this.notificationService.sendMessageNotificationToUser(receiver.id, author.first_name + " " + author.last_name, content, {room_id : roomId});
+    await this.notificationService.sendMessageNotificationToUser(receiver.id, author.first_name + " " + author.last_name, content, {
+      type: "message",
+      room_id : roomId
+    });
   }
 
   @SubscribeMessage("create_room")
@@ -80,7 +83,10 @@ export class MessagingGateway implements OnGatewayInit, OnGatewayConnection, OnG
     const room = await this.messagingRoomService.create(createdBy, participant);
     this.logger.log(`Client created room: ${room.id}`);
     this.server.emit("room_created", room);
-    await this.notificationService.sendBasicNotificationToUser(participant, "creation-room-body", {room_id : room.id});
+    await this.notificationService.sendBasicNotificationToUser(participant, "creation-room-body", {
+      type: "create_room",
+      room_id : room.id
+    });
   }
 
   @SubscribeMessage("request_all_messages")

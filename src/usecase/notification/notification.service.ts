@@ -82,7 +82,8 @@ export class NotificationService {
                         }
                     },
                     data: {
-                        room_id: data.room_id,
+                        type: data.type || '',
+                        room_id: data.room_id || '',
                     },
                 }).then(r => console.log(r)).catch(e => console.log(e));
             });
