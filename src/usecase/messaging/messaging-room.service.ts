@@ -46,12 +46,12 @@ export class MessagingRoomService {
 
   findAllUserRooms(userId: string) {
     return this.messagingRoomRepository.createQueryBuilder("messaging_room")
-      .leftJoinAndSelect("messaging_room.createdBy", "createdBy")
+        .leftJoinAndSelect("messaging_room.createdBy", "createdBy")
         .leftJoinAndSelect("createdBy.statuses", "createdByStatuses")
-      .leftJoinAndSelect("messaging_room.participant", "participant")
+        .leftJoinAndSelect("messaging_room.participant", "participant")
         .leftJoinAndSelect("participant.statuses", "participantStatuses")
-      .where("messaging_room.createdBy = :userId", { userId: userId })
-      .orWhere("messaging_room.participant = :userId", { userId: userId })
-      .getMany();
+        .where("messaging_room.createdBy = :userId", { userId: userId })
+        .orWhere("messaging_room.participant = :userId", { userId: userId })
+        .getMany();
   }
 }

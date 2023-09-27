@@ -137,7 +137,7 @@ export class EmployerService {
     request.status = JobRequestStatus.ACCEPTED;
 
     // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-ACCEPTED)
-    await this.notificationService.sendJobNotificationToUser(userId, "job-request-accepted-body", {
+    await this.notificationService.sendJobNotificationToUser(request.extra.id, "job-request-accepted-body", {
       type: "job-request-accepted",
       job_offer: jobOffer,
       job_request: request
