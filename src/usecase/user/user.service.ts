@@ -171,6 +171,7 @@ export class UserService {
           .set({ id_photo: signedUrls[0] })
           .execute();
         this.addStatus(userId, UserStatusEnum.UNVERIFIED)
+        this.removeStatus(userId, UserStatusEnum.NEED_ID)
       });
     });
     blobStream.end(file.buffer);
