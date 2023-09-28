@@ -32,8 +32,10 @@ export class NotificationService {
                 },
                 data: {
                     type: data.type,
-                    job_request: JSON.stringify(data.job_request) || '',
-                    job_offer: JSON.stringify(data.job_offer) || '',
+                    job_title: data.job_title || '',
+                    starting_date: JSON.stringify(data.starting_date) || '',
+                    verification_code: JSON.stringify(data.verification_code) || '',
+                    request_id: data.request_id || '',
                 },
             }).then(r => console.log(r)).catch(e => console.log(e));
         });
