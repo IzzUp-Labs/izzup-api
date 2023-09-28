@@ -139,8 +139,8 @@ export class EmployerService {
     // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-ACCEPTED)
     await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-accepted-body", {
       type: "job-request-accepted",
-      job_offer: jobOffer,
-      job_request: request
+      job_title: jobOffer.job_title,
+      starting_date: jobOffer.starting_date
     });
 
     if (jobOffer.acceptedSpots + 1 === jobOffer.spots) {
@@ -210,8 +210,8 @@ export class EmployerService {
     // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-CONFIRMED)
     await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-confirmed-body", {
       type: "job-request-confirmed",
-      job_offer: jobOffer,
-      job_request: newRequest
+      verification_code: verification_code,
+      request_id: request.id
     });
   }
 
@@ -251,8 +251,6 @@ export class EmployerService {
     // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-FINISHED)
     await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-finished-body", {
       type: "job-request-finished",
-      job_offer: jobOffer,
-      job_request: newRequest
     });
   }
 
