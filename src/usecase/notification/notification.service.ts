@@ -21,7 +21,7 @@ export class NotificationService {
                   token: device.token,
                   notification: {
                       title: 'IzzUp',
-                      body: this.i18n.translate(`notification.${body}`, { lang: device.language , args: { job_title: data.job_offer.job_title }})
+                      body: this.i18n.translate(`notification.${body}`, { lang: device.language , args: { job_title: data.job_title }})
                   },
                   apns: {
                     payload: {
