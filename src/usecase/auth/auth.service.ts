@@ -111,9 +111,4 @@ export class AuthService {
     });
     return user;
   }
-
-  // TODO : Add logout function
-  async logout() {
-    return true;
-  }
 }

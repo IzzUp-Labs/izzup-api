@@ -8,6 +8,7 @@ export class NotificationDataDto{
     starting_date?: Date | null;
     verification_code?: number | null;
     request_id?: string | null;
+    user_name?: string | null;
     job_offer?: JobOfferEntity | null;
     job_request?: ExtraJobRequestEntity | null;
     room_id?: string | null;

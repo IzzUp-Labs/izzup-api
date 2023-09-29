@@ -11,17 +11,22 @@ export class NotificationService {
     private readonly firebase: FirebaseAdmin,
     private deviceService: DeviceService,
     private readonly i18n: I18nService
-  ) {
-  }
-
-  async sendJobNotificationToUser(userId: string, body: string, data: NotificationDataDto) {
+  ) {}
+    async sendJobNotificationToUser(userId: string, body: string, data: NotificationDataDto) {
       this.deviceService.getDevicesInformation(userId).then(devices => {
           devices.forEach(device => {
               this.firebase.messaging.send({
                   token: device.token,
                   notification: {
                       title: 'IzzUp',
-                      body: this.i18n.translate(`notification.${body}`, { lang: device.language , args: { job_title: data.job_title }})
+                      body: this.i18n.translate(`notification.${body}`, {
+                          lang: device.language ,
+                          args: {
+                              job_title: data.job_title,
+                              user_name: data.user_name,
+                              verification_code: data.verification_code,
+                          }
+                      })
                   },
                   apns: {
                     payload: {
@@ -66,7 +71,6 @@ export class NotificationService {
             });
         });
     }
-
     async sendMessageNotificationToUser(userId: string, title: string, body: string, data: NotificationDataDto) {
         this.deviceService.getDevicesInformation(userId).then(devices => {
             devices.forEach(device => {

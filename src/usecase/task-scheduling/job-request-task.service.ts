@@ -43,14 +43,15 @@ export class JobRequestTaskService {
           // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-CONFIRMED)
           await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-confirmed-body", {
             type: "job-request-confirmed",
-            job_offer: jobOffer,
-            job_request: updatedRequest
+            verification_code: verification_code,
+            request_id: request.id,
           });
           // NOTIFICATION : SEND NOTIFICATION TO EMPLOYER (JOB-REQUEST-CONFIRMED)
-          await this.notificationService.sendJobNotificationToUser(jobOffer.company.employer.user.id, "job-request-confirmed-body", {
+          await this.notificationService.sendJobNotificationToUser(jobOffer.company.employer.user.id, "job-request-confirmed-employer-body", {
             type: "job-request-confirmed",
-            job_offer: jobOffer,
-            job_request: updatedRequest
+            verification_code: verification_code,
+            request_id: request.id,
+            user_name: request.extra.user.first_name + " " + request.extra.user.last_name,
           });
         }
       }
