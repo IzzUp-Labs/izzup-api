@@ -78,7 +78,32 @@ describe("AuthService", () => {
               extra: null,
               employer: null,
               statuses: [{ id: "1", name: UserStatusEnum.UNVERIFIED }]
-            })
+            }),
+            // allow createQuryBuilder to be mocked
+            createQueryBuilder: jest.fn(() => ({
+                leftJoinAndSelect: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                relations: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue({
+                    id: "1",
+                    email: "",
+                    password: "",
+                    last_name: "",
+                    first_name: "",
+                    date_of_birth: new Date(),
+                    photo: null,
+                    id_photo: null,
+                    role: "USER",
+                    extra: null,
+                    employer: null,
+                    rooms: null,
+                    is_email_confirmed: false,
+                    email_confirmation_code: null,
+                    devices: [],
+                    statuses: [],
+                    created_at: new Date(),
+                }),
+            })),
           }
         },
         {
@@ -120,7 +145,7 @@ describe("AuthService", () => {
         {
           provide: I18nService,
           useValue: I18nService
-        }
+        },
       ]
     }).compile();
 

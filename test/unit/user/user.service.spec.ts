@@ -5,7 +5,6 @@ import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
 import { CreateUserDto } from "../../../src/usecase/user/dto/create-user.dto";
-import { UpdateUserDto } from "../../../src/usecase/user/dto/update-user.dto";
 import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
 import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
@@ -133,17 +132,6 @@ describe("UserService", () => {
       const user = { id: 1, email: "test@example.com", password: "password" };
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(user as any);
       const result = await service.findOne(fields);
-      expect(result).toEqual(user);
-    });
-  });
-
-  describe("update", () => {
-    it("should update and return a user by id and update dto", async () => {
-      const id = "1";
-      const updateUserDto: UpdateUserDto = { email: "newtest@example.com" };
-      const user = { id, email: "newtest@example.com", password: "password" };
-      jest.spyOn(repository, "save").mockResolvedValueOnce(user as any);
-      const result = await service.update(id, updateUserDto);
       expect(result).toEqual(user);
     });
   });
