@@ -11,6 +11,10 @@ import { UserStatusService } from "../../../src/usecase/user-status/user-status.
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {NotificationService} from "../../../src/usecase/notification/notification.service";
+import {I18nService} from "nestjs-i18n";
 
 describe("UserService", () => {
   let service: UserService;
@@ -23,6 +27,8 @@ describe("UserService", () => {
         UserStatusService,
         ConfigService,
         FileExtensionChecker,
+        DeviceService,
+        NotificationService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -50,6 +56,14 @@ describe("UserService", () => {
         {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
+        },
+        {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();

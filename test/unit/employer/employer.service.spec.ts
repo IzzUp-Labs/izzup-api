@@ -20,6 +20,7 @@ import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
 import {DeviceService} from "../../../src/usecase/device/device.service";
 import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {I18nService} from "nestjs-i18n";
 
 describe("EmployerService", () => {
   let service: EmployerService;
@@ -27,7 +28,6 @@ describe("EmployerService", () => {
   let jobOfferService: JobOfferService;
   let extraJobRequestService: ExtraJobRequestService;
   let companyService: CompanyService;
-  let deviceService: DeviceService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -79,6 +79,10 @@ describe("EmployerService", () => {
         {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();
@@ -90,7 +94,6 @@ describe("EmployerService", () => {
     employerRepository = module.get<Repository<EmployerEntity>>(
       getRepositoryToken(EmployerEntity)
     );
-    deviceService = module.get<DeviceService>(DeviceService);
   });
 
   describe("create", () => {

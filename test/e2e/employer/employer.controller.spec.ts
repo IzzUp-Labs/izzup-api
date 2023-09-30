@@ -14,6 +14,9 @@ import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-req
 import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {I18nService} from "nestjs-i18n";
 
 describe("EmployerController", () => {
   let controller: EmployerController;
@@ -29,6 +32,7 @@ describe("EmployerController", () => {
         JwtService,
         ExtraJobRequestService,
         ExtraService,
+        DeviceService,
         NotificationService,
         {
           provide: getRepositoryToken(EmployerEntity),
@@ -51,8 +55,16 @@ describe("EmployerController", () => {
           useValue: ExtraEntity
         },
         {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
+        },
+        {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();

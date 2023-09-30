@@ -33,6 +33,7 @@ import { LocationEntity } from "../../../src/usecase/location/entities/location.
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
 import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
 import {DeviceService} from "../../../src/usecase/device/device.service";
+import {I18nService} from "nestjs-i18n";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -43,7 +44,6 @@ describe("AuthService", () => {
   let companyService: CompanyService;
   let userStatusService: UserStatusService;
   let locationService: LocationService;
-  let deviceService: DeviceService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -116,6 +116,10 @@ describe("AuthService", () => {
         {
           provide: getRepositoryToken(DeviceEntity),
           useValue: DeviceEntity
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();
@@ -128,7 +132,6 @@ describe("AuthService", () => {
     companyService = module.get<CompanyService>(CompanyService);
     userStatusService = module.get<UserStatusService>(UserStatusService);
     locationService = module.get<LocationService>(LocationService);
-    deviceService = module.get<DeviceService>(DeviceService);
   });
 
   it("should be defined", () => {

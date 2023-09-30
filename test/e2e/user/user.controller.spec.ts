@@ -10,6 +10,10 @@ import { ParamCheckService } from "../../../src/domain/middleware/param-check/pa
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {NotificationService} from "../../../src/usecase/notification/notification.service";
+import {I18nService} from "nestjs-i18n";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
 
 describe("UserController", () => {
   let controller: UserController;
@@ -24,6 +28,8 @@ describe("UserController", () => {
         JwtService,
         ConfigService,
         FileExtensionChecker,
+        NotificationService,
+        DeviceService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -33,8 +39,16 @@ describe("UserController", () => {
           useValue: Repository
         },
         {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
+        },
+        {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();
