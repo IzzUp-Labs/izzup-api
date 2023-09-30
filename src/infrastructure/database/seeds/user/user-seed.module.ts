@@ -14,12 +14,13 @@ import { LocationEntity } from "../../../../usecase/location/entities/location.e
 import { MessagingRoomEntity } from "../../../../usecase/messaging/entities/messaging-room.entity";
 import { MessagingEntity } from "../../../../usecase/messaging/entities/messaging.entity";
 import { MessagingSessionEntity } from "../../../../usecase/messaging/entities/messaging-session.entity";
+import {DeviceEntity} from "../../../../usecase/device/entities/device.entity";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       UserEntity, EmployerEntity, ExtraEntity, ExtraJobRequestEntity, JobOfferEntity, CompanyEntity,
-      UserStatusEntity, LocationEntity, MessagingRoomEntity, MessagingEntity, MessagingSessionEntity]),
+      UserStatusEntity, LocationEntity, MessagingRoomEntity, MessagingEntity, MessagingSessionEntity, DeviceEntity]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [seedUserConfig],

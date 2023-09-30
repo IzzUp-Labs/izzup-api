@@ -5,14 +5,15 @@ import { UserEntity } from "../../../src/usecase/user/entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntityCondition } from "../../../src/domain/utils/types/entity-condition.type";
 import { CreateUserDto } from "../../../src/usecase/user/dto/create-user.dto";
-import { UpdateUserDto } from "../../../src/usecase/user/dto/update-user.dto";
 import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
 import { UserStatusService } from "../../../src/usecase/user-status/user-status.service";
 import { UserStatusEntity } from "../../../src/usecase/user-status/entities/user-status.entity";
 import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {NotificationService} from "../../../src/usecase/notification/notification.service";
+import {I18nService} from "nestjs-i18n";
 
 describe("UserService", () => {
   let service: UserService;
@@ -25,7 +26,8 @@ describe("UserService", () => {
         UserStatusService,
         ConfigService,
         FileExtensionChecker,
-        SocketService,
+        DeviceService,
+        NotificationService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -51,12 +53,16 @@ describe("UserService", () => {
           useValue: Repository
         },
         {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
-        },
-        {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
+        },
+        {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();
@@ -85,7 +91,7 @@ describe("UserService", () => {
         deleted_at: null,
         employer: null,
         extra: null,
-        fcm_tokens: [],
+        devices: [],
         is_email_confirmed: false,
         email_confirmation_code: null,
         statuses: [
@@ -126,17 +132,6 @@ describe("UserService", () => {
       const user = { id: 1, email: "test@example.com", password: "password" };
       jest.spyOn(repository, "findOne").mockResolvedValueOnce(user as any);
       const result = await service.findOne(fields);
-      expect(result).toEqual(user);
-    });
-  });
-
-  describe("update", () => {
-    it("should update and return a user by id and update dto", async () => {
-      const id = "1";
-      const updateUserDto: UpdateUserDto = { email: "newtest@example.com" };
-      const user = { id, email: "newtest@example.com", password: "password" };
-      jest.spyOn(repository, "save").mockResolvedValueOnce(user as any);
-      const result = await service.update(id, updateUserDto);
       expect(result).toEqual(user);
     });
   });

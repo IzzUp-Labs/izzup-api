@@ -28,7 +28,6 @@ import { LocationModule } from "./usecase/location/location.module";
 import { MessagingRoomModule } from "./usecase/messaging/messaging-room.module";
 import { MessagingModule } from "./usecase/messaging/messaging.module";
 import { StatusGuard } from "./domain/guards/status.guard";
-import { SocketModule } from "./usecase/app-socket/socket.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { JobRequestTaskModule } from "./usecase/task-scheduling/job-request-task.module";
 import { MailingModule } from "./usecase/mailing/mailing.module";
@@ -36,6 +35,9 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import verificationEmailConfig from "./infrastructure/config/verification-email.config";
 import { NotificationModule } from "./usecase/notification/notification.module";
+import {DeviceModule} from "./usecase/device/device.module";
+import {AcceptLanguageResolver, I18nModule, QueryResolver} from "nestjs-i18n";
+import * as path from "path";
 
 @Module({
   imports: [
@@ -75,6 +77,17 @@ import { NotificationModule } from "./usecase/notification/notification.module";
         }
       }
     }),
+    I18nModule.forRoot({
+      fallbackLanguage: "en",
+      loaderOptions: {
+        path: path.join(__dirname, 'domain/utils/i18n/'),
+        watch: true
+      },
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+      ],
+    }),
     NotificationModule,
     UserModule,
     AuthModule,
@@ -94,8 +107,8 @@ import { NotificationModule } from "./usecase/notification/notification.module";
     LocationModule,
     MessagingRoomModule,
     MessagingModule,
-    SocketModule,
-    MailingModule
+    MailingModule,
+    DeviceModule
   ],
   controllers: [],
   providers: [

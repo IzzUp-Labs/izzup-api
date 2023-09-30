@@ -1,13 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterExtraDto } from "./dto/auth-register-extra.dto";
 import { AuthRegisterEmployerDto } from "./dto/auth-register-employer.dto";
 import { AuthMembershipCheckDto } from "./dto/auth-membership-check.dto";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { AuthGuard } from "@nestjs/passport";
-import { RoleGuard } from "../../domain/guards/role.decorator";
-import { RoleEnum } from "../../domain/utils/enums/role.enum";
+import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Authentications")
 @Controller({
@@ -40,14 +37,5 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   registerEmployer(@Body() authRegisterEmployerDto: AuthRegisterEmployerDto) {
     return this.authService.registerEmployer(authRegisterEmployerDto);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
-  @RoleGuard([RoleEnum.ADMIN])
-  @Get("connected/devices")
-  @HttpCode(HttpStatus.OK)
-  async getConnectedDevices() {
-    return this.authService.getConnectedDevices();
   }
 }

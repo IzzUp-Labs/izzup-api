@@ -31,7 +31,7 @@ export class ExtraService {
 
   findOne(fields: EntityCondition<ExtraEntity>) {
     return this.extrasRepository.findOne({
-      relations: ["tags", "requests", "requests.jobOffer.company", "user"],
+      relations: ["tags", "requests", "requests.jobOffer.company", "user", "user.statuses"],
       where: fields
     });
   }

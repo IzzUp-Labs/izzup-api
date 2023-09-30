@@ -13,9 +13,10 @@ import { ExtraJobRequestEntity } from "../../../src/usecase/extra/entities/extra
 import { ExtraJobRequestService } from "../../../src/usecase/extra/extra-job-request.service";
 import { ExtraService } from "../../../src/usecase/extra/extra.service";
 import { ExtraEntity } from "../../../src/usecase/extra/entities/extra.entity";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {I18nService} from "nestjs-i18n";
 
 describe("EmployerController", () => {
   let controller: EmployerController;
@@ -31,7 +32,7 @@ describe("EmployerController", () => {
         JwtService,
         ExtraJobRequestService,
         ExtraService,
-        SocketService,
+        DeviceService,
         NotificationService,
         {
           provide: getRepositoryToken(EmployerEntity),
@@ -54,12 +55,16 @@ describe("EmployerController", () => {
           useValue: ExtraEntity
         },
         {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
         },
         {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();

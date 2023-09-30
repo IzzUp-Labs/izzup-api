@@ -22,6 +22,7 @@ import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
+import {CheckDeviceFcmTokenDto} from "../device/dto/check-device-fcm-token.dto";
 
 @ApiTags("User")
 @Controller({
@@ -58,9 +59,13 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Patch('update-info')
+  update(@Body() updateUserDto: UpdateUserDto, @Headers("Authorization") authorization: string, @UploadedFile() file: Express.Multer.File) {
+    if (file === undefined) {
+      throw new HttpException("Id photo not provided", 400);
+    }
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.userService.update(userId, updateUserDto, file);
   }
 
   @ApiBearerAuth()
@@ -88,6 +93,14 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
+  @RoleGuard([RoleEnum.ADMIN])
+  @Patch(":id/not-verify")
+  notVerifyUser(@Param("id") id: string) {
+    return this.userService.notVerifyUser(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
   @UseInterceptors(FileInterceptor("file"))
   @Post("upload/photo")
   uploadFile(@UploadedFile() file: Express.Multer.File, @Headers("Authorization") authorization: string) {
@@ -108,5 +121,13 @@ export class UserController {
     }
     const userId = this.paramCheckService.decodeId(authorization);
     return this.userService.uploadId(userId, file);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Post("device/check")
+  checkFcmToken(@Body() checkUserFcmTokenDto: CheckDeviceFcmTokenDto, @Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.userService.checkFCMToken(userId, checkUserFcmTokenDto.device_id, checkUserFcmTokenDto.fcm_token, checkUserFcmTokenDto.device_language);
   }
 }

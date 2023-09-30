@@ -11,7 +11,6 @@ import { CompanyService } from "../company/company.service";
 import { ExtraJobRequestService } from "../extra/extra-job-request.service";
 import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
 import { JobOfferEntity } from "../job-offer/entities/job-offer.entity";
-import { SocketService } from "../app-socket/socket.service";
 import * as moment from "moment";
 import { ExtraJobRequestEntity } from "../extra/entities/extra-job-request.entity";
 import { NotificationService } from "../notification/notification.service";
@@ -24,7 +23,6 @@ export class EmployerService {
     private jobOfferService: JobOfferService,
     private readonly companyService: CompanyService,
     private readonly extraJobRequestService: ExtraJobRequestService,
-    private readonly socketService: SocketService,
     private readonly notificationService: NotificationService
   ) {
   }
@@ -138,13 +136,12 @@ export class EmployerService {
     }
     request.status = JobRequestStatus.ACCEPTED;
 
-    //SOCKET : EMIT EVENT "JOB-REQUEST-ACCEPTED"
-    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-    this.socketService.socket.to(clientId).emit("job-request-accepted", {
-      jobOffer: jobOffer,
-      request: request
+    // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-ACCEPTED)
+    await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-accepted-body", {
+      type: "job-request-accepted",
+      job_title: jobOffer.job_title,
+      starting_date: jobOffer.starting_date
     });
-    await this.notificationService.sendNotificationToUser();
 
     if (jobOffer.acceptedSpots + 1 === jobOffer.spots) {
       return await this.setJobOfferExpired(jobOffer);
@@ -209,11 +206,12 @@ export class EmployerService {
     }
     newRequest.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
     newRequest.verification_code = verification_code;
-    //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED"
-    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-    this.socketService.socket.to(clientId).emit("job-request-confirmed", {
-      jobOffer: jobOffer,
-      request: newRequest
+
+    // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-CONFIRMED)
+    await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-confirmed-body", {
+      type: "job-request-confirmed",
+      verification_code: verification_code,
+      request_id: request.id
     });
   }
 
@@ -249,11 +247,10 @@ export class EmployerService {
     }
     newRequest.status = JobRequestStatus.FINISHED;
     newRequest.verification_code = null;
-    //SOCKET : EMIT EVENT "JOB-REQUEST-FINISHED"
-    const clientId = await this.socketService.findClientByUserId(request.extra.user.id);
-    this.socketService.socket.to(clientId).emit("job-request-finished", {
-      jobOffer: jobOffer,
-      request: newRequest
+
+    // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-FINISHED)
+    await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-finished-body", {
+      type: "job-request-finished",
     });
   }
 

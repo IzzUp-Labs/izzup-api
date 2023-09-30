@@ -22,9 +22,10 @@ import { ConfigService } from "@nestjs/config";
 import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-checker/file-extension-checker";
 import { LocationEntity } from "../../../src/usecase/location/entities/location.entity";
 import { LocationService } from "../../../src/usecase/location/location.service";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {I18nService} from "nestjs-i18n";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -45,8 +46,8 @@ describe("AuthController", () => {
         ConfigService,
         FileExtensionChecker,
         LocationService,
-        SocketService,
         NotificationService,
+        DeviceService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
@@ -76,16 +77,20 @@ describe("AuthController", () => {
           useValue: Repository
         },
         {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
-        },
-        {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
         },
         {
           provide: getRepositoryToken(LocationEntity),
           useValue: LocationEntity
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
+        },
+        {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
         }
       ]
     }).compile();

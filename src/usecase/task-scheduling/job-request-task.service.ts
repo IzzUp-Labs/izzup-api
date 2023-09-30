@@ -3,8 +3,8 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { JobOfferService } from "../job-offer/job-offer.service";
 import { ExtraJobRequestService } from "../extra/extra-job-request.service";
 import { JobRequestStatus } from "../../domain/utils/enums/job-request-status";
-import { SocketService } from "../app-socket/socket.service";
 import * as moment from "moment";
+import {NotificationService} from "../notification/notification.service";
 
 @Injectable()
 export class JobRequestTaskService {
@@ -13,7 +13,7 @@ export class JobRequestTaskService {
   constructor(
     private readonly jobOfferService: JobOfferService,
     private readonly extraJobRequestService: ExtraJobRequestService,
-    private readonly socketService: SocketService
+    private readonly notificationService: NotificationService
   ) {
   }
 
@@ -39,16 +39,19 @@ export class JobRequestTaskService {
           });
           updatedRequest.status = JobRequestStatus.WAITING_FOR_VERIFICATION;
           updatedRequest.verification_code = verification_code;
-          //SOCKET : EMIT EVENT "JOB-REQUEST-CONFIRMED" FOR 2 CLIENTS
-          const clientIdForExtra = await this.socketService.findClientByUserId(request.extra.user.id);
-          const clientIdForCompany = await this.socketService.findClientByUserId(jobOffer.company.employer.user.id);
-          this.socketService.socket.to(clientIdForExtra).emit("job-request-confirmed", {
-            jobOffer: jobOffer,
-            request: updatedRequest
+
+          // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-CONFIRMED)
+          await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-confirmed-body", {
+            type: "job-request-confirmed",
+            verification_code: verification_code,
+            request_id: request.id,
           });
-          this.socketService.socket.to(clientIdForCompany).emit("job-request-confirmed", {
-            jobOffer: jobOffer,
-            request: updatedRequest
+          // NOTIFICATION : SEND NOTIFICATION TO EMPLOYER (JOB-REQUEST-CONFIRMED)
+          await this.notificationService.sendJobNotificationToUser(jobOffer.company.employer.user.id, "job-request-confirmed-employer-body", {
+            type: "job-request-confirmed",
+            verification_code: verification_code,
+            request_id: request.id,
+            user_name: request.extra.user.first_name + " " + request.extra.user.last_name,
           });
         }
       }

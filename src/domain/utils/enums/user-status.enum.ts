@@ -1,4 +1,6 @@
 export enum UserStatusEnum {
   VERIFIED = "VERIFIED",
   UNVERIFIED = "UNVERIFIED",
+  NOT_VALID = "NOT_VALID",
+  NEED_ID = "NEED_ID"
 }

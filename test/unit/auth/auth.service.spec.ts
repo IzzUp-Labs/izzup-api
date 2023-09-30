@@ -30,9 +30,10 @@ import { FileExtensionChecker } from "../../../src/domain/utils/file-extension-c
 import { LocationService } from "../../../src/usecase/location/location.service";
 import { CreateLocationDto } from "../../../src/usecase/location/dto/create-location.dto";
 import { LocationEntity } from "../../../src/usecase/location/entities/location.entity";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {I18nService} from "nestjs-i18n";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -59,8 +60,8 @@ describe("AuthService", () => {
         ConfigService,
         FileExtensionChecker,
         LocationService,
-        SocketService,
         NotificationService,
+        DeviceService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: {
@@ -77,7 +78,32 @@ describe("AuthService", () => {
               extra: null,
               employer: null,
               statuses: [{ id: "1", name: UserStatusEnum.UNVERIFIED }]
-            })
+            }),
+            // allow createQuryBuilder to be mocked
+            createQueryBuilder: jest.fn(() => ({
+                leftJoinAndSelect: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                relations: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue({
+                    id: "1",
+                    email: "",
+                    password: "",
+                    last_name: "",
+                    first_name: "",
+                    date_of_birth: new Date(),
+                    photo: null,
+                    id_photo: null,
+                    role: "USER",
+                    extra: null,
+                    employer: null,
+                    rooms: null,
+                    is_email_confirmed: false,
+                    email_confirmation_code: null,
+                    devices: [],
+                    statuses: [],
+                    created_at: new Date(),
+                }),
+            })),
           }
         },
         {
@@ -105,17 +131,21 @@ describe("AuthService", () => {
           useValue: Repository
         },
         {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
-        },
-        {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
         },
         {
           provide: getRepositoryToken(LocationEntity),
           useValue: LocationEntity
-        }
+        },
+        {
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
+        },
       ]
     }).compile();
 
@@ -155,7 +185,7 @@ describe("AuthService", () => {
         rooms: null,
         is_email_confirmed: false,
         email_confirmation_code: null,
-        fcm_tokens: [],
+        devices: [],
         statuses: [
           {
             id: "1",
@@ -196,7 +226,7 @@ describe("AuthService", () => {
         rooms: null,
         email_confirmation_code: null,
         is_email_confirmed: false,
-        fcm_tokens: [],
+        devices: [],
         statuses: [
           {
             id: "1",
@@ -360,7 +390,7 @@ describe("AuthService", () => {
         rooms: null,
         is_email_confirmed: false,
         email_confirmation_code: null,
-        fcm_tokens: [],
+        devices: [],
         statuses: [
           {
             id: "1",

@@ -17,9 +17,10 @@ import { JobRequestStatus } from "../../../src/domain/utils/enums/job-request-st
 import { HttpException } from "@nestjs/common";
 import { JobOfferDto } from "../../../src/usecase/job-offer/dto/job-offer.dto";
 import { UserStatusEnum } from "../../../src/domain/utils/enums/user-status.enum";
-import { SocketService } from "../../../src/usecase/app-socket/socket.service";
 import { NotificationService } from "../../../src/usecase/notification/notification.service";
-import { AppSocketSessionEntity } from "../../../src/usecase/app-socket/entities/app-socket-session.entity";
+import {DeviceService} from "../../../src/usecase/device/device.service";
+import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {I18nService} from "nestjs-i18n";
 
 describe("EmployerService", () => {
   let service: EmployerService;
@@ -36,8 +37,8 @@ describe("EmployerService", () => {
         CompanyService,
         ExtraJobRequestService,
         ExtraService,
-        SocketService,
         NotificationService,
+        DeviceService,
         {
           provide: getRepositoryToken(EmployerEntity),
           useValue: {
@@ -72,12 +73,16 @@ describe("EmployerService", () => {
           useValue: ExtraEntity
         },
         {
-          provide: getRepositoryToken(AppSocketSessionEntity),
-          useValue: AppSocketSessionEntity
+          provide: getRepositoryToken(DeviceEntity),
+          useValue: DeviceEntity
         },
         {
           provide: "FIREBASE_TOKEN",
           useValue: "FIREBASE_TOKEN"
+        },
+        {
+          provide: I18nService,
+          useValue: I18nService
         }
       ]
     }).compile();
@@ -109,7 +114,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           email_confirmation_code: null,
-          fcm_tokens: [],
+          devices: [],
           is_email_confirmed: false,
           statuses: [
             {
@@ -163,7 +168,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -214,7 +219,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -264,7 +269,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -333,7 +338,7 @@ describe("EmployerService", () => {
           id_photo: null,
           rooms: null,
           is_email_confirmed: false,
-          fcm_tokens: [],
+          devices: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -448,7 +453,7 @@ describe("EmployerService", () => {
               id_photo: null,
               rooms: null,
               is_email_confirmed: false,
-              fcm_tokens: [],
+              devices: [],
               email_confirmation_code: null,
               statuses: [
                 {
@@ -558,7 +563,7 @@ describe("EmployerService", () => {
               id_photo: null,
               rooms: null,
               is_email_confirmed: false,
-              fcm_tokens: [],
+              devices: [],
               email_confirmation_code: null,
               statuses: [
                 {

@@ -15,6 +15,7 @@ import { EmployerEntity } from "../../employer/entities/employer.entity";
 import { ExtraEntity } from "../../extra/entities/extra.entity";
 import { UserStatusEntity } from "../../user-status/entities/user-status.entity";
 import { MessagingRoomEntity } from "../../messaging/entities/messaging-room.entity";
+import {DeviceEntity} from "../../device/entities/device.entity";
 
 @Entity("user")
 export class UserEntity {
@@ -51,9 +52,6 @@ export class UserEntity {
   @Column({ type: "varchar", nullable: true })
   id_photo: string;
 
-  @Column({ type: "varchar", nullable: true })
-  fcm_tokens: string[];
-
   @OneToOne(() => EmployerEntity, (employer) => employer.user, { cascade: true })
   @JoinColumn()
   employer: EmployerEntity;
@@ -68,6 +66,9 @@ export class UserEntity {
 
   @OneToMany(() => MessagingRoomEntity, (messageRoom) => messageRoom.participant)
   rooms: MessagingRoomEntity[];
+
+  @OneToMany(() => DeviceEntity, (device) => device.device_id)
+  devices: DeviceEntity[];
 
   @CreateDateColumn()
   created_at: Date;

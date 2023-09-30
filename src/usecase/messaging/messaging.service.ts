@@ -44,9 +44,15 @@ export class MessagingService {
 
   findAllRoomMessages(roomId: string) {
     return this.messagingRepository.createQueryBuilder("messaging")
-      .leftJoinAndSelect("messaging.author", "author")
-      .where("messaging.room = :roomId", { roomId: roomId })
-      .orderBy("messaging.creationDate", "ASC")
-      .getMany();
+        .leftJoinAndSelect("messaging.author", "author")
+        .leftJoinAndSelect("author.statuses", "authorStatuses")
+        .leftJoinAndSelect("messaging.room", "room")
+        .leftJoinAndSelect("room.createdBy", "createdBy")
+        .leftJoinAndSelect("createdBy.statuses", "createdByStatuses")
+        .leftJoinAndSelect("room.participant", "participant")
+        .leftJoinAndSelect("participant.statuses", "participantStatuses")
+        .where("messaging.room = :roomId", { roomId: roomId })
+        .orderBy("messaging.creationDate", "ASC")
+        .getMany();
   }
 }
