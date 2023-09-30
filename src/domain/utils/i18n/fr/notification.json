@@ -1,8 +1,9 @@
 {
-  "job-request-accepted-body": "Votre demande d'emploi pour {job_title} a été acceptée !",
+  "job-request-accepted-body": "Votre demande d'emploi pour {job_title} a été acceptée.",
   "job-request-confirmed-body": "Votre temps de travail est terminé, donnez le code {verification_code} à votre employeur.",
-  "job-request-finished-body": "Votre demande d'emploi pour {job_title} a été terminée !",
+  "job-request-finished-body": "Votre demande d'emploi pour {job_title} a été terminée.",
   "job-request-confirmed-employer-body": "Le temps de travail de {user_name} sur {job_title} est terminé, validez son code en ouvrant l'application avant de le laisser partir !",
-  "account_verified-body": "Votre compte a été vérifié avec succès !",
-  "creation-room-body": "Un employeur souhaite discuter avec vous !"
+  "account-verified-body": "Votre compte a été vérifié avec succès.",
+  "account-not-verified-body": "Votre compte n'a pas pu être vérifié, veuillez réessayer.",
+  "creation-room-body": "Un employeur souhaite discuter avec vous."
 }

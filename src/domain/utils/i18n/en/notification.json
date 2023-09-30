@@ -1,8 +1,9 @@
 {
-  "job-request-accepted-body": "Your application for {job_title} has been accepted !",
+  "job-request-accepted-body": "Your application for {job_title} has been accepted.",
   "job-request-confirmed-body": "Your shift is over, give the code {verification_code} to your employer.",
-  "job-request-finished-body": "Your application for {job_title} has been finished !",
-  "job-request-confirmed-employer-body": "{user_name}'s shift on {job_title} is over, validate their code in the app before letting them go ! ",
-  "account_verified-body": "Your account has been verified !",
-  "creation-room-body": "A employer wants to chat with you !"
+  "job-request-finished-body": "Your application for {job_title} has been finished.",
+  "job-request-confirmed-employer-body": "{user_name}'s shift on {job_title} is over, validate their code in the app before letting them go !",
+  "account-verified-body": "Your account has been verified.",
+  "account-not-verified-body": "Your account has not been verified, try again.",
+  "creation-room-body": "A employer wants to chat with you."
 }

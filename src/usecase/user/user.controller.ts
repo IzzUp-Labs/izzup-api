@@ -59,9 +59,13 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Patch('update-info')
+  update(@Body() updateUserDto: UpdateUserDto, @Headers("Authorization") authorization: string, @UploadedFile() file: Express.Multer.File) {
+    if (file === undefined) {
+      throw new HttpException("Id photo not provided", 400);
+    }
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.userService.update(userId, updateUserDto, file);
   }
 
   @ApiBearerAuth()
@@ -85,6 +89,14 @@ export class UserController {
   @Patch(":id/verify")
   verifyUser(@Param("id") id: string) {
     return this.userService.verifyUser(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @RoleGuard([RoleEnum.ADMIN])
+  @Patch(":id/not-verify")
+  notVerifyUser(@Param("id") id: string) {
+    return this.userService.notVerifyUser(id);
   }
 
   @ApiBearerAuth()

@@ -18,7 +18,7 @@ import {NotificationService} from "../notification/notification.service";
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
+    private userRepository: Repository<UserEntity>,
     private readonly userStatusService: UserStatusService,
     @InjectFirebaseAdmin()
     private readonly firebase: FirebaseAdmin,
@@ -30,73 +30,86 @@ export class UserService {
   }
 
   create(createUserDto: CreateUserDto) {
-    return this.usersRepository.save(
-      this.usersRepository.create(createUserDto)
+    return this.userRepository.save(
+      this.userRepository.create(createUserDto)
     );
   }
 
   findAll() {
-    return this.usersRepository.find({
+    return this.userRepository.find({
       relations: ["employer", "extra", "statuses"]
     });
   }
 
   findOne(fields: EntityCondition<UserEntity>) {
-    return this.usersRepository.findOne({
+    return this.userRepository.findOne({
       relations: ["statuses"],
       where: fields
     });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.save(
-      this.usersRepository.create({
-        id,
-        ...updateUserDto
-      })
-    );
+  async update(userId: string, updateUserDto: UpdateUserDto, file: Express.Multer.File) {
+    await this.uploadId(userId, file);
+    await this.removeStatus(userId, UserStatusEnum.NOT_VALID)
+    return this.userRepository.update(userId, updateUserDto);
   }
 
   remove(id: string) {
-    return this.usersRepository.delete(id);
+    return this.userRepository.delete(id);
   }
 
-  async addStatus(id: string, status: UserStatusEnum) {
+  async findUserStatuses(userId: string) {
+    const userStatuses = await this.userRepository.createQueryBuilder("user")
+      .leftJoinAndSelect("user.statuses", "status")
+      .where("user.id = :id", { id: userId })
+      .getOne();
+    return userStatuses.statuses;
+  }
+
+  async addStatus(userId: string, status: UserStatusEnum) {
     const selectedStatus = await this.userStatusService.findOne({
       name: status
     });
+    const userStatuses = await this.findUserStatuses(userId);
+    if (userStatuses.find(userStatus => userStatus.name === status)) {
+      throw new HttpException("User already has this status", 400);
+    }
     try {
-      return this.usersRepository.createQueryBuilder()
+      return this.userRepository.createQueryBuilder()
         .relation(UserEntity, "statuses")
-        .of(id)
+        .of(userId)
         .add(selectedStatus.id);
     } catch (e) {
       console.log(e);
     }
   }
 
-  async removeStatus(id: string, status: UserStatusEnum) {
+  async removeStatus(userId: string, status: UserStatusEnum) {
     const selectedStatus = await this.userStatusService.findOne({
       name: status
     });
+    const userStatuses = await this.findUserStatuses(userId);
+    if (!userStatuses.find(userStatus => userStatus.name === status)) {
+        throw new HttpException("User does not have this status", 400);
+    }
     try {
-      return this.usersRepository.createQueryBuilder()
+      return this.userRepository.createQueryBuilder()
         .relation(UserEntity, "statuses")
-        .of(id)
+        .of(userId)
         .remove(selectedStatus.id);
     } catch (e) {
       console.log(e);
     }
   }
 
-  getUsersByStatus(status: UserStatusEnum) {
-    return this.usersRepository.createQueryBuilder("user")
+  async getUsersByStatus(status: UserStatusEnum) {
+    return this.userRepository.createQueryBuilder("user")
       .leftJoinAndSelect("user.statuses", "status")
       .where("status.name = :name", { name: status })
       .getMany();
   }
 
-  async verifyUser(id: string) {
+  async verifyUser(userId: string) {
     const unverifiedStatus = await this.userStatusService.findOne({
       name: UserStatusEnum.UNVERIFIED
     });
@@ -105,16 +118,25 @@ export class UserService {
     });
 
     // NOTIFICATION : SEND NOTIFICATION TO USER (ACCOUNT-VERIFIED)
-    await this.notificationService.sendBasicNotificationToUser(id, "account_verified", {
+    await this.notificationService.sendBasicNotificationToUser(userId, "account-verified-body", {
       type: "account_verified",
     });
 
-    await this.usersRepository.createQueryBuilder("user")
+    await this.userRepository.createQueryBuilder("user")
       .relation(UserEntity, "statuses")
-      .of(id)
+      .of(userId)
       .addAndRemove([verifiedStatus.id], [unverifiedStatus.id]);
 
-    return await this.deleteIdPhoto(id);
+    return await this.deleteIdPhoto(userId);
+  }
+
+  async notVerifyUser(userId: string) {
+    // NOTIFICATION : SEND NOTIFICATION TO USER (ACCOUNT-NOT-VERIFIED)
+    await this.notificationService.sendBasicNotificationToUser(userId, "account-not-verified-body", {
+      type: "account_not_verified",
+    });
+    await this.addStatus(userId, UserStatusEnum.NOT_VALID)
+    return await this.deleteIdPhoto(userId);
   }
 
   async uploadFile(userId: string, file: Express.Multer.File) {
@@ -136,7 +158,7 @@ export class UserService {
         action: "read",
         expires: "03-09-2491"
       }).then(signedUrls => {
-        this.usersRepository.createQueryBuilder()
+        this.userRepository.createQueryBuilder()
           .where("id = :id", { id: userId })
           .update(UserEntity)
           .set({ photo: signedUrls[0] })
@@ -164,14 +186,19 @@ export class UserService {
       bucket.getSignedUrl({
         action: "read",
         expires: "03-09-2491"
-      }).then(signedUrls => {
-        this.usersRepository.createQueryBuilder()
+      }).then(async signedUrls => {
+        await this.userRepository.createQueryBuilder()
           .where("id = :id", { id: userId })
           .update(UserEntity)
           .set({ id_photo: signedUrls[0] })
           .execute();
-        this.addStatus(userId, UserStatusEnum.UNVERIFIED)
-        this.removeStatus(userId, UserStatusEnum.NEED_ID)
+        const userStatuses = await this.findUserStatuses(userId);
+        if (!userStatuses.find(userStatus => userStatus.name === UserStatusEnum.UNVERIFIED)) {
+          await this.addStatus(userId, UserStatusEnum.UNVERIFIED)
+        }
+        if(userStatuses.find(userStatus => userStatus.name === UserStatusEnum.NEED_ID)) {
+          await this.removeStatus(userId, UserStatusEnum.NEED_ID)
+        }
       });
     });
     blobStream.end(file.buffer);
@@ -183,7 +210,7 @@ export class UserService {
         prefix: this.configService.get("firebase.id_bucket_name") + userId
       })
       .then(() => {
-        this.usersRepository.createQueryBuilder()
+        this.userRepository.createQueryBuilder()
           .where("id = :id", { id: userId })
           .update(UserEntity)
           .set({ id_photo: null })
