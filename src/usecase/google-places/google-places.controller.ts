@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import {Controller, Get, Param, Post} from "@nestjs/common";
 import { GooglePlacesService } from "./google-places.service";
 
 @Controller({
@@ -17,5 +17,10 @@ export class GooglePlacesController {
   @Get("details/:placeId")
   getPlaceDetails(@Param("placeId") placeId: string) {
     return this.googlePlacesService.getPlaceDetails(placeId);
+  }
+
+  @Post("verify/:placeId")
+  verifyPlace(@Param("placeId") placeId: string) {
+    return this.googlePlacesService.verifyPlace(placeId);
   }
 }
