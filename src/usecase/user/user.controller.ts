@@ -60,12 +60,12 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
   @Patch('update-info')
-  update(@Body() updateUserDto: UpdateUserDto, @Headers("Authorization") authorization: string, @UploadedFile() file: Express.Multer.File) {
+  updateInfo(@Body() updateUserDto: UpdateUserDto, @Headers("Authorization") authorization: string, @UploadedFile() file: Express.Multer.File) {
     if (file === undefined) {
       throw new HttpException("Id photo not provided", 400);
     }
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.userService.update(userId, updateUserDto, file);
+    return this.userService.updateInfo(userId, updateUserDto, file);
   }
 
   @ApiBearerAuth()
