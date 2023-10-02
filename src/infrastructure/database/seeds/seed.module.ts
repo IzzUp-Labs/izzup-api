@@ -10,6 +10,7 @@ import { UserStatusSeedModule } from "./user-status/user-status-seed.module";
 import { TagsSeedModule } from "./tags/tags-seed.module";
 import { ActivitySectorSeedModule } from "./activity-sector/activity-sector-seed.module";
 import { HomepageCardSeedModule } from "./homepage-card/homepage-card-seed.module";
+import {BadgeSeedModule} from "./badge/badge-seed.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { HomepageCardSeedModule } from "./homepage-card/homepage-card-seed.modul
     TagsSeedModule,
     ActivitySectorSeedModule,
     HomepageCardSeedModule,
+    BadgeSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
