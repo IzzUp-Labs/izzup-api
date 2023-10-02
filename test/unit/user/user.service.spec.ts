@@ -92,6 +92,10 @@ describe("UserService", () => {
         employer: null,
         extra: null,
         devices: [],
+        ratings: [],
+        rated_users: [],
+        badge_rated_users: [],
+        badge_ratings: [],
         is_email_confirmed: false,
         email_confirmation_code: null,
         statuses: [

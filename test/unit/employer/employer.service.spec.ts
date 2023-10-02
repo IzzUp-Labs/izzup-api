@@ -115,6 +115,10 @@ describe("EmployerService", () => {
           rooms: null,
           email_confirmation_code: null,
           devices: [],
+          ratings: [],
+          rated_users: [],
+          badge_rated_users: [],
+          badge_ratings: [],
           is_email_confirmed: false,
           statuses: [
             {
@@ -169,6 +173,10 @@ describe("EmployerService", () => {
           rooms: null,
           is_email_confirmed: false,
           devices: [],
+          ratings: [],
+          rated_users: [],
+          badge_rated_users: [],
+          badge_ratings: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -220,6 +228,10 @@ describe("EmployerService", () => {
           rooms: null,
           is_email_confirmed: false,
           devices: [],
+          ratings: [],
+          rated_users: [],
+          badge_rated_users: [],
+          badge_ratings: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -270,6 +282,10 @@ describe("EmployerService", () => {
           rooms: null,
           is_email_confirmed: false,
           devices: [],
+          ratings: [],
+          rated_users: [],
+          badge_rated_users: [],
+          badge_ratings: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -339,6 +355,10 @@ describe("EmployerService", () => {
           rooms: null,
           is_email_confirmed: false,
           devices: [],
+          ratings: [],
+          rated_users: [],
+          badge_rated_users: [],
+          badge_ratings: [],
           email_confirmation_code: null,
           statuses: [
             {
@@ -454,6 +474,10 @@ describe("EmployerService", () => {
               rooms: null,
               is_email_confirmed: false,
               devices: [],
+              ratings: [],
+              rated_users: [],
+              badge_rated_users: [],
+              badge_ratings: [],
               email_confirmation_code: null,
               statuses: [
                 {
@@ -564,6 +588,10 @@ describe("EmployerService", () => {
               rooms: null,
               is_email_confirmed: false,
               devices: [],
+              ratings: [],
+              rated_users: [],
+              badge_rated_users: [],
+              badge_ratings: [],
               email_confirmation_code: null,
               statuses: [
                 {
