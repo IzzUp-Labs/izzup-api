@@ -48,7 +48,11 @@ export class UserService {
     });
   }
 
-  async update(userId: string, updateUserDto: UpdateUserDto, file: Express.Multer.File) {
+  async update(userId: string, updateUserDto: UpdateUserDto) {
+    return this.userRepository.update(userId, updateUserDto);
+  }
+
+  async updateInfo(userId: string, updateUserDto: UpdateUserDto, file: Express.Multer.File) {
     await this.uploadId(userId, file);
     await this.removeStatus(userId, UserStatusEnum.NOT_VALID)
     return this.userRepository.update(userId, updateUserDto);
