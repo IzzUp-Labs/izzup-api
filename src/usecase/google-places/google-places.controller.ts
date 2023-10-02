@@ -1,6 +1,8 @@
 import {Controller, Get, Param, Post} from "@nestjs/common";
 import { GooglePlacesService } from "./google-places.service";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags("Google Places")
 @Controller({
   path: "google-places",
   version: "1"
