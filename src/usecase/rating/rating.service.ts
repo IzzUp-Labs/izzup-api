@@ -1,5 +1,5 @@
 import {HttpException, Injectable} from '@nestjs/common';
-import { CreateRatingDto } from './dto/create-rating.dto';
+import {CreateRatingDto} from './dto/create-rating.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {RatingEntity} from "./entities/rating.entity";
 import {Repository} from "typeorm";
@@ -74,7 +74,36 @@ export class RatingService {
   }
 
   async findUserRatingStats(userId: string) {
-      return "TODO"
+      const user = await this.userService.findOne({id: userId});
+      const ratings = await this.ratingRepository.createQueryBuilder("rating")
+            .where("rating.target = :target", {target: user})
+            .getMany();
+      const userBadge = await this.findAllUserBadge(userId);
+      const badgeRatings = await this.badgeRatingRepository.createQueryBuilder("badge_rating")
+          .where("badge_rating.target = :target", {target: user})
+          .getMany();
+      const badgeStats = [];
+      for (const badge of userBadge) {
+            badgeStats.push({
+                id: badge.id,
+                name: badge.name,
+                description: badge.description,
+                image: badge.image,
+                is_extra: badge.is_extra,
+                rating_count: badgeRatings.filter(badgeRating => badgeRating.badge.id === badge.id).length
+            });
+      }
+      return {
+          zero: ratings.filter(rating => rating.stars === 0).length,
+          one: ratings.filter(rating => rating.stars === 1).length,
+          two: ratings.filter(rating => rating.stars === 2).length,
+          three: ratings.filter(rating => rating.stars === 3).length,
+          four: ratings.filter(rating => rating.stars === 4).length,
+          five: ratings.filter(rating => rating.stars === 5).length,
+          average: ratings.reduce((acc, rating) => acc + rating.stars, 0) / ratings.length,
+          total: ratings.length,
+          badges: badgeStats
+      };
   }
 
   async findAllUserBadge(userId: string) {
