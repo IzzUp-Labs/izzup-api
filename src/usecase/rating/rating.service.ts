@@ -36,10 +36,10 @@ export class RatingService {
         throw new Error("You must provide at least one of stars or badges");
     }
     if(createRatingDto.stars){
-        if(createRatingDto.stars < 0 || createRatingDto.stars > 5){
-            throw new Error("Stars must be between 0 and 5");
+        if(createRatingDto.stars < 1 || createRatingDto.stars > 5){
+            throw new Error("Stars must be between 1 and 5");
         }
-        return this.ratingRepository.save({
+        await this.ratingRepository.save({
             author: user,
             target: target,
             stars: createRatingDto.stars
@@ -94,12 +94,11 @@ export class RatingService {
             });
       }
       return {
-          zero: ratings.filter(rating => rating.stars === 0).length,
-          one: ratings.filter(rating => rating.stars === 1).length,
-          two: ratings.filter(rating => rating.stars === 2).length,
-          three: ratings.filter(rating => rating.stars === 3).length,
-          four: ratings.filter(rating => rating.stars === 4).length,
-          five: ratings.filter(rating => rating.stars === 5).length,
+          one_stars: ratings.filter(rating => rating.stars === 1).length,
+          two_stars: ratings.filter(rating => rating.stars === 2).length,
+          three_stars: ratings.filter(rating => rating.stars === 3).length,
+          four_stars: ratings.filter(rating => rating.stars === 4).length,
+          five_stars: ratings.filter(rating => rating.stars === 5).length,
           average: ratings.reduce((acc, rating) => acc + rating.stars, 0) / ratings.length,
           total: ratings.length,
           badges: badgeStats
