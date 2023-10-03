@@ -79,6 +79,7 @@ export class RatingService {
             .getMany();
       const userBadge = await this.findAllUserBadge(userId);
       const badgeRatings = await this.badgeRatingRepository.createQueryBuilder("badge_rating")
+          .leftJoinAndSelect("badge_rating.badge", "badge")
           .where("badge_rating.target = :target", {target: userId})
           .getMany();
       const badgeStats = [];
