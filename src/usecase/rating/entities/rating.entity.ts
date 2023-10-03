@@ -15,6 +15,6 @@ export class RatingEntity {
     @ManyToOne(() => UserEntity, (user) => user.ratings)
     target!: UserEntity;
 
-    @Column("varchar")
+    @Column("varchar", {nullable: true})
     comment: string;
 }
