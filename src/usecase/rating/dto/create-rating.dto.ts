@@ -2,11 +2,11 @@ import {ApiProperty} from "@nestjs/swagger";
 
 export class CreateRatingDto {
     @ApiProperty()
-    stars?: number;
+    stars?: number | null;
     @ApiProperty()
     target_id!: string;
     @ApiProperty()
     comment?: string;
     @ApiProperty()
-    badges?: string[];
+    badges?: string[] | null;
 }
