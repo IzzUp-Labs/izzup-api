@@ -74,13 +74,12 @@ export class RatingService {
   }
 
   async findUserRatingStats(userId: string) {
-      const user = await this.userService.findOne({id: userId});
       const ratings = await this.ratingRepository.createQueryBuilder("rating")
-            .where("rating.target = :target", {target: user})
+            .where("rating.target = :target", {target: userId})
             .getMany();
       const userBadge = await this.findAllUserBadge(userId);
       const badgeRatings = await this.badgeRatingRepository.createQueryBuilder("badge_rating")
-          .where("badge_rating.target = :target", {target: user})
+          .where("badge_rating.target = :target", {target: userId})
           .getMany();
       const badgeStats = [];
       for (const badge of userBadge) {
