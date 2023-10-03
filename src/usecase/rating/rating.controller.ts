@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, UseGuards, Headers, UploadedFile, UseInterceptors} from '@nestjs/common';
+import {Controller, Get, Post, Body, UseGuards, Headers, UploadedFile, UseInterceptors, Param} from '@nestjs/common';
 import { RatingService } from './rating.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
@@ -39,9 +39,8 @@ export class RatingController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
-  @Get('user-stats')
-  findUserRatingStats(@Headers("Authorization") authorization: string) {
-    const userId = this.paramCheckService.decodeId(authorization);
+  @Get('user-stats/:userId')
+  findUserRatingStats(@Param("userId") userId: string) {
     return this.ratingService.findUserRatingStats(userId);
   }
 
