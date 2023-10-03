@@ -16,6 +16,8 @@ import { ExtraEntity } from "../../extra/entities/extra.entity";
 import { UserStatusEntity } from "../../user-status/entities/user-status.entity";
 import { MessagingRoomEntity } from "../../messaging/entities/messaging-room.entity";
 import {DeviceEntity} from "../../device/entities/device.entity";
+import {RatingEntity} from "../../rating/entities/rating.entity";
+import {BadgeRatingEntity} from "../../rating/entities/badge-rating.entity";
 
 @Entity("user")
 export class UserEntity {
@@ -69,6 +71,18 @@ export class UserEntity {
 
   @OneToMany(() => DeviceEntity, (device) => device.device_id)
   devices: DeviceEntity[];
+
+  @OneToMany(() => RatingEntity, (rating) => rating.target)
+  ratings: RatingEntity[];
+
+  @OneToMany(() => RatingEntity, (rating) => rating.author)
+  rated_users: RatingEntity[];
+
+  @OneToMany(() => BadgeRatingEntity, (badgeRating) => badgeRating.target)
+  badge_ratings: BadgeRatingEntity[];
+
+  @OneToMany(() => BadgeRatingEntity, (badgeRating) => badgeRating.author)
+  badge_rated_users: BadgeRatingEntity[];
 
   @CreateDateColumn()
   created_at: Date;

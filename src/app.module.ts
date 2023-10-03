@@ -38,6 +38,7 @@ import { NotificationModule } from "./usecase/notification/notification.module";
 import {DeviceModule} from "./usecase/device/device.module";
 import {AcceptLanguageResolver, I18nModule, QueryResolver} from "nestjs-i18n";
 import * as path from "path";
+import {RatingModule} from "./usecase/rating/rating.module";
 
 @Module({
   imports: [
@@ -108,7 +109,8 @@ import * as path from "path";
     MessagingRoomModule,
     MessagingModule,
     MailingModule,
-    DeviceModule
+    DeviceModule,
+    RatingModule,
   ],
   controllers: [],
   providers: [

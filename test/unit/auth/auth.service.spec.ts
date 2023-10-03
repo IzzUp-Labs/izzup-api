@@ -186,6 +186,10 @@ describe("AuthService", () => {
         is_email_confirmed: false,
         email_confirmation_code: null,
         devices: [],
+        ratings: [],
+        rated_users: [],
+        badge_rated_users: [],
+        badge_ratings: [],
         statuses: [
           {
             id: "1",
@@ -227,6 +231,10 @@ describe("AuthService", () => {
         email_confirmation_code: null,
         is_email_confirmed: false,
         devices: [],
+        ratings: [],
+        rated_users: [],
+        badge_rated_users: [],
+        badge_ratings: [],
         statuses: [
           {
             id: "1",
@@ -391,6 +399,10 @@ describe("AuthService", () => {
         is_email_confirmed: false,
         email_confirmation_code: null,
         devices: [],
+        ratings: [],
+        rated_users: [],
+        badge_rated_users: [],
+        badge_ratings: [],
         statuses: [
           {
             id: "1",
