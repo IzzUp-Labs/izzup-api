@@ -13,6 +13,7 @@ import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { UserEntity } from "../user/entities/user.entity";
 import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 import { LocationService } from "../location/location.service";
+import {DeviceService} from "../device/device.service";
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,8 @@ export class AuthService {
     private extraService: ExtraService,
     private employerService: EmployerService,
     private companyService: CompanyService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private deviceService: DeviceService,
   ) {}
 
   async validateLogin(authLoginDto: AuthLoginDto): Promise<{ token: string }> {
@@ -110,5 +112,9 @@ export class AuthService {
       location: company_location
     });
     return user;
+  }
+
+  async logout(userId: string) {
+    await this.deviceService.removeUserDevices(userId);
   }
 }

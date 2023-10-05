@@ -9,6 +9,8 @@ import { ExtraModule } from "../extra/extra.module";
 import { CompanyModule } from "../company/company.module";
 import { EmployerModule } from "../employer/employer.module";
 import { LocationModule } from "../location/location.module";
+import {DeviceModule} from "../device/device.module";
+import {ParamCheckModule} from "../../domain/middleware/param-check/param-check.module";
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { LocationModule } from "../location/location.module";
     EmployerModule,
     CompanyModule,
     LocationModule,
+    DeviceModule,
+    ParamCheckModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

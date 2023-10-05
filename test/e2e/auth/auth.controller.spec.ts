@@ -26,6 +26,7 @@ import { NotificationService } from "../../../src/usecase/notification/notificat
 import {DeviceService} from "../../../src/usecase/device/device.service";
 import {I18nService} from "nestjs-i18n";
 import {DeviceEntity} from "../../../src/usecase/device/entities/device.entity";
+import {ParamCheckService} from "../../../src/domain/middleware/param-check/param-check.service";
 
 describe("AuthController", () => {
   let controller: AuthController;
@@ -48,6 +49,7 @@ describe("AuthController", () => {
         LocationService,
         NotificationService,
         DeviceService,
+        ParamCheckService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: UserEntity
