@@ -9,5 +9,7 @@ export class CreateDeviceDto {
     @ApiProperty()
     device_language: string;
     @ApiProperty()
+    notification_enabled: boolean;
+    @ApiProperty()
     user: UserEntity;
 }

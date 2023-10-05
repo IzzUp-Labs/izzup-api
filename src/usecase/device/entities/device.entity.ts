@@ -17,4 +17,7 @@ export class DeviceEntity {
 
     @Column({ type: "varchar", nullable: false })
     device_language: string;
+
+    @Column({ type: "boolean", nullable: false, default: false})
+    notification_enabled: boolean;
 }

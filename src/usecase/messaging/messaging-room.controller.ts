@@ -1,10 +1,14 @@
 import { Controller, Delete, Get, Headers, Param, Post, UseGuards } from "@nestjs/common";
 import { MessagingRoomService } from "./messaging-room.service";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
 
-@Controller("messaging-room")
+@ApiTags("Messaging Room")
+@Controller({
+  path: "messaging-room",
+  version: "1"
+})
 export class MessagingRoomController {
   constructor(private readonly messagingRoomService: MessagingRoomService,
               private readonly paramCheckService: ParamCheckService) {

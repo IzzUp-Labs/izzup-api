@@ -7,4 +7,6 @@ export class CheckDeviceFcmTokenDto {
     fcm_token: string;
     @ApiProperty()
     device_language: string;
+    @ApiProperty()
+    notification_enabled: boolean;
 }

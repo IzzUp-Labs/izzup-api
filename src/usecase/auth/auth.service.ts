@@ -25,7 +25,7 @@ export class AuthService {
     private locationService: LocationService
   ) {}
 
-  validateLogin(authLoginDto: AuthLoginDto): Promise<{ token: string }> {
+  async validateLogin(authLoginDto: AuthLoginDto): Promise<{ token: string }> {
     return this.userService.findOne({
       email: authLoginDto.email.toLowerCase()
     }).then((user) => {

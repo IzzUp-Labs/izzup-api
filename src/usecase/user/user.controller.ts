@@ -128,6 +128,14 @@ export class UserController {
   @Post("device/check")
   checkFcmToken(@Body() checkUserFcmTokenDto: CheckDeviceFcmTokenDto, @Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);
-    return this.userService.checkFCMToken(userId, checkUserFcmTokenDto.device_id, checkUserFcmTokenDto.fcm_token, checkUserFcmTokenDto.device_language);
+    return this.userService.checkFCMToken(userId, checkUserFcmTokenDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Delete("delete/account")
+  deleteAccount(@Headers("Authorization") authorization: string) {
+    const userId = this.paramCheckService.decodeId(authorization);
+    return this.userService.deleteAccount(userId);
   }
 }

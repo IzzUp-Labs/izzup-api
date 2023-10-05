@@ -3,11 +3,12 @@ import { LocationService } from "./location.service";
 import { CreateLocationDto } from "./dto/create-location.dto";
 import { UpdateLocationDto } from "./dto/update-location.dto";
 import { CheckJobOffersInRangeDto } from "./dto/check-job-offers-in-range.dto";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
 import { AuthGuard } from "@nestjs/passport";
 
+@ApiTags("Location")
 @Controller({
   path: "location",
   version: "1"

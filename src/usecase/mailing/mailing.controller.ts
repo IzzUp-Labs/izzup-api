@@ -1,9 +1,10 @@
 import { Controller, Get, Headers, Param, Patch, UseGuards } from "@nestjs/common";
 import { MailingService } from "./mailing.service";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import { ParamCheckService } from "../../domain/middleware/param-check/param-check.service";
 
+@ApiTags("Mailing")
 @Controller({
   path: "mailing",
   version: "1"

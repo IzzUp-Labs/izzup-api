@@ -16,6 +16,7 @@ export class DeviceService {
 
   async findOne(fields: EntityCondition<DeviceEntity>) {
     return this.deviceRepository.findOne({
+      relations: ["user"],
       where: fields
     });
   }
@@ -37,6 +38,28 @@ export class DeviceService {
         return {
             token: device.fcm_token,
             language: device.device_language
+        }
+    });
+  }
+
+  async getAllUserDevices(userId: string) {
+    return this.deviceRepository.find({
+      where: {
+        user: {
+          id: userId
+        }
+      }
+    });
+  }
+
+  async remove(deviceId: string) {
+    return this.deviceRepository.delete(deviceId);
+  }
+
+  async removeUserDevices(userId: string) {
+    return this.deviceRepository.delete({
+        user: {
+            id: userId
         }
     });
   }

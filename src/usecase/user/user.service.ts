@@ -13,6 +13,7 @@ import { FileExtensionChecker } from "../../domain/utils/file-extension-checker/
 import {DeviceService} from "../device/device.service";
 import {CreateDeviceDto} from "../device/dto/create-device.dto";
 import {NotificationService} from "../notification/notification.service";
+import {CheckDeviceFcmTokenDto} from "../device/dto/check-device-fcm-token.dto";
 
 @Injectable()
 export class UserService {
@@ -222,23 +223,30 @@ export class UserService {
       });
   }
 
-  async checkFCMToken(userId: string, deviceId: string, fcmToken: string, deviceLanguage: string) {
+  async checkFCMToken(userId: string, checkUserFcmTokenDto: CheckDeviceFcmTokenDto) {
     const user = await this.findOne({id: userId});
-    const device = await this.deviceService.findOne({device_id: deviceId});
-    if (device) {
-      if (device.fcm_token !== fcmToken) {
-        device.fcm_token = fcmToken;
-        device.device_language = deviceLanguage;
+    const device = await this.deviceService.findOne({device_id: checkUserFcmTokenDto.device_id});
+    if (device && device.user.id === user.id) {
+      if (device.fcm_token !== checkUserFcmTokenDto.fcm_token) {
+        device.fcm_token = checkUserFcmTokenDto.fcm_token;
+        device.device_language = checkUserFcmTokenDto.device_language;
+        device.notification_enabled = checkUserFcmTokenDto.notification_enabled;
         await this.deviceService.update(device.id, device);
       }
     }else{
       const device: CreateDeviceDto = {
-        device_id: deviceId,
-        fcm_token: fcmToken,
-        device_language: deviceLanguage,
+        device_id: checkUserFcmTokenDto.device_id,
+        fcm_token: checkUserFcmTokenDto.fcm_token,
+        device_language: checkUserFcmTokenDto.device_language,
+        notification_enabled: checkUserFcmTokenDto.notification_enabled,
         user: user
       }
       await this.deviceService.create(device);
     }
+  }
+
+  async deleteAccount(userId: string) {
+    await this.deviceService.removeUserDevices(userId);
+    await this.userRepository.softDelete(userId);
   }
 }
