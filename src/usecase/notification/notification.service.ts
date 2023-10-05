@@ -13,7 +13,11 @@ export class NotificationService {
         private readonly i18n: I18nService
     ) {}
     async sendJobNotificationToUser(userId: string, body: string, data: NotificationDataDto) {
+        // console log in gcp
+        console.log('sendBasicNotificationToUser :', userId, body, data);
         this.deviceService.getDevicesInformation(userId).then(devices => {
+            // console log in gcp
+            console.log("devices:", devices);
             devices.forEach(device => {
                 this.firebase.messaging.send({
                     token: device.token,
@@ -54,7 +58,11 @@ export class NotificationService {
     }
 
     async sendBasicNotificationToUser(userId: string, body: string, data: NotificationDataDto) {
+        // console log in gcp
+        console.log('sendBasicNotificationToUser :', userId, body, data);
         this.deviceService.getDevicesInformation(userId).then(devices => {
+            // console log in gcp
+            console.log("devices:", devices);
             devices.forEach(device => {
                 this.firebase.messaging.send({
                     token: device.token,
@@ -85,7 +93,11 @@ export class NotificationService {
     }
 
     async sendMessageNotificationToUser(userId: string, title: string, body: string, data: NotificationDataDto) {
+        // console log in gcp
+        console.log('sendBasicNotificationToUser :', userId, body, data);
         this.deviceService.getDevicesInformation(userId).then(devices => {
+            // console log in gcp
+            console.log("devices:", devices);
             devices.forEach(device => {
                 this.firebase.messaging.send({
                     token: device.token,
