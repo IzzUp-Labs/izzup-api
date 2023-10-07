@@ -107,9 +107,11 @@ export class RatingService {
 
   async findAllUserBadge(userId: string) {
       const user = await this.userService.findOne({id: userId});
-      return this.badgeRepository.createQueryBuilder("badge")
-          .where("badge.is_extra = :is_extra", {is_extra: !!user.extra})
-          .getMany();
+      if(user.extra || user.employer){
+          return this.badgeRepository.createQueryBuilder("badge")
+              .where("badge.is_extra = :is_extra", {is_extra: !!user.extra})
+              .getMany();
+      }
   }
 
   async updateBadgeIcon(id: string, file: Express.Multer.File) {
