@@ -10,6 +10,7 @@ import {FirebaseAdmin, InjectFirebaseAdmin} from "nestjs-firebase";
 import {ConfigService} from "@nestjs/config";
 import {FileExtensionChecker} from "../../domain/utils/file-extension-checker/file-extension-checker";
 import {CreateBadgeDto} from "./dto/create-badge.dto";
+import {RoleEnum} from "../../domain/utils/enums/role.enum";
 
 @Injectable()
 export class RatingService {
@@ -107,16 +108,15 @@ export class RatingService {
 
   async findAllUserBadge(userId: string) {
       const user = await this.userService.findOne({id: userId});
-      if(user.extra){
+      if(user.role === RoleEnum.EXTRA){
           return this.badgeRepository.createQueryBuilder("badge")
-              .where("badge.is_extra = :is_extra", {is_extra: !!user.extra})
+              .where("badge.is_extra = :is_extra", {is_extra: true})
               .getMany();
-      }else if (user.employer){
+      }else{
           return this.badgeRepository.createQueryBuilder("badge")
-              .where("badge.is_extra = :is_extra", {is_extra: !!user.employer})
+              .where("badge.is_extra = :is_extra", {is_extra: false})
               .getMany();
       }
-      return [];
   }
 
   async updateBadgeIcon(id: string, file: Express.Multer.File) {
