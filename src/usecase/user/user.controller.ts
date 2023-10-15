@@ -79,7 +79,7 @@ export class UserController {
   @RoleGuard([RoleEnum.ADMIN])
   @Get("users/unverified")
   getUnverifiedUsers() {
-    return this.userService.getUsersByStatus();
+    return this.userService.getUnverifiedUsers();
   }
 
   @ApiBearerAuth()
