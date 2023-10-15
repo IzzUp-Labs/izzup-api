@@ -107,11 +107,14 @@ export class UserService {
     }
   }
 
-  async getUsersByStatus(status: UserStatusEnum) {
+  async getUsersByStatus() {
     return this.userRepository.createQueryBuilder("user")
-      .leftJoinAndSelect("user.statuses", "status")
-      .where("status.name = :name", { name: status })
-      .getMany();
+        .leftJoinAndSelect("user.statuses", "status")
+        .where("status.name = :name", { name: UserStatusEnum.UNVERIFIED })
+        .andWhere("status.name != :name2", { name2: UserStatusEnum.NOT_VALID })
+        .andWhere("status.name != :name3", { name3: UserStatusEnum.VERIFIED })
+        .andWhere("status.name != :name4", { name4: UserStatusEnum.NEED_ID })
+        .getMany();
   }
 
   async verifyUser(userId: string) {
@@ -247,6 +250,6 @@ export class UserService {
 
   async deleteAccount(userId: string) {
     await this.deviceService.removeUserDevices(userId);
-    await this.userRepository.softDelete(userId);
+    await this.userRepository.delete(userId);
   }
 }

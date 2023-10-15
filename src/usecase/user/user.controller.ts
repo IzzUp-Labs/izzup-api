@@ -16,7 +16,6 @@ import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { UserStatusEnum } from "../../domain/utils/enums/user-status.enum";
 import { AuthGuard } from "@nestjs/passport";
 import { RoleGuard } from "../../domain/guards/role.decorator";
 import { RoleEnum } from "../../domain/utils/enums/role.enum";
@@ -80,7 +79,7 @@ export class UserController {
   @RoleGuard([RoleEnum.ADMIN])
   @Get("users/unverified")
   getUnverifiedUsers() {
-    return this.userService.getUsersByStatus(UserStatusEnum.UNVERIFIED);
+    return this.userService.getUsersByStatus();
   }
 
   @ApiBearerAuth()
