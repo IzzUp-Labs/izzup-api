@@ -47,6 +47,7 @@ export class NotificationService {
                         starting_date: JSON.stringify(data.starting_date) || '',
                         verification_code: JSON.stringify(data.verification_code) || '',
                         request_id: data.request_id || '',
+                        user_id: data.user_id || '',
                     },
                 }).then(r => console.log(r)).catch(e => console.log(e));
             });

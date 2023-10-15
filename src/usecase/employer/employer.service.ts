@@ -211,7 +211,8 @@ export class EmployerService {
     await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-confirmed-body", {
       type: "job-request-confirmed",
       verification_code: verification_code,
-      request_id: request.id
+      request_id: request.id,
+      user_id: request.extra.user.id
     });
   }
 
