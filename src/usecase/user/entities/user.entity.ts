@@ -54,34 +54,34 @@ export class UserEntity {
   @Column({ type: "varchar", nullable: true })
   id_photo: string;
 
-  @OneToOne(() => EmployerEntity, (employer) => employer.user, { cascade: true })
+  @OneToOne(() => EmployerEntity, (employer) => employer.user, { onDelete: "CASCADE" })
   @JoinColumn()
   employer: EmployerEntity;
 
-  @OneToOne(() => ExtraEntity, (extra) => extra.user, { cascade: true })
+  @OneToOne(() => ExtraEntity, (extra) => extra.user, { onDelete: "CASCADE" })
   @JoinColumn()
   extra: ExtraEntity;
 
-  @ManyToMany(() => UserStatusEntity)
+  @ManyToMany(() => UserStatusEntity, { cascade: true })
   @JoinTable()
   statuses: UserStatusEntity[];
 
-  @OneToMany(() => MessagingRoomEntity, (messageRoom) => messageRoom.participant)
+  @OneToMany(() => MessagingRoomEntity, (messageRoom) => messageRoom.participant, { onDelete: "CASCADE" })
   rooms: MessagingRoomEntity[];
 
-  @OneToMany(() => DeviceEntity, (device) => device.device_id)
+  @OneToMany(() => DeviceEntity, (device) => device.device_id, { onDelete: "CASCADE" })
   devices: DeviceEntity[];
 
-  @OneToMany(() => RatingEntity, (rating) => rating.target)
+  @OneToMany(() => RatingEntity, (rating) => rating.target, { onDelete: "CASCADE" })
   ratings: RatingEntity[];
 
-  @OneToMany(() => RatingEntity, (rating) => rating.author)
+  @OneToMany(() => RatingEntity, (rating) => rating.author, { onDelete: "CASCADE" })
   rated_users: RatingEntity[];
 
-  @OneToMany(() => BadgeRatingEntity, (badgeRating) => badgeRating.target)
+  @OneToMany(() => BadgeRatingEntity, (badgeRating) => badgeRating.target, { onDelete: "CASCADE" })
   badge_ratings: BadgeRatingEntity[];
 
-  @OneToMany(() => BadgeRatingEntity, (badgeRating) => badgeRating.author)
+  @OneToMany(() => BadgeRatingEntity, (badgeRating) => badgeRating.author, { onDelete: "CASCADE" })
   badge_rated_users: BadgeRatingEntity[];
 
   @CreateDateColumn()

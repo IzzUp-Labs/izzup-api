@@ -15,7 +15,7 @@ export class MessagingRoomEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @OneToMany(() => MessagingEntity, (message) => message.room)
+  @OneToMany(() => MessagingEntity, (message) => message.room, { cascade: true })
   messages!: MessagingEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.rooms, { cascade: true })

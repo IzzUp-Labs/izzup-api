@@ -25,10 +25,10 @@ export class ExtraEntity {
   @OneToOne(() => UserEntity, (user) => user.extra)
   user: UserEntity;
 
-  @OneToMany(() => ExtraJobRequestEntity, (request) => request.extra)
+  @OneToMany(() => ExtraJobRequestEntity, (request) => request.extra, { cascade: true })
   requests: ExtraJobRequestEntity[];
 
-  @ManyToMany(() => TagEntity)
+  @ManyToMany(() => TagEntity, { cascade: true })
   @JoinTable()
   tags: TagEntity[];
 
