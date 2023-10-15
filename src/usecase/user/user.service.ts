@@ -108,11 +108,12 @@ export class UserService {
   }
 
   async getUnverifiedUsers() {
-    return await this.userRepository.createQueryBuilder("user")
-        .innerJoinAndSelect("user.statuses", "status")
-        .where("status.name = :name", { name: UserStatusEnum.UNVERIFIED })
-        .andWhere("status.name != :name1", { name1: UserStatusEnum.NOT_VALID })
-        .getMany();
+    const users = await this.userRepository.createQueryBuilder("user")
+        .leftJoinAndSelect("user.statuses", "status")
+        .leftJoinAndSelect("user.employer", "employer")
+        .leftJoinAndSelect("user.extra", "extra")
+        .getMany()
+    return users.filter(user => user.statuses.find(userStatus => userStatus.name === UserStatusEnum.UNVERIFIED) && !user.statuses.find(userStatus => userStatus.name === UserStatusEnum.NOT_VALID));
   }
 
   async verifyUser(userId: string) {
