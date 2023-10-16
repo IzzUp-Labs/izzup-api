@@ -35,7 +35,6 @@ export class HomepageCardController {
   @UseInterceptors(FileInterceptor("file"))
   @Post()
   create(@Body() homepageCardDto: HomepageCardDto, @UploadedFile() file: Express.Multer.File) {
-    console.log(file);
     return this.homepageCardService.create(homepageCardDto, file);
   }
 

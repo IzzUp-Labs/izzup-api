@@ -74,9 +74,6 @@ export class MailingService {
     // Find user
     const user = await this.userService.findOne({ id: userId });
 
-    console.log("USER ID for MALING : " + userId);
-    console.log("REQUEST ID for MALING : " + requestId);
-
     await this.extraJobRequestService.update(requestId, {
       status: JobRequestStatus.REJECTED,
       verification_code: null

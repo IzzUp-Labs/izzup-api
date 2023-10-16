@@ -232,8 +232,6 @@ export class EmployerService {
       throw new HttpException("Request is not waiting for verification", 400);
     }
 
-    console.log("VERIFICATION CODE ON REQUEST : " + request.verification_code);
-    console.log("VERIFICATION CODE ON PARAMETER : " + verification_code);
     if (Number(request.verification_code) !== Number(verification_code)) {
       throw new HttpException("Invalid verification code", 400);
     }

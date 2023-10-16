@@ -112,7 +112,6 @@ export class RatingService {
       const users = await this.userService.findAllUserWithRating();
       return users.filter(user => {
           const userStars = Math.round(user.ratings.reduce((acc, rating) => acc + rating.stars, 0) / user.ratings.length);
-          console.log(userStars)
           return userStars == stars;
       })
   }
