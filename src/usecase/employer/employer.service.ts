@@ -252,6 +252,7 @@ export class EmployerService {
     // NOTIFICATION : SEND NOTIFICATION TO EXTRA (JOB-REQUEST-FINISHED)
     await this.notificationService.sendJobNotificationToUser(request.extra.user.id, "job-request-finished-body", {
       type: "job-request-finished",
+      user_id: request.extra.user.id
     });
   }
 
