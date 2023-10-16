@@ -87,8 +87,10 @@ export class RatingService {
       for (const badge of userBadge) {
             badgeStats.push({
                 id: badge.id,
-                name: badge.name,
-                description: badge.description,
+                name_fr: badge.name_fr,
+                name_en: badge.name_en,
+                description_fr: badge.description_fr,
+                description_en: badge.description_en,
                 image: badge.image,
                 is_extra: badge.is_extra,
                 rating_count: badgeRatings.filter(badgeRating => badgeRating.badge.id === badge.id).length

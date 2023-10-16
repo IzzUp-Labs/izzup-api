@@ -6,9 +6,13 @@ export class BadgeEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
     @Column("varchar")
-    name: string;
+    name_fr: string;
     @Column("varchar")
-    description: string;
+    name_en: string;
+    @Column("varchar")
+    description_fr: string;
+    @Column("varchar")
+    description_en: string;
     @Column("varchar", {nullable: true})
     image: string;
     @Column("boolean")
