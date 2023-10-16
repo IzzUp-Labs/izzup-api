@@ -45,7 +45,7 @@ export class JobRequestTaskService {
               type: "job-request-confirmed",
               verification_code: verification_code,
               request_id: request.id,
-              user_id: request.extra.user.id
+              user_id: jobOffer.company.employer.user.id
           });
           // NOTIFICATION : SEND NOTIFICATION TO EMPLOYER (JOB-REQUEST-CONFIRMED)
           await this.notificationService.sendJobNotificationToUser(jobOffer.company.employer.user.id, "job-request-confirmed-employer-body", {
@@ -53,7 +53,7 @@ export class JobRequestTaskService {
               verification_code: verification_code,
               request_id: request.id,
               user_name: request.extra.user.first_name + " " + request.extra.user.last_name,
-              user_id: jobOffer.company.employer.user.id
+              user_id: request.extra.user.id
           });
         }
       }
