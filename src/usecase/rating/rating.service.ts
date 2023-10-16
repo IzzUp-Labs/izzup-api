@@ -108,6 +108,14 @@ export class RatingService {
       };
   }
 
+  async findUsersByStars(stars: number) {
+      const users = await this.userService.findAllUserWithRating();
+      return users.filter(user => {
+          const userStars = user.ratings.reduce((acc, rating) => acc + rating.stars, 0) / user.ratings.length;
+          return userStars >= stars;
+      })
+  }
+
   async findAllUserBadge(userId: string) {
       const user = await this.userService.findOne({id: userId});
       if(user.role === RoleEnum.EXTRA){

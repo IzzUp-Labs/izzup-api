@@ -46,6 +46,14 @@ export class RatingController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
+  @RoleGuard([RoleEnum.ADMIN])
+  @Get('users/:stars')
+  findUsersByStars(@Param("stars") stars: number) {
+    return this.ratingService.findUsersByStars(stars);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
   @Get('user-badges')
   findAllUserBadge(@Headers("Authorization") authorization: string) {
     const userId = this.paramCheckService.decodeId(authorization);

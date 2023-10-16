@@ -42,6 +42,12 @@ export class UserService {
     });
   }
 
+  findAllUserWithRating() {
+    return this.userRepository.find({
+      relations: ["employer", "extra", "statuses", "ratings"]
+    });
+  }
+
   findOne(fields: EntityCondition<UserEntity>) {
     return this.userRepository.findOne({
       relations: ["statuses"],
