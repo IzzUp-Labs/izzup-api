@@ -65,8 +65,9 @@ export class UserService {
     return this.userRepository.update(userId, updateUserDto);
   }
 
-  remove(id: string) {
-    return this.userRepository.delete(id);
+  async remove(id: string) {
+    await this.deviceService.removeUserDevices(id);
+    return await this.userRepository.delete(id);
   }
 
   async findUserStatuses(userId: string) {

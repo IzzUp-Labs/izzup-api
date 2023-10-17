@@ -25,7 +25,9 @@ export class CompanyService {
       {
         relations: {
           sectors: true,
-          jobOffers: true
+          jobOffers: true,
+          location: true,
+          employer: true
         }
       }
     );
