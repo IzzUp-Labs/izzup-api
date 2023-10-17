@@ -42,5 +42,6 @@ export class GooglePlacesService {
       if(company){
           throw new HttpException("Company already exists", 409);
       }
+      throw new HttpException("Company not already exists", 200);
   }
 }
