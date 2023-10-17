@@ -23,12 +23,7 @@ export class CompanyService {
   findAll() {
     return this.companyRepository.find(
       {
-        relations: {
-          sectors: true,
-          jobOffers: true,
-          location: true,
-          employer: true
-        }
+        relations: [ "sectors", "jobOffers", "location", "employer", "employer.user"]
       }
     );
   }
