@@ -58,6 +58,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
+  @UseInterceptors(FileInterceptor("file"))
   @Patch('update-info')
   updateInfo(@Headers("Authorization") authorization: string, @UploadedFile() file: Express.Multer.File) {
     if (file === undefined) {
