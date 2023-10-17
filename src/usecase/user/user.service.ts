@@ -59,10 +59,10 @@ export class UserService {
     return this.userRepository.update(userId, updateUserDto);
   }
 
-  async updateInfo(userId: string, updateUserDto: UpdateUserDto, file: Express.Multer.File) {
+  async updateInfo(userId: string, file: Express.Multer.File) {
     await this.uploadId(userId, file);
     await this.removeStatus(userId, UserStatusEnum.NOT_VALID)
-    return this.userRepository.update(userId, updateUserDto);
+    throw new HttpException("Id photo uploaded", 200);
   }
 
   async remove(id: string) {
